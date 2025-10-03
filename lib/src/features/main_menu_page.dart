@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:flixbit/src/providers/tab_change_provider.dart';
 
+import '../res/app_colors.dart';
+
 class MainMenuPage extends StatelessWidget{
   const MainMenuPage({super.key, required this.navigationShell});
 
@@ -25,11 +27,60 @@ class MainMenuPage extends StatelessWidget{
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
         onTap: (int index) => _goBranch(context, index),
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.local_offer_outlined), label: 'Offers'),
-          BottomNavigationBarItem(icon: Icon(Icons.account_balance_wallet_outlined), label: 'Wallet'),
-          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Profile'),
+        showUnselectedLabels: true,
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
+        unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500),
+        selectedIconTheme: const IconThemeData(size: 26),
+        unselectedIconTheme: const IconThemeData(size: 24),
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined, color: AppColors.unSelectedGreyColor),
+            activeIcon: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: AppColors.primaryColor.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(Icons.home_filled, color: AppColors.primaryColor),
+            ),
+            label: 'Dashboard',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.percent_outlined, color: AppColors.unSelectedGreyColor),
+            activeIcon: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: AppColors.primaryColor.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(Icons.percent_rounded, color: AppColors.primaryColor),
+            ),
+            label: 'Offers',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.dashboard_outlined, color: AppColors.unSelectedGreyColor),
+            activeIcon: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: AppColors.primaryColor.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(Icons.dashboard_rounded, color: AppColors.primaryColor),
+            ),
+            label: 'Contests',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline, color: AppColors.unSelectedGreyColor),
+            activeIcon: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: AppColors.primaryColor.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(Icons.person, color: AppColors.primaryColor),
+            ),
+            label: 'Profile',
+          ),
         ],
         type: BottomNavigationBarType.fixed,
       ),

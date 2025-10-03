@@ -1,12 +1,14 @@
-import 'package:flixbit/src/constants/app_constants.dart';
-import 'package:flixbit/src/constants/app_colors.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flixbit/src/providers/tab_change_provider.dart';
+import 'package:flixbit/src/res/app_colors.dart';
+import 'package:flixbit/src/res/app_constants.dart';
 import 'package:flixbit/src/routes/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void main() {
-
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_)=> MainMenuTabChangeProvider()),
@@ -25,6 +27,7 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.dark,
       theme: ThemeData(
         brightness: Brightness.dark,
+        fontFamily: AppConstants.appFontFamily,
         colorScheme: ColorScheme.fromSeed(
           brightness: Brightness.dark,
           seedColor: AppColors.primaryColor,
@@ -50,6 +53,7 @@ class MyApp extends StatelessWidget {
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
+        fontFamily: AppConstants.appFontFamily,
         colorScheme: ColorScheme.fromSeed(
           brightness: Brightness.dark,
           seedColor: AppColors.primaryColor,

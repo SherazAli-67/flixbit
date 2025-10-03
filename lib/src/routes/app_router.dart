@@ -1,3 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flixbit/src/features/authentication/login_page.dart';
+import 'package:flixbit/src/features/authentication/signup_page.dart';
 import 'package:flixbit/src/routes/router_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -12,12 +15,19 @@ final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(de
 
 final GoRouter appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
-  initialLocation: RouterEnum.homeView.routeName,
+  initialLocation: RouterEnum.loginView.routeName,
   routes: <RouteBase>[
     GoRoute(
       path: RouterEnum.welcomeView.routeName,
-      name: 'welcome',
       builder: (BuildContext context, GoRouterState state) => const WelcomePage(),
+    ),
+    GoRoute(
+      path: RouterEnum.loginView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const LoginPage(),
+    ),
+    GoRoute(
+      path: RouterEnum.signupView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const SignupPage(),
     ),
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state, StatefulNavigationShell navigationShell) {
@@ -59,6 +69,29 @@ final GoRouter appRouter = GoRouter(
       ],
     ),
   ],
+  redirect: (context, state) {
+    final loggedIn = FirebaseAuth.instance.currentUser != null;
+    final goingTo = state.matchedLocation;
+
+    // Routes that don't require auth
+    final publicPaths = [
+      RouterEnum.loginView.routeName,
+      RouterEnum.welcomeView.routeName,
+      RouterEnum.signupView.routeName,
+    ];
+
+    if (!loggedIn && !publicPaths.contains(goingTo)) {
+      // Not logged in and trying to access a private route
+      return RouterEnum.loginView.routeName;
+    }
+
+    if (loggedIn && publicPaths.contains(goingTo)) {
+      // Logged in and trying to access public route (e.g., login or welcome)
+      return RouterEnum.homeView.routeName;
+    }
+
+    return null;
+  },
   errorBuilder: (BuildContext context, GoRouterState state) {
     return Scaffold(
       appBar: AppBar(title: const Text('Not found')),
