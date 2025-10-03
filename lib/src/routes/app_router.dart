@@ -1,3 +1,4 @@
+import 'package:flixbit/src/routes/router_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flixbit/src/features/main_menu_page.dart';
@@ -10,7 +11,7 @@ final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(de
 
 final GoRouter appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
-  initialLocation: '/home',
+  initialLocation: RouterEnum.homeView.routeName,
   routes: <RouteBase>[
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state, StatefulNavigationShell navigationShell) {
@@ -20,8 +21,7 @@ final GoRouter appRouter = GoRouter(
         StatefulShellBranch(
           routes: <RouteBase>[
             GoRoute(
-              path: '/home',
-              name: 'home',
+              path: RouterEnum.homeView.routeName,
               builder: (BuildContext context, GoRouterState state) => const HomePage(),
             ),
           ],
@@ -29,8 +29,7 @@ final GoRouter appRouter = GoRouter(
         StatefulShellBranch(
           routes: <RouteBase>[
             GoRoute(
-              path: '/offers',
-              name: 'offers',
+              path: RouterEnum.offersView.routeName,
               builder: (BuildContext context, GoRouterState state) => const OffersPage(),
             ),
           ],
@@ -38,8 +37,7 @@ final GoRouter appRouter = GoRouter(
         StatefulShellBranch(
           routes: <RouteBase>[
             GoRoute(
-              path: '/wallet',
-              name: 'wallet',
+              path: RouterEnum.walletView.routeName,
               builder: (BuildContext context, GoRouterState state) => const WalletPage(),
             ),
           ],
@@ -47,8 +45,7 @@ final GoRouter appRouter = GoRouter(
         StatefulShellBranch(
           routes: <RouteBase>[
             GoRoute(
-              path: '/profile',
-              name: 'profile',
+              path: RouterEnum.profileView.routeName,
               builder: (BuildContext context, GoRouterState state) => const ProfilePage(),
             ),
           ],
