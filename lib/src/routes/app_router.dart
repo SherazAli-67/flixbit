@@ -6,6 +6,7 @@ import 'package:flixbit/src/features/home_page.dart';
 import 'package:flixbit/src/features/offers_page.dart';
 import 'package:flixbit/src/features/wallet_page.dart';
 import 'package:flixbit/src/features/profile_page.dart';
+import 'package:flixbit/src/features/welcome_page.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
@@ -13,6 +14,11 @@ final GoRouter appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
   initialLocation: RouterEnum.homeView.routeName,
   routes: <RouteBase>[
+    GoRoute(
+      path: RouterEnum.welcomeView.routeName,
+      name: 'welcome',
+      builder: (BuildContext context, GoRouterState state) => const WelcomePage(),
+    ),
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state, StatefulNavigationShell navigationShell) {
         return MainMenuPage(navigationShell: navigationShell);
