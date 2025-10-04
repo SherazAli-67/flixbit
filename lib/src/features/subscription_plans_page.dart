@@ -1,3 +1,4 @@
+import 'package:flixbit/src/res/apptextstyles.dart';
 import 'package:flutter/material.dart';
 import '../res/app_colors.dart';
 
@@ -113,42 +114,14 @@ class SubscriptionPlansPage extends StatelessWidget {
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 15,
             children: [
               // Plan Name
               Text(
                 planName,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.whiteColor,
-                ),
+                style: AppTextStyles.headingTextStyle3
               ),
-              const SizedBox(height: 8),
-              
-              // Price
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    price,
-                    style: const TextStyle(
-                      fontSize: 36,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.whiteColor,
-                    ),
-                  ),
-                  Text(
-                    priceUnit,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      color: AppColors.whiteColor,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              
+
               // Choose Button
               SizedBox(
                 width: double.infinity,
@@ -166,22 +139,36 @@ class SubscriptionPlansPage extends StatelessWidget {
                   ),
                   child: Text(
                     buttonText,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.whiteColor,
-                    ),
+                    style: AppTextStyles.buttonTextStyle.copyWith(fontWeight: FontWeight.w600)
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
-              
               // Features List
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 8,
                 children: features.map((feature) => _buildFeatureItem(feature)).toList(),
               ),
+
+              // Price
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    price,
+                    style: const TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.whiteColor,
+                    ),
+                  ),
+                  Text(
+                    priceUnit,
+                    style: AppTextStyles.smallTextStyle
+                  ),
+                ],
+              ),
+
             ],
           ),
         ),
@@ -197,13 +184,9 @@ class SubscriptionPlansPage extends StatelessWidget {
                 color: AppColors.lightBlueColor,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Text(
+              child:  Text(
                 'Best Value',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.whiteColor,
-                ),
+                style: AppTextStyles.captionTextStyle.copyWith(fontWeight: FontWeight.w600)
               ),
             ),
           ),
@@ -213,21 +196,17 @@ class SubscriptionPlansPage extends StatelessWidget {
 
   Widget _buildFeatureItem(String feature) {
     return Row(
+      spacing: 12,
       children: [
         Icon(
           Icons.check_circle,
           color: AppColors.primaryColor,
           size: 20,
         ),
-        const SizedBox(width: 12),
         Expanded(
           child: Text(
             feature,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: AppColors.whiteColor,
-            ),
+            style: AppTextStyles.smallTextStyle
           ),
         ),
       ],

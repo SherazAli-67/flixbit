@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flixbit/src/features/authentication/login_page.dart';
 import 'package:flixbit/src/features/authentication/signup_page.dart';
+import 'package:flixbit/src/features/rewards_page.dart';
 import 'package:flixbit/src/features/subscription_plans_page.dart';
 import 'package:flixbit/src/routes/router_enum.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: RouterEnum.subscriptionView.routeName,
       builder: (BuildContext context, GoRouterState state) => const SubscriptionPlansPage(),
+    ),
+    GoRoute(
+      path: RouterEnum.rewardsView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const RewardsPage(),
     ),
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state, StatefulNavigationShell navigationShell) {

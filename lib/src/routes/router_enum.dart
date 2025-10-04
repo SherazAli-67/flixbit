@@ -9,6 +9,7 @@ enum RouterEnum {
 
   //Rest pages
   subscriptionView('/subscription_view'),
+  rewardsView('/rewards_view'),
 
   //BottomNav
   homeView('/home_view'),

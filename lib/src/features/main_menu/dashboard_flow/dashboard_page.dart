@@ -26,7 +26,7 @@ class DashboardPage extends StatelessWidget {
                 _buildMediaSection(),
                 
                 // Quick Access Section
-                _buildQuickAccessSection(),
+                _buildQuickAccessSection(context),
                 
                 // List Cards Section
                 _buildListCardsSection(context),
@@ -103,7 +103,7 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickAccessSection() {
+  Widget _buildQuickAccessSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,
@@ -116,39 +116,46 @@ class DashboardPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           spacing: 5,
           children: [
-            _buildQuickAccessButton(Icons.card_giftcard, 'Offers'),
-            _buildQuickAccessButton(Icons.wb_sunny, 'Gifts'),
-            _buildQuickAccessButton(Icons.account_tree, 'Rewards'),
-            _buildQuickAccessButton(Icons.notifications, 'Notifications'),
+            _buildQuickAccessButton(Icons.card_giftcard, 'Offers', (){
+
+            }),
+            _buildQuickAccessButton(Icons.wb_sunny, 'Gifts', (){}),
+            _buildQuickAccessButton(Icons.account_tree, 'Rewards', (){
+              context.push(RouterEnum.rewardsView.routeName);
+            }),
+            _buildQuickAccessButton(Icons.notifications, 'Notifications', (){}),
           ],
         ),
       ],
     );
   }
 
-  Widget _buildQuickAccessButton(IconData icon, String label) {
+  Widget _buildQuickAccessButton(IconData icon, String label,VoidCallback onTap) {
     return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          decoration: BoxDecoration(
-            color: AppColors.cardBgColor,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Column(
-            spacing: 8,
-            children: [
-              Icon(
-                icon,
-                color: AppColors.primaryColor,
-                size: 24,
-              ),
-              Text(
-                label,
-                style: AppTextStyles.captionTextStyle
-              ),
-            ],
+      child: GestureDetector(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            decoration: BoxDecoration(
+              color: AppColors.cardBgColor,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              spacing: 8,
+              children: [
+                Icon(
+                  icon,
+                  color: AppColors.primaryColor,
+                  size: 24,
+                ),
+                Text(
+                    label,
+                    style: AppTextStyles.captionTextStyle
+                ),
+              ],
+            ),
           ),
         ),
       ),
