@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flixbit/src/features/authentication/login_page.dart';
 import 'package:flixbit/src/features/authentication/signup_page.dart';
+import 'package:flixbit/src/features/main_menu/qr_scanner_page.dart';
 import 'package:flixbit/src/features/rewards_page.dart';
 import 'package:flixbit/src/features/subscription_plans_page.dart';
 import 'package:flixbit/src/routes/router_enum.dart';
@@ -8,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flixbit/src/features/main_menu_page.dart';
 import 'package:flixbit/src/features/main_menu/dashboard_flow/dashboard_page.dart';
-import 'package:flixbit/src/features/main_menu/offers_page.dart';
+import 'package:flixbit/src/features/offers_page.dart';
 import 'package:flixbit/src/features/main_menu/wallet_page.dart';
 import 'package:flixbit/src/features/main_menu/profile_page.dart';
 import 'package:flixbit/src/features/welcome_page.dart';
@@ -39,6 +40,10 @@ final GoRouter appRouter = GoRouter(
       path: RouterEnum.rewardsView.routeName,
       builder: (BuildContext context, GoRouterState state) => const RewardsPage(),
     ),
+    GoRoute(
+      path: RouterEnum.offersView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const OffersPage(),
+    ),
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state, StatefulNavigationShell navigationShell) {
         return MainMenuPage(navigationShell: navigationShell);
@@ -55,8 +60,8 @@ final GoRouter appRouter = GoRouter(
         StatefulShellBranch(
           routes: <RouteBase>[
             GoRoute(
-              path: RouterEnum.offersView.routeName,
-              builder: (BuildContext context, GoRouterState state) => const OffersPage(),
+              path: RouterEnum.qrScannerView.routeName,
+              builder: (BuildContext context, GoRouterState state) => const QRScannerView(),
             ),
           ],
         ),

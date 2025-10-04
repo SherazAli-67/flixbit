@@ -117,7 +117,7 @@ class DashboardPage extends StatelessWidget {
           spacing: 5,
           children: [
             _buildQuickAccessButton(Icons.card_giftcard, 'Offers', (){
-
+              context.push(RouterEnum.offersView.routeName);
             }),
             _buildQuickAccessButton(Icons.wb_sunny, 'Gifts', (){}),
             _buildQuickAccessButton(Icons.account_tree, 'Rewards', (){

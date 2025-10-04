@@ -10,10 +10,12 @@ enum RouterEnum {
   //Rest pages
   subscriptionView('/subscription_view'),
   rewardsView('/rewards_view'),
+  offersView('/offers_view'),
+
 
   //BottomNav
   homeView('/home_view'),
-  offersView('/offers_view'),
+  qrScannerView('/qr_scanner_view'),
   walletView('/wallet_view'),
   profileView('/profile_view');
 
