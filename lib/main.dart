@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flixbit/src/providers/authentication_provider.dart';
 import 'package:flixbit/src/providers/tab_change_provider.dart';
 import 'package:flixbit/src/res/app_colors.dart';
 import 'package:flixbit/src/res/app_constants.dart';
@@ -12,6 +13,7 @@ void main() async {
   runApp(MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_)=> MainMenuTabChangeProvider()),
+        ChangeNotifierProvider(create: (_)=> AuthenticationProvider()),
       ],
       child: const MyApp()));
 }

@@ -62,7 +62,7 @@ class MainMenuPage extends StatelessWidget{
             activeIcon: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
-                color: AppColors.primaryColor.withOpacity(0.12),
+                color: AppColors.primaryColor.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Icon(Icons.dashboard_rounded, color: AppColors.primaryColor),
@@ -74,7 +74,7 @@ class MainMenuPage extends StatelessWidget{
             activeIcon: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
-                color: AppColors.primaryColor.withOpacity(0.12),
+                color: AppColors.primaryColor.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Icon(Icons.person, color: AppColors.primaryColor),

@@ -1,3 +1,4 @@
+import 'package:flixbit/src/providers/authentication_provider.dart';
 import 'package:flixbit/src/res/app_colors.dart';
 import 'package:flixbit/src/res/apptextstyles.dart';
 import 'package:flixbit/src/routes/router_enum.dart';
@@ -6,6 +7,7 @@ import 'package:flixbit/src/widgets/primary_btn.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../../res/app_icons.dart';
 
@@ -39,7 +41,15 @@ class _LoginPageState extends State<LoginPage> {
                   child: TextButton(onPressed: (){}, child: Text("Forget Password?")),
                 ),
                 const SizedBox(height: 20,),
-                PrimaryBtn(btnText: 'Login', icon: '', onTap: (){}),
+                Consumer<AuthenticationProvider>(
+                  builder: (context, authProvider, child) {
+                    return PrimaryBtn(
+                      btnText: authProvider.isLoading ? 'Signing In...' : 'Login',
+                      icon: '',
+                      onTap: authProvider.isLoading ? () {} : () => _onLoginTap(),
+                    );
+                  },
+                ),
                 RichText(
 
                     text: TextSpan(
@@ -63,5 +73,63 @@ class _LoginPageState extends State<LoginPage> {
         ],
       )),
     );
+  }
+
+  Future<void> _onLoginTap() async {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+
+    // Validation
+    if (email.isEmpty || password.isEmpty) {
+      String errorMessage = '';
+      if (email.isEmpty) {
+        errorMessage = 'Please enter your email address';
+      } else if (password.isEmpty) {
+        errorMessage = 'Please enter your password';
+      }
+      
+      _showSnackBar(errorMessage, isError: true);
+      return;
+    }
+
+    if (!_isValidEmail(email)) {
+      _showSnackBar('Please enter a valid email address', isError: true);
+      return;
+    }
+
+    // Get authentication provider
+    final authProvider = Provider.of<AuthenticationProvider>(context, listen: false);
+    
+    // Attempt to sign in
+    final success = await authProvider.signInWithEmail(
+      email: email,
+      password: password,
+    );
+
+    if (success) {
+      _showSnackBar('Signed in successfully!', isError: false);
+      // Navigate to home page
+      if (mounted) {
+        context.go(RouterEnum.homeView.routeName);
+      }
+    } else {
+      _showSnackBar(authProvider.errorMessage ?? 'Failed to sign in', isError: true);
+    }
+  }
+
+  bool _isValidEmail(String email) {
+    return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
+  }
+
+  void _showSnackBar(String message, {required bool isError}) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: isError ? Colors.red : Colors.green,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
   }
 }

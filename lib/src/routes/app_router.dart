@@ -15,7 +15,7 @@ final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(de
 
 final GoRouter appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
-  initialLocation: RouterEnum.loginView.routeName,
+  initialLocation: RouterEnum.homeView.routeName,
   routes: <RouteBase>[
     GoRoute(
       path: RouterEnum.welcomeView.routeName,
@@ -69,7 +69,7 @@ final GoRouter appRouter = GoRouter(
       ],
     ),
   ],
-  /*redirect: (context, state) {
+  redirect: (context, state) {
     final loggedIn = FirebaseAuth.instance.currentUser != null;
     final goingTo = state.matchedLocation;
 
@@ -78,8 +78,6 @@ final GoRouter appRouter = GoRouter(
       RouterEnum.loginView.routeName,
       RouterEnum.welcomeView.routeName,
       RouterEnum.signupView.routeName,
-      // Temporarily allow home for post-signup navigation before auth wiring
-      RouterEnum.homeView.routeName,
     ];
 
     if (!loggedIn && !publicPaths.contains(goingTo)) {
@@ -93,7 +91,7 @@ final GoRouter appRouter = GoRouter(
     }
 
     return null;
-  },*/
+  },
   errorBuilder: (BuildContext context, GoRouterState state) {
     return Scaffold(
       appBar: AppBar(title: const Text('Not found')),
