@@ -1,8 +1,9 @@
+import 'package:flixbit/src/res/apptextstyles.dart';
 import 'package:flutter/material.dart';
 import '../../../res/app_colors.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class DashboardPage extends StatelessWidget {
+  const DashboardPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class HomePage extends StatelessWidget {
               children: [
                 // Top Bar
                 _buildTopBar(),
-                
+
                 // Media Section
                 _buildMediaSection(),
                 
@@ -44,12 +45,7 @@ class HomePage extends StatelessWidget {
       children: [
         const Text(
           'Dashboard',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
-            fontFamily: 'Figtree',
-          ),
+          style: AppTextStyles.headingTextStyle3
         ),
         Container(
           padding: const EdgeInsets.all(8),
@@ -75,7 +71,7 @@ class HomePage extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         gradient: const LinearGradient(
-          colors: [Color(0xff2a3b45), Color(0xff1e2a32)],
+          colors: [Color(0xff2a3b45), Color(0xff1e2a32), ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -89,7 +85,7 @@ class HomePage extends StatelessWidget {
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.3),
+                color: Colors.black.withValues(alpha: 0.3),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -108,19 +104,15 @@ class HomePage extends StatelessWidget {
   Widget _buildQuickAccessSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 16,
       children: [
         const Text(
           'Quick Access',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
-          ),
+          style: AppTextStyles.subHeadingTextStyle
         ),
-        const SizedBox(height: 16),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          spacing: 10,
+          spacing: 5,
           children: [
             _buildQuickAccessButton(Icons.card_giftcard, 'Offers'),
             _buildQuickAccessButton(Icons.wb_sunny, 'Gifts'),
@@ -139,25 +131,20 @@ class HomePage extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
-            color: const Color(0xff2a3b45),
+            color: AppColors.cardBgColor,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
+            spacing: 8,
             children: [
               Icon(
                 icon,
                 color: AppColors.primaryColor,
                 size: 24,
               ),
-              const SizedBox(height: 8),
               Text(
                 label,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  fontFamily: 'Figtree',
-                ),
+                style: AppTextStyles.captionTextStyle
               ),
             ],
           ),
@@ -168,9 +155,9 @@ class HomePage extends StatelessWidget {
 
   Widget _buildListCardsSection() {
     return Column(
+      spacing: 20,
       children: [
         _buildListCard(Icons.stars, 'Subscription Packages', 'Upgrade for more features'),
-        const SizedBox(height: 16),
         _buildListCard(Icons.people, 'Referrals', 'Invite friends and earn'),
       ],
     );
@@ -181,10 +168,11 @@ class HomePage extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xff2a3b45),
+        color: AppColors.cardBgColor,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
+        spacing: 16,
         children: [
           Container(
             width: 48,
@@ -199,27 +187,18 @@ class HomePage extends StatelessWidget {
               size: 24,
             ),
           ),
-          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 4,
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: AppTextStyles.tileTitleTextStyle
                 ),
-                const SizedBox(height: 4),
                 Text(
                   subtitle,
-                  style: const TextStyle(
-                    color: Color(0xff838c97),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                  ),
+                  style: AppTextStyles.smallTextStyle.copyWith(color: AppColors.unSelectedGreyColor)
                 ),
               ],
             ),
@@ -231,11 +210,11 @@ class HomePage extends StatelessWidget {
 
   Widget _buildBottomCardsSection() {
     return Row(
+      spacing: 10,
       children: [
         Expanded(
           child: _buildBottomCard(Icons.confirmation_number, 'Coupons', 'View coupons'),
         ),
-        const SizedBox(width: 16),
         Expanded(
           child: _buildBottomCard(Icons.casino, 'Wheel of Fortune', 'Spin to win'),
         ),
@@ -247,16 +226,17 @@ class HomePage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xff2a3b45),
+        color: AppColors.cardBgColor,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
+        spacing: 10,
         children: [
           Container(
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppColors.primaryColor.withOpacity(0.2),
+              color: AppColors.primaryColor.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Icon(
@@ -265,29 +245,18 @@ class HomePage extends StatelessWidget {
               size: 20,
             ),
           ),
-          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 2,
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    fontFamily: 'Figtree',
-                  ),
+                  style: AppTextStyles.smallTextStyle.copyWith(fontWeight: FontWeight.w700)
                 ),
-                const SizedBox(height: 2),
                 Text(
                   subtitle,
-                  style: const TextStyle(
-                    color: Color(0xff838c97),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    fontFamily: 'Figtree',
-                  ),
+                  style: AppTextStyles.captionTextStyle.copyWith(color: AppColors.unSelectedGreyColor)
                 ),
               ],
             ),

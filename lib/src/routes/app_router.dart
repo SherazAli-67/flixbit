@@ -38,7 +38,7 @@ final GoRouter appRouter = GoRouter(
           routes: <RouteBase>[
             GoRoute(
               path: RouterEnum.homeView.routeName,
-              builder: (BuildContext context, GoRouterState state) => const HomePage(),
+              builder: (BuildContext context, GoRouterState state) => const DashboardPage(),
             ),
           ],
         ),
