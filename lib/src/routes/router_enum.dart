@@ -6,6 +6,10 @@ enum RouterEnum {
   forgetPassView('/forgetPass_view'),
   personalizationView('/personalization_view'),
 
+
+  //Rest pages
+  subscriptionView('/subscription_view'),
+
   //BottomNav
   homeView('/home_view'),
   offersView('/offers_view'),
