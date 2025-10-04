@@ -11,6 +11,7 @@ enum RouterEnum {
   subscriptionView('/subscription_view'),
   rewardsView('/rewards_view'),
   offersView('/offers_view'),
+  referralView('/referral_view'),
 
 
   //BottomNav

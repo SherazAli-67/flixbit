@@ -10,4 +10,11 @@ class AppColors {
   static const lightBlueColor = Color(0xff4a9eff);
   static const lightGreyColor = Color(0xffb0b8c0);
   static const darkGreyColor = Color(0xff4a5568);
+  static const greenColor = Color(0xff4CAF50);
+  static const lightBeigeColor = Color(0xffF5F5DC);
+  static const socialBlueColor = Color(0xff4267B2);
+  static const whatsappColor = Color(0xff25D366);
+  static const telegramColor = Color(0xff0088cc);
+  static const snapchatColor = Color(0xffFFFC00);
+  static const instagramColor = Color(0xffE4405F);
 }

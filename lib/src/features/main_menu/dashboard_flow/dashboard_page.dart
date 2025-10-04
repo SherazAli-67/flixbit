@@ -169,7 +169,9 @@ class DashboardPage extends StatelessWidget {
         _buildListCard(Icons.stars, 'Subscription Packages', 'Upgrade for more features', (){
           context.push(RouterEnum.subscriptionView.routeName);
         }),
-        _buildListCard(Icons.people, 'Referrals', 'Invite friends and earn', (){}),
+        _buildListCard(Icons.people, 'Referrals', 'Invite friends and earn', (){
+          context.push(RouterEnum.referralView.routeName);
+        }),
       ],
     );
   }

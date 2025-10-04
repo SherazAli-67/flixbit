@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flixbit/src/features/authentication/login_page.dart';
 import 'package:flixbit/src/features/authentication/signup_page.dart';
 import 'package:flixbit/src/features/main_menu/qr_scanner_page.dart';
+import 'package:flixbit/src/features/referral_page.dart';
 import 'package:flixbit/src/features/rewards_page.dart';
 import 'package:flixbit/src/features/subscription_plans_page.dart';
 import 'package:flixbit/src/routes/router_enum.dart';
@@ -43,6 +44,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: RouterEnum.offersView.routeName,
       builder: (BuildContext context, GoRouterState state) => const OffersPage(),
+    ),
+    GoRoute(
+      path: RouterEnum.referralView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const ReferralPage(),
     ),
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state, StatefulNavigationShell navigationShell) {
