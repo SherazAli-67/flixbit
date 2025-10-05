@@ -8,8 +8,10 @@ import 'loading_widget.dart';
 class PrimaryBtn extends StatelessWidget {
   const PrimaryBtn({
     super.key,
-    required String btnText, required String icon, required VoidCallback onTap, bool isPrefix = false, bool isLoading = false, double borderRadius = SpacingConstants.btnBorderRadius, Color? iconColor,
-    TextStyle textStyle = AppTextStyles.buttonTextStyle
+    required String btnText, required String icon, required VoidCallback onTap, bool isPrefix = false, bool isLoading = false, double borderRadius = SpacingConstants
+        .btnBorderRadius, Color? iconColor,
+    TextStyle textStyle = AppTextStyles.buttonTextStyle,
+    Color bgColor = AppColors.primaryColor
   })
       : _text = btnText,
         _icon = icon,
@@ -18,7 +20,9 @@ class PrimaryBtn extends StatelessWidget {
         _isLoading = isLoading,
         _borderRadius = borderRadius,
         _iconColor = iconColor,
-        _textStyle = textStyle
+        _textStyle = textStyle,
+  _bgColor = bgColor
+
   ;
   final String _text;
   final String _icon;
@@ -28,13 +32,14 @@ class PrimaryBtn extends StatelessWidget {
   final double _borderRadius;
   final Color? _iconColor;
   final TextStyle _textStyle;
+  final Color _bgColor;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: _onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.primaryColor,
+          color: _bgColor,
           // gradient: AppGradients.btnOuterGradient,
          /* boxShadow: [
             BoxShadow(

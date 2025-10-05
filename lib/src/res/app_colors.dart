@@ -17,4 +17,9 @@ class AppColors {
   static const telegramColor = Color(0xff0088cc);
   static const snapchatColor = Color(0xffFFFC00);
   static const instagramColor = Color(0xffE4405F);
+  static const orangeColor = Color(0xffFF9500);
+  static const redColor = Color(0xffFF3B30);
+  static const lightGreenColor = Color(0xff34C759);
+  static const purpleColor = Color(0xffAF52DE);
+  static const avatarBgColor = Color(0xffF5F5DC);
 }
