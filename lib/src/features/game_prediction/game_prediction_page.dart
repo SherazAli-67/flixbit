@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../models/tournament_model.dart';
-import '../models/user_tournament_stats.dart';
-import '../res/app_colors.dart';
-import '../res/apptextstyles.dart';
-import '../service/tournament_service.dart';
+import '../../models/tournament_model.dart';
+import '../../models/user_tournament_stats.dart';
+import '../../res/app_colors.dart';
+import '../../res/apptextstyles.dart';
+import '../../service/tournament_service.dart';
 
 class GamePredicationPage extends StatefulWidget {
   const GamePredicationPage({super.key});

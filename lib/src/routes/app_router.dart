@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flixbit/src/features/authentication/login_page.dart';
 import 'package:flixbit/src/features/authentication/signup_page.dart';
-import 'package:flixbit/src/features/game_prediction_page.dart';
 import 'package:flixbit/src/features/main_menu/qr_scanner_page.dart';
 import 'package:flixbit/src/features/referral_page.dart';
 import 'package:flixbit/src/features/rewards_page.dart';
@@ -16,6 +15,8 @@ import 'package:flixbit/src/features/offers_page.dart';
 import 'package:flixbit/src/features/main_menu/wallet_page.dart';
 import 'package:flixbit/src/features/main_menu/profile_page.dart';
 import 'package:flixbit/src/features/welcome_page.dart';
+
+import '../features/game_prediction/game_prediction_page.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 

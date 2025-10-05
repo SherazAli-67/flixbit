@@ -14,6 +14,8 @@ enum RouterEnum {
   referralView('/referral_view'),
   wheelOfFortuneView('/wheel_of_fortune_view'),
   gamePredictionView('/game_predication_view'),
+  tournamentMatchesView('/tournament_matches_view'),
+  makePredictionView('/make_prediction_view'),
 
   //BottomNav
   homeView('/home_view'),
