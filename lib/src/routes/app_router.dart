@@ -17,6 +17,10 @@ import 'package:flixbit/src/features/main_menu/profile_page.dart';
 import 'package:flixbit/src/features/welcome_page.dart';
 
 import '../features/game_prediction/game_prediction_page.dart';
+import '../features/game_prediction/tournament_matches_page.dart';
+import '../features/game_prediction/make_prediction_page.dart';
+import '../models/match_model.dart';
+import '../models/tournament_model.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
@@ -59,6 +63,23 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: RouterEnum.gamePredictionView.routeName,
       builder: (BuildContext context, GoRouterState state) => const GamePredicationPage(),
+    ),
+    GoRoute(
+      path: RouterEnum.tournamentMatchesView.routeName,
+      builder: (BuildContext context, GoRouterState state) {
+        final tournamentId = state.uri.queryParameters['tournamentId'] ?? '';
+        return TournamentMatchesPage(tournamentId: tournamentId);
+      },
+    ),
+    GoRoute(
+      path: RouterEnum.makePredictionView.routeName,
+      builder: (BuildContext context, GoRouterState state) {
+        final extra = state.extra as Map<String, dynamic>;
+        return MakePredictionPage(
+          match: extra['match'] as Match,
+          tournament: extra['tournament'] as Tournament,
+        );
+      },
     ),
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state, StatefulNavigationShell navigationShell) {
@@ -130,5 +151,3 @@ final GoRouter appRouter = GoRouter(
     );
   },
 );
-
-

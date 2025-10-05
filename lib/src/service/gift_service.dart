@@ -261,7 +261,6 @@ class GiftService {
       await Future.delayed(Duration(milliseconds: 500));
 
       int refundedCount = 0;
-      final now = DateTime.now();
 
       for (int i = 0; i < _mockGifts.length; i++) {
         final gift = _mockGifts[i];

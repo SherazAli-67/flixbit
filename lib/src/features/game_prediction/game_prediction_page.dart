@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../models/tournament_model.dart';
 import '../../models/user_tournament_stats.dart';
 import '../../res/app_colors.dart';
 import '../../res/apptextstyles.dart';
+import '../../routes/router_enum.dart';
 import '../../service/tournament_service.dart';
 
 class GamePredicationPage extends StatefulWidget {
@@ -324,7 +326,9 @@ class _GamePredicationPageState extends State<GamePredicationPage> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Navigate to matches
+                    context.push(
+                      '${RouterEnum.tournamentMatchesView.routeName}?tournamentId=${tournament.id}',
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryColor,
@@ -343,13 +347,15 @@ class _GamePredicationPageState extends State<GamePredicationPage> {
                   ),
                 ),
               ),
-          ] else ...[
+          ] else ...[ 
             // No stats - user hasn't started
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // Navigate to matches
+                  context.push(
+                    '${RouterEnum.tournamentMatchesView.routeName}?tournamentId=${tournament.id}',
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryColor,

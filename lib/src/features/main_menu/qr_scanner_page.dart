@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../res/apptextstyles.dart';
-import '../../widgets/primary_btn.dart';
 
 class ScannerPage extends StatefulWidget{
   const ScannerPage({super.key});
