@@ -32,7 +32,7 @@ class DashboardPage extends StatelessWidget {
                 _buildListCardsSection(context),
 
                 // Bottom Cards Section
-                _buildBottomCardsSection(),
+                _buildBottomCardsSection(context),
               ],
             ),
           ),
@@ -224,65 +224,70 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomCardsSection() {
+  Widget _buildBottomCardsSection(BuildContext context) {
     return Row(
       spacing: 10,
       children: [
         Expanded(
-          child: _buildBottomCard(Icons.confirmation_number, 'Coupons', 'View coupons'),
+          child: _buildBottomCard(Icons.confirmation_number, 'Coupons', 'View coupons', (){}),
         ),
         Expanded(
-          child: _buildBottomCard(Icons.casino, 'Wheel of Fortune', 'Spin to win'),
+          child: _buildBottomCard(Icons.casino, 'Wheel of Fortune', 'Spin to win', (){
+            context.push(RouterEnum.wheelOfFortuneView.routeName);
+          }),
         ),
       ],
     );
   }
 
-  Widget _buildBottomCard(IconData icon, String title, String subtitle) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      alignment: Alignment.center,
-      height: 90,
-      decoration: BoxDecoration(
-        color: AppColors.cardBgColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        spacing: 10,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: AppColors.primaryColor.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(20),
+  Widget _buildBottomCard(IconData icon, String title, String subtitle, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        alignment: Alignment.center,
+        height: 90,
+        decoration: BoxDecoration(
+          color: AppColors.cardBgColor,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          spacing: 10,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: AppColors.primaryColor.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Icon(
+                icon,
+                color: AppColors.primaryColor,
+                size: 20,
+              ),
             ),
-            child: Icon(
-              icon,
-              color: AppColors.primaryColor,
-              size: 20,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 2,
+                children: [
+                  Text(
+                    title,
+                    style: AppTextStyles.smallTextStyle.copyWith(fontWeight: FontWeight.w700)
+                  ),
+                  Text(
+                    subtitle,
+                    style: AppTextStyles.captionTextStyle.copyWith(color: AppColors.unSelectedGreyColor)
+                  ),
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 2,
-              children: [
-                Text(
-                  title,
-                  style: AppTextStyles.smallTextStyle.copyWith(fontWeight: FontWeight.w700)
-                ),
-                Text(
-                  subtitle,
-                  style: AppTextStyles.captionTextStyle.copyWith(color: AppColors.unSelectedGreyColor)
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

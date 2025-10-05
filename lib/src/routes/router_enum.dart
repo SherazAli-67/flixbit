@@ -12,7 +12,7 @@ enum RouterEnum {
   rewardsView('/rewards_view'),
   offersView('/offers_view'),
   referralView('/referral_view'),
-
+  wheelOfFortuneView('/wheel_of_fortune_view'),
 
   //BottomNav
   homeView('/home_view'),

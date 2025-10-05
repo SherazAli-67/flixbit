@@ -5,6 +5,7 @@ import 'package:flixbit/src/features/main_menu/qr_scanner_page.dart';
 import 'package:flixbit/src/features/referral_page.dart';
 import 'package:flixbit/src/features/rewards_page.dart';
 import 'package:flixbit/src/features/subscription_plans_page.dart';
+import 'package:flixbit/src/features/wheel_of_fortune_page.dart';
 import 'package:flixbit/src/routes/router_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -49,6 +50,11 @@ final GoRouter appRouter = GoRouter(
       path: RouterEnum.referralView.routeName,
       builder: (BuildContext context, GoRouterState state) => const ReferralPage(),
     ),
+    GoRoute(
+      path: RouterEnum.wheelOfFortuneView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const WheelOfFortunePage(),
+    ),
+
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state, StatefulNavigationShell navigationShell) {
         return MainMenuPage(navigationShell: navigationShell);
@@ -66,7 +72,7 @@ final GoRouter appRouter = GoRouter(
           routes: <RouteBase>[
             GoRoute(
               path: RouterEnum.qrScannerView.routeName,
-              builder: (BuildContext context, GoRouterState state) => const QRScannerView(),
+              builder: (BuildContext context, GoRouterState state) => const ScannerPage(),
             ),
           ],
         ),
