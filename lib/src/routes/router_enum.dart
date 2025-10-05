@@ -13,6 +13,7 @@ enum RouterEnum {
   offersView('/offers_view'),
   referralView('/referral_view'),
   wheelOfFortuneView('/wheel_of_fortune_view'),
+  gamePredictionView('/game_predication_view'),
 
   //BottomNav
   homeView('/home_view'),

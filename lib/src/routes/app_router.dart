@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flixbit/src/features/authentication/login_page.dart';
 import 'package:flixbit/src/features/authentication/signup_page.dart';
+import 'package:flixbit/src/features/game_prediction_page.dart';
 import 'package:flixbit/src/features/main_menu/qr_scanner_page.dart';
 import 'package:flixbit/src/features/referral_page.dart';
 import 'package:flixbit/src/features/rewards_page.dart';
@@ -54,7 +55,10 @@ final GoRouter appRouter = GoRouter(
       path: RouterEnum.wheelOfFortuneView.routeName,
       builder: (BuildContext context, GoRouterState state) => const WheelOfFortunePage(),
     ),
-
+    GoRoute(
+      path: RouterEnum.gamePredictionView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const GamePredicationPage(),
+    ),
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state, StatefulNavigationShell navigationShell) {
         return MainMenuPage(navigationShell: navigationShell);

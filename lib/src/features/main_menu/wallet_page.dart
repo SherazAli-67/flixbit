@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flixbit/src/res/app_icons.dart';
 import 'package:flixbit/src/widgets/primary_btn.dart';
 import 'package:flutter/material.dart';
 import '../../res/app_colors.dart';
@@ -13,6 +15,7 @@ class WalletPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppColors.darkBgColor,
         elevation: 0,
+        scrolledUnderElevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
           onPressed: () => Navigator.pop(context),
@@ -29,80 +32,64 @@ class WalletPage extends StatelessWidget {
             // User Profile Section
             SliverToBoxAdapter(
               child: Column(
+                spacing: 40,
                 children: [
-                  const SizedBox(height: 20),
-                  
-                  // Avatar with verification badge
-                  Stack(
+                  Column(
+                    spacing: 8,
                     children: [
-                      Container(
-                        width: 120,
-                        height: 120,
-                        decoration: BoxDecoration(
-                          color: AppColors.avatarBgColor,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.person,
-                          size: 60,
-                          color: AppColors.primaryColor,
+
+                      // Avatar with verification badge
+                      Stack(
+                        children: [
+                          CircleAvatar(
+                            backgroundImage: CachedNetworkImageProvider(AppIcons.icDummyProfileUrl),
+                            radius: 45,
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: Container(
+                              width: 32,
+                              height: 32,
+                              decoration: const BoxDecoration(
+                                color: AppColors.primaryColor,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.check,
+                                color: AppColors.whiteColor,
+                                size: 18,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+
+                      // User name
+                      Text(
+                          'Ethan Carter',
+                          style: AppTextStyles.headingTextStyle3
+                      ),
+
+                      // Balance label
+                      Text(
+                        'Flixbit Balance',
+                        style: AppTextStyles.bodyTextStyle.copyWith(
+                          color: AppColors.lightGreyColor,
                         ),
                       ),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: Container(
-                          width: 32,
-                          height: 32,
-                          decoration: const BoxDecoration(
-                            color: AppColors.primaryColor,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.check,
-                            color: AppColors.whiteColor,
-                            size: 18,
-                          ),
+                      // Balance amount
+                      const Text(
+                        '1,250',
+                        style: TextStyle(
+                          fontSize: 48,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.whiteColor,
                         ),
                       ),
                     ],
                   ),
-                  
-                  const SizedBox(height: 16),
-                  
-                  // User name
-                  const Text(
-                    'Ethan Carter',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.whiteColor,
-                    ),
-                  ),
-                  
-                  const SizedBox(height: 8),
-                  
-                  // Balance label
-                  Text(
-                    'Flixbit Balance',
-                    style: AppTextStyles.bodyTextStyle.copyWith(
-                      color: AppColors.lightGreyColor,
-                    ),
-                  ),
-                  
-                  const SizedBox(height: 8),
-                  
-                  // Balance amount
-                  const Text(
-                    '1,250',
-                    style: TextStyle(
-                      fontSize: 48,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.whiteColor,
-                    ),
-                  ),
-                  
-                  const SizedBox(height: 40),
                   
                   // Buy and Sell Buttons
                   Padding(
@@ -121,25 +108,24 @@ class WalletPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  
-                  const SizedBox(height: 40),
+
                 ],
               ),
             ),
             
             // Transactions Section
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               sliver: SliverToBoxAdapter(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 10,
                   children: [
                     const Text(
                       'Transactions',
                       style: AppTextStyles.subHeadingTextStyle,
                     ),
-                    
-                    const SizedBox(height: 20),
+
                   ],
                 ),
               ),
@@ -212,11 +198,7 @@ class WalletPage extends StatelessWidget {
                 ),
               ),
             ),
-            
-            // Bottom padding
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 20),
-            ),
+
           ],
         ),
       ),
@@ -243,7 +225,7 @@ class WalletPage extends StatelessWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: AppColors.primaryColor.withOpacity(0.2),
+              color: AppColors.primaryColor.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(24),
             ),
             child: Icon(
@@ -252,7 +234,7 @@ class WalletPage extends StatelessWidget {
               size: 24,
             ),
           ),
-          
+
           const SizedBox(width: 16),
           
           Expanded(

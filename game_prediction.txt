@@ -1,0 +1,132 @@
+🏆 Game Prediction System — Complete Explanation
+
+The Game Prediction Contest is the central engagement and reward feature of the app.
+It motivates users to make predictions on real tournaments and earn rewards or eligibility for final prize drawings.
+
+⸻
+
+🎯 Purpose
+
+To make the app interactive and gamified — users predict the outcomes of sports tournaments, earn Flixbit points, and compete for prizes.
+
+⸻
+
+⚙️ How It Works — Step-by-Step Flow
+
+1. Tournament Creation (By Sub-Admin or Admin)
+	•	The Admin/Sub-Admin creates tournaments and groups of matches in the backend.
+	•	Each tournament includes:
+	•	Match details (team names, date, start & end time).
+	•	Prediction type (winner-only, scoreline, or player stats).
+	•	Points assigned for correct predictions.
+	•	Rules (e.g., predictions close 1 hour before game start).
+
+⸻
+
+2. User Participation
+	•	Any registered user can participate in the prediction contest.
+	•	Initially, participation is free.
+	•	The user views upcoming games in the app and makes predictions such as:
+	•	Selecting the winning team.
+	•	Entering a scoreline (if required).
+	•	Predicting specific outcomes (like top scorer, if implemented later).
+
+⸻
+
+3. Prediction Rules
+	•	Predictions are accepted only up to 1 hour before the match begins.
+	•	Once the match starts, predictions are locked and cannot be changed.
+
+⸻
+
+4. Scoring System
+	•	After the match ends, Sub-Admin updates the final score in the backend.
+	•	The system automatically awards points to users based on accuracy.
+	•	The points per match (e.g., 10 points per correct prediction) are defined at the tournament’s creation.
+
+⸻
+
+5. Qualification Threshold
+	•	To qualify for the final prize drawing, a user must have at least 80% correct predictions in that tournament.
+	•	Example:
+	•	A user predicts 10 matches.
+	•	8 out of 10 correct predictions = 80% → qualifies for free entry into the final draw.
+	•	If they have only 40% correct, they can buy extra Flixbit points to reach the qualifying threshold.
+
+⸻
+
+6. Buying Points (Flixbit)
+	•	If users don’t reach 80%, they can purchase additional Flixbit points to become eligible for the final draw.
+	•	Example:
+	•	User achieved 40% (needs another 40% worth of points).
+	•	Admin sets the value of each point (e.g., $0.10 or $0.25 per point).
+	•	User buys enough Flixbit points to reach the qualification percentage.
+
+⸻
+
+7. Final Drawing / Winners
+	•	Once the tournament ends:
+	•	Users with ≥80% correct predictions (or equivalent purchased points) qualify for the final drawing.
+	•	The Admin/Sub-Admin conducts a lucky draw or automated selection.
+	•	Winners receive prizes, which can be:
+	•	Digital rewards (coupons, vouchers, Flixbit balance).
+	•	Physical gifts (merchandise, shipped later).
+
+⸻
+
+8. Reward Distribution
+	•	Winners receive in-app notifications about their prizes.
+	•	Rewards are credited to their wallet or reward section in the app.
+	•	Physical rewards can be marked as “shipped” in the Admin panel.
+
+⸻
+
+💰 Earning and Flixbit Integration
+	•	Flixbit is the in-app currency.
+	•	Users can:
+	•	Earn Flixbit by correct predictions.
+	•	Buy Flixbit to qualify for the final draw.
+	•	Redeem Flixbit for gifts, coupons, or offers.
+	•	Admin controls:
+	•	Value of Flixbit (e.g., 1 Flixbit = $0.10).
+	•	How many Flixbits each contest or reward provides.
+
+⸻
+
+🧠 Example Scenario
+
+Let’s say there’s a Football Tournament:
+	•	Total Matches: 10
+	•	Points per correct prediction: 10
+	•	Qualification threshold: 80% (needs 80 points)
+
+	Step  -  Action  - Result
+    User predicts 10 matches -  4 correct   - Earns 40 points
+    Needs 40 more points   -   Can buy at $0.10 each -  Pays $4
+    Plays 2 remaining matches  - Wins 1, loses 1  -  Stays at 50 points
+    Can buy remaining 30 points at $0.25 each  - Pays $7.50
+    Now total 80 points - Qualifies for Final Drawing
+    Draw conducted  - If selected, receives prize notification
+
+🧩 Backend Management
+	•	Admin/Sub-Admin manage:
+	•	Tournament creation & score updates.
+	•	Point systems and Flixbit pricing.
+	•	Final prize setup and number of winners.
+	•	Reward distribution and inventory.
+
+⸻
+
+🏁 End-to-End User Flow
+	1.	User registers & logs in.
+	2.	Sees available tournaments.
+	3.	Makes predictions before match start.
+	4.	Earns points for correct outcomes.
+	5.	Buys Flixbit if below qualification level.
+	6.	Qualifies for final draw.
+	7.	Wins and receives rewards/notifications.
+
+⸻
+
+✅ In short:
+The Game Prediction System in Flixbit is a reward-based contest where users predict match outcomes, earn Flixbit points, and qualify for final prize drawings. It integrates tightly with the wallet, rewards, and notification systems, making it both engaging for users and manageable for Admin/Sub-Admins.
