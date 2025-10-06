@@ -58,16 +58,16 @@ class MainMenuPage extends StatelessWidget{
             label: 'Scanner',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard_outlined, color: AppColors.unSelectedGreyColor),
+            icon: Icon(Icons.wallet_outlined, color: AppColors.unSelectedGreyColor),
             activeIcon: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
                 color: AppColors.primaryColor.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: Icon(Icons.dashboard_rounded, color: AppColors.primaryColor),
+              child: Icon(Icons.wallet, color: AppColors.primaryColor),
             ),
-            label: 'Contests',
+            label: 'Wallet',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_outline, color: AppColors.unSelectedGreyColor),

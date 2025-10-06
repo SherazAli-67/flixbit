@@ -12,6 +12,7 @@ enum RouterEnum {
   rewardsView('/rewards_view'),
   offersView('/offers_view'),
   referralView('/referral_view'),
+  videoAdsView('/video_ads_view'),
   wheelOfFortuneView('/wheel_of_fortune_view'),
   gamePredictionView('/game_predication_view'),
   tournamentMatchesView('/tournament_matches_view'),

@@ -6,6 +6,7 @@ import 'package:flixbit/src/features/referral_page.dart';
 import 'package:flixbit/src/features/rewards_page.dart';
 import 'package:flixbit/src/features/subscription_plans_page.dart';
 import 'package:flixbit/src/features/wheel_of_fortune_page.dart';
+import 'package:flixbit/src/features/video_ads/video_ads_list_page.dart';
 import 'package:flixbit/src/routes/router_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -51,6 +52,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: RouterEnum.offersView.routeName,
       builder: (BuildContext context, GoRouterState state) => const OffersPage(),
+    ),
+    GoRoute(
+      path: RouterEnum.videoAdsView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const VideoAdsListPage(),
     ),
     GoRoute(
       path: RouterEnum.referralView.routeName,

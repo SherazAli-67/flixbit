@@ -169,6 +169,9 @@ class DashboardPage extends StatelessWidget {
         _buildListCard(Icons.sports_soccer, 'Game Predictions', 'Predict matches and win prizes', (){
           context.push(RouterEnum.gamePredictionView.routeName);
         }),
+        _buildListCard(Icons.ondemand_video, 'Watch & Earn', 'Watch ads to earn Flixbit', (){
+          context.push(RouterEnum.videoAdsView.routeName);
+        }),
         _buildListCard(Icons.stars, 'Subscription Packages', 'Upgrade for more features', (){
           context.push(RouterEnum.subscriptionView.routeName);
         }),

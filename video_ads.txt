@@ -1,0 +1,140 @@
+🎥 Video Ads Feature — Complete Explanation
+
+🎯 Purpose
+
+The Video Ads feature is designed to:
+	•	Help sellers and advertisers promote their products or services.
+	•	Reward users for watching, rating, or interacting with those videos.
+	•	Increase engagement within the app through gamified advertising.
+
+Essentially, it combines marketing + user incentives — users don’t just view ads; they get rewarded (Flixbit points, coupons, or contest entries) for engaging with them.
+
+⸻
+
+⚙️ How It Works (Step-by-Step Flow)
+
+1. Video Ad Creation (Seller or Sub-Admin Side)
+	•	Sellers or Sub-Admins can upload promotional videos to the backend.
+	•	These videos can be:
+	•	Uploaded directly (MP4 file or YouTube/Vimeo link).
+	•	Tagged with categories (e.g., restaurant, fitness, electronics).
+	•	Linked to specific campaigns or offers.
+
+Each video ad can have:
+	•	Start and end date (ad campaign duration).
+	•	Reward value (e.g., 5 Flixbit points for watching).
+	•	Region targeting (e.g., only show in Dubai or Karachi).
+
+⸻
+
+2. Display to Users
+	•	Videos appear:
+	•	On the home screen (top section) in auto-play mode.
+	•	In a dedicated “Video Ads” or “Watch & Earn” section.
+	•	In push notifications, if part of a special campaign.
+
+Users can browse and choose to watch video ads voluntarily — the app can also auto-play top ads like Instagram Reels or TikTok, keeping engagement high.
+
+⸻
+
+3. User Interaction & Reward System
+
+When a user watches an ad:
+	•	They must watch it completely (or for a minimum set duration).
+	•	Once finished, they receive rewards like:
+	•	Flixbit points added to their wallet.
+	•	Discount coupons or vouchers from that seller.
+	•	Qualification entries for contests (e.g., “watch 3 ads to join draw”).
+
+Users can also:
+	•	Rate the video (thumbs up or down).
+	•	Leave brief feedback or comments (optional, for analytics).
+
+Top-rated videos get more visibility in the app’s “Featured Ads” section — motivating sellers to create better quality content.
+
+⸻
+
+4. Video Contest Feature (Optional Extension)
+	•	Some videos (especially from influencers or brands) can be part of a contest.
+	•	Each video has:
+	•	Start and end date for voting.
+	•	Users can vote (thumbs up/down) during that period.
+	•	Winners (videos with highest ratings) are announced by Admin/Sub-Admin.
+	•	Both video creators and participating users can be rewarded.
+
+⸻
+
+5. Tracking & Analytics
+	•	The backend tracks:
+	•	How many users watched each video.
+	•	Average watch time and completion rate.
+	•	Ratings and engagement metrics.
+	•	Sellers/Sub-Admins can view performance and adjust future campaigns.
+
+⸻
+
+💰 User Perspective — Why They Want It
+
+Users love the Video Ads feature because it gives them value for attention and feels interactive rather than boring.
+
+Here’s what they get:
+User Expectation     -    How Flixbit Delivers
+Earn rewards easily  -   Users get instant Flixbit points or coupons for each ad watched.
+Entertainment        -    Ads are shown in short, dynamic video format (like social media reels).
+Choice & Control     -   Users choose which ads to watch and can skip irrelevant ones.
+Transparency         -   Reward shown upfront — e.g., “Watch this ad to earn 5 Flixbit points.”
+Social fun           -   Users can rate ads, share results, and compete on leaderboards for engagement.
+
+
+💡 Example Scenarios
+
+Example 1:
+A clothing brand uploads a 30-second video ad —
+	•	Reward: 10 Flixbit points for watching fully.
+	•	Target: Users aged 18–35 in Riyadh.
+	•	User watches → earns 10 Flixbit points → can use them in wallet for discounts.
+
+Example 2:
+An influencer posts a contest video —
+	•	“Vote my ad and get 5 Flixbit points!”
+	•	Users rate the video; top-rated video wins the weekly campaign prize.
+
+Example 3:
+Admin runs a campaign —
+	•	“Watch 3 ads from local businesses to unlock a 20% off coupon.”
+	•	The app automatically issues coupons after completing 3 full ads.
+
+⸻
+
+⚙️ Backend & Admin Control
+	•	Admin/Sub-Admin:
+	•	Approve uploaded videos before publishing.
+	•	Set reward points, view statistics, and manage ad categories.
+	•	Can remove or flag low-quality/inappropriate videos.
+	•	Seller:
+	•	Upload videos, set rewards, view performance.
+	•	Optionally pay Flixbit or subscription fees to boost ad visibility.
+
+✅ Benefits Summary
+Stakeholder    -      Benefit
+User           -      Earn rewards for watching fun, targeted ads.
+Seller         -      Promote offers, get real engagement data, increase followers.
+Admin/Sub-Admin-      Control ad quality, generate revenue from sponsored videos, track analytics.
+
+
+🔗 Integration with Other Features
+	•	Watching ads increases Flixbit balance (Wallet).
+	•	Some ads can link directly to QR redemption offers.
+	•	Viewing history can influence personalized notifications (“Watch similar ads for more rewards”).
+
+⸻
+
+🚀 In Summary
+
+The Video Ads feature in Flixbit turns traditional ads into reward-based entertainment.
+It helps:
+	•	Users earn rewards by watching and rating ads.
+	•	Sellers gain exposure and track engagement.
+	•	Admins monetize ad views and maintain quality through moderation.
+
+This makes it a win-win system for all roles — interactive for users, profitable for sellers, and manageable for admins.

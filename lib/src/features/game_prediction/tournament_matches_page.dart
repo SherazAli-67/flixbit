@@ -63,53 +63,21 @@ class _TournamentMatchesPageState extends State<TournamentMatchesPage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          _tournament!.name,
+          'Game Prediction',
           style: AppTextStyles.headingTextStyle3,
         ),
         centerTitle: true,
       ),
       body: Column(
         children: [
-          // Header
+          // Header (title card like the mock)
           Container(
-            padding: const EdgeInsets.all(16),
-            color: AppColors.cardBgColor,
-            child: Column(
-              spacing: 8,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Prediction Contest',
-                      style: AppTextStyles.subHeadingTextStyle,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryColor.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        '$_completedPredictions/${_matches.length}',
-                        style: AppTextStyles.smallBoldTextStyle.copyWith(
-                          color: AppColors.primaryColor,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                if (_matches.isNotEmpty)
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
-                    child: LinearProgressIndicator(
-                      value: _completedPredictions / _matches.length,
-                      minHeight: 4,
-                      backgroundColor: AppColors.unSelectedGreyColor.withValues(alpha: 0.3),
-                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
-                    ),
-                  ),
-              ],
+            width: double.infinity,
+            padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
+            color: AppColors.darkBgColor,
+            child: Text(
+              'Tournament Game',
+              style: AppTextStyles.headingTextStyle3,
             ),
           ),
 
@@ -201,7 +169,7 @@ class _TournamentMatchesPageState extends State<TournamentMatchesPage> {
                         elevation: 0,
                       ),
                       child: Text(
-                        'Submit All Predictions',
+                        _matches.length == 1 ? 'Submit Prediction' : 'Submit All Predictions',
                         style: AppTextStyles.buttonTextStyle.copyWith(
                           color: _canSubmit ? AppColors.whiteColor : AppColors.lightGreyColor,
                           fontSize: 18,
@@ -221,187 +189,86 @@ class _TournamentMatchesPageState extends State<TournamentMatchesPage> {
     final dateFormat = DateFormat('MMM dd, yyyy');
     final prediction = _predictions[match.id];
     final selectedWinner = prediction?['winner'];
-    
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.cardBgColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: selectedWinner != null
-              ? AppColors.primaryColor.withValues(alpha: 0.5)
-              : AppColors.unSelectedGreyColor.withValues(alpha: 0.2),
-          width: selectedWinner != null ? 2 : 1,
-        ),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 16,
         children: [
-          // Question number and match info
+          // Top card: round, game title, image
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                decoration: BoxDecoration(
-                  color: AppColors.primaryColor.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  'Match ${index + 1}',
-                  style: AppTextStyles.captionTextStyle.copyWith(
-                    color: AppColors.primaryColor,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              if (selectedWinner != null)
-                Icon(
-                  Icons.check_circle,
-                  color: AppColors.primaryColor,
-                  size: 20,
-                ),
-            ],
-          ),
-
-          // Teams Display
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Home team
               Expanded(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 6,
                   children: [
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryColor.withValues(alpha: 0.2),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.sports_soccer,
-                        color: AppColors.primaryColor,
-                        size: 28,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
+                    Text('Round ${index + 1}', style: AppTextStyles.captionTextStyle.copyWith(color: AppColors.lightGreyColor)),
+                    Text('Game ${index + 1}', style: AppTextStyles.subHeadingTextStyle),
                     Text(
-                      match.homeTeam,
-                      style: AppTextStyles.smallBoldTextStyle,
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                      '${match.homeTeam} vs. ${match.awayTeam}',
+                      style: AppTextStyles.smallTextStyle.copyWith(color: AppColors.lightGreyColor),
                     ),
                   ],
                 ),
               ),
-
-              // VS
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Text(
-                  'VS',
-                  style: AppTextStyles.tileTitleTextStyle.copyWith(
-                    color: AppColors.lightGreyColor,
+              const SizedBox(width: 12),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  width: 88,
+                  height: 72,
+                  color: AppColors.darkGreyColor,
+                  child: Image.asset(
+                    'asset/images/referral_page_img.png',
+                    fit: BoxFit.cover,
                   ),
-                ),
-              ),
-
-              // Away team
-              Expanded(
-                child: Column(
-                  children: [
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryColor.withValues(alpha: 0.2),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.sports_soccer,
-                        color: AppColors.primaryColor,
-                        size: 28,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      match.awayTeam,
-                      style: AppTextStyles.smallBoldTextStyle,
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
                 ),
               ),
             ],
           ),
 
-          // Match details
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            spacing: 16,
-            children: [
-              Row(
-                spacing: 4,
-                children: [
-                  Icon(
-                    Icons.calendar_today,
-                    size: 12,
-                    color: AppColors.unSelectedGreyColor,
-                  ),
-                  Text(
-                    '${dateFormat.format(match.matchDate)} • ${match.matchTime}',
-                    style: AppTextStyles.captionTextStyle.copyWith(
-                      color: AppColors.unSelectedGreyColor,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-
-          const Divider(color: AppColors.unSelectedGreyColor, height: 24),
-
-          // Question
+          // Instruction text
           Text(
-            'Who will win?',
-            style: AppTextStyles.bodyTextStyle.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            "Select the team you think will win or choose 'Tie' if you predict a draw.",
+            style: AppTextStyles.smallTextStyle.copyWith(color: AppColors.lightGreyColor),
           ),
 
-          // Team selection options
+          // Radio-style options
+          _optionTile(
+            matchId: match.id,
+            value: 'home',
+            label: match.homeTeam,
+            selected: selectedWinner == 'home',
+          ),
+          _optionTile(
+            matchId: match.id,
+            value: 'away',
+            label: match.awayTeam,
+            selected: selectedWinner == 'away',
+          ),
+          _optionTile(
+            matchId: match.id,
+            value: 'draw',
+            label: 'Tie',
+            selected: selectedWinner == 'draw',
+          ),
+
+          // Date/time footer like subtle caption
           Row(
-            spacing: 8,
             children: [
-              Expanded(
-                child: _buildTeamOption(
-                  match.id,
-                  'home',
-                  match.homeTeam,
-                  selectedWinner == 'home',
-                ),
-              ),
-              Expanded(
-                child: _buildTeamOption(
-                  match.id,
-                  'draw',
-                  'Draw',
-                  selectedWinner == 'draw',
-                ),
-              ),
-              Expanded(
-                child: _buildTeamOption(
-                  match.id,
-                  'away',
-                  match.awayTeam,
-                  selectedWinner == 'away',
-                ),
+              Icon(Icons.calendar_today, size: 12, color: AppColors.unSelectedGreyColor),
+              const SizedBox(width: 6),
+              Text(
+                '${dateFormat.format(match.matchDate)} • ${match.matchTime}',
+                style: AppTextStyles.captionTextStyle.copyWith(color: AppColors.unSelectedGreyColor),
               ),
             ],
           ),
@@ -410,8 +277,13 @@ class _TournamentMatchesPageState extends State<TournamentMatchesPage> {
     );
   }
 
-  Widget _buildTeamOption(String matchId, String value, String label, bool isSelected) {
-    return GestureDetector(
+  Widget _optionTile({
+    required String matchId,
+    required String value,
+    required String label,
+    required bool selected,
+  }) {
+    return InkWell(
       onTap: () {
         setState(() {
           _predictions[matchId] = {
@@ -421,48 +293,53 @@ class _TournamentMatchesPageState extends State<TournamentMatchesPage> {
           };
         });
       },
+      borderRadius: BorderRadius.circular(12),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
         decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.primaryColor.withValues(alpha: 0.2)
-              : AppColors.darkBgColor,
-          borderRadius: BorderRadius.circular(8),
+          color: selected ? AppColors.primaryColor.withValues(alpha: 0.2) : AppColors.darkBgColor,
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected
-                ? AppColors.primaryColor
-                : AppColors.unSelectedGreyColor.withValues(alpha: 0.3),
-            width: isSelected ? 2 : 1,
+            color: selected ? AppColors.primaryColor : AppColors.unSelectedGreyColor.withValues(alpha: 0.25),
+            width: selected ? 2 : 1,
           ),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          spacing: 8,
+        child: Row(
           children: [
-            Icon(
-              value == 'draw' ? Icons.handshake : Icons.sports_soccer,
-              color: isSelected ? AppColors.primaryColor : AppColors.lightGreyColor,
-              size: 24,
-            ),
-            Text(
-              label,
-              style: AppTextStyles.captionTextStyle.copyWith(
-                color: isSelected ? AppColors.primaryColor : AppColors.lightGreyColor,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+            _radioDot(selected: selected),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                label,
+                style: AppTextStyles.tileTitleTextStyle.copyWith(
+                  color: AppColors.whiteColor,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
             ),
-            if (isSelected)
-              Icon(
-                Icons.check_circle,
-                color: AppColors.primaryColor,
-                size: 16,
-              ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _radioDot({required bool selected}) {
+    return Container(
+      width: 22,
+      height: 22,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: selected ? AppColors.whiteColor : AppColors.unSelectedGreyColor,
+          width: 2,
+        ),
+        color: selected ? AppColors.primaryColor : Colors.transparent,
+      ),
+      child: selected
+          ? const Center(
+              child: Icon(Icons.circle, size: 10, color: AppColors.whiteColor),
+            )
+          : null,
     );
   }
 
