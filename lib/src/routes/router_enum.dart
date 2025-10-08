@@ -17,6 +17,7 @@ enum RouterEnum {
   gamePredictionView('/game_predication_view'),
   tournamentMatchesView('/tournament_matches_view'),
   makePredictionView('/make_prediction_view'),
+  buyFlixbitPointsView('/buy_flixbit_points_view'),
 
   //BottomNav
   homeView('/home_view'),

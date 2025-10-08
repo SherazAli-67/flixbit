@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flixbit/src/features/authentication/login_page.dart';
 import 'package:flixbit/src/features/authentication/signup_page.dart';
 import 'package:flixbit/src/features/main_menu/qr_scanner_page.dart';
+import 'package:flixbit/src/features/main_menu/wallet_page/buy_flixbit_points_page.dart';
 import 'package:flixbit/src/features/referral_page.dart';
 import 'package:flixbit/src/features/rewards_page.dart';
 import 'package:flixbit/src/features/subscription_plans_page.dart';
@@ -13,7 +14,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flixbit/src/features/main_menu_page.dart';
 import 'package:flixbit/src/features/main_menu/dashboard_flow/dashboard_page.dart';
 import 'package:flixbit/src/features/offers_page.dart';
-import 'package:flixbit/src/features/main_menu/wallet_page.dart';
+import 'package:flixbit/src/features/main_menu/wallet_page/wallet_page.dart';
 import 'package:flixbit/src/features/main_menu/profile_page.dart';
 import 'package:flixbit/src/features/welcome_page.dart';
 
@@ -68,6 +69,9 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: RouterEnum.gamePredictionView.routeName,
       builder: (BuildContext context, GoRouterState state) => const GamePredicationPage(),
+    ),GoRoute(
+      path: RouterEnum.buyFlixbitPointsView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const BuyFlixbitPointsPage(),
     ),
     GoRoute(
       path: RouterEnum.tournamentMatchesView.routeName,

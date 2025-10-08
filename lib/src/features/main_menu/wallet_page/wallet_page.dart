@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flixbit/src/res/app_icons.dart';
+import 'package:flixbit/src/routes/router_enum.dart';
 import 'package:flixbit/src/widgets/primary_btn.dart';
 import 'package:flutter/material.dart';
-import '../../res/app_colors.dart';
-import '../../res/apptextstyles.dart';
+import 'package:go_router/go_router.dart';
+import '../../../res/app_colors.dart';
+import '../../../res/apptextstyles.dart';
 
 class WalletPage extends StatelessWidget {
   const WalletPage({super.key});
@@ -97,7 +99,9 @@ class WalletPage extends StatelessWidget {
                     child: Row(
                       children: [
                         Expanded(
-                          child: PrimaryBtn(btnText: "Buy", icon: '', onTap: (){}, borderRadius: 20,),
+                          child: PrimaryBtn(btnText: "Buy", icon: '', onTap: (){
+                            context.push(RouterEnum.buyFlixbitPointsView.routeName);
+                          }, borderRadius: 20,),
                         ),
                         
                         const SizedBox(width: 16),

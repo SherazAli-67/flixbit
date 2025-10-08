@@ -22,4 +22,7 @@ class AppColors {
   static const lightGreenColor = Color(0xff34C759);
   static const purpleColor = Color(0xffAF52DE);
   static const avatarBgColor = Color(0xffF5F5DC);
+  static const paymentMethodBgColor = Color(0xff1e2a32);
+  static const selectedPaymentMethodBgColor = Color(0xff2a3b45);
+  static const orderSummaryBgColor = Color(0xff1e2a32);
 }
