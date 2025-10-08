@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flixbit/src/res/app_icons.dart';
 import 'package:flutter/material.dart';
 import '../../res/app_colors.dart';
 import '../../res/apptextstyles.dart';
@@ -31,175 +33,94 @@ class _ProfilePageState extends State<ProfilePage> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 25,
             children: [
-              _ProfileHeader(),
-              const SizedBox(height: 24),
-              _SectionTitle(title: 'ACCOUNT'),
-              const SizedBox(height: 12),
-              _SectionCard(
-                children: [
-                  _ArrowTile(title: 'Edit Profile'),
-                  const _SectionDivider(),
-                  _ArrowTile(title: 'Change Password'),
-                  const _SectionDivider(),
-                  _ArrowTile(title: 'Linked Accounts'),
-                ],
-              ),
-              const SizedBox(height: 24),
-              _SectionTitle(title: 'PREFERENCES'),
-              const SizedBox(height: 12),
-              _SectionCard(
-                children: [
-                  _ArrowTile(title: 'Notifications'),
-                  const _SectionDivider(),
-                  _ValueArrowTile(title: 'Language', value: 'English'),
-                  const _SectionDivider(),
-                  _SwitchTile(
-                    title: 'Dark Theme',
-                    value: isDarkTheme,
-                    onChanged: (v) => setState(() => isDarkTheme = v),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              _SectionTitle(title: 'SUPPORT'),
-              const SizedBox(height: 12),
-              _SectionCard(
-                children: const [
-                  _ArrowTile(title: 'Help Center'),
-                  _SectionDivider(),
-                  _ArrowTile(title: 'Contact Us'),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ProfileHeader extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        CircleAvatar(
-          radius: 36,
-          backgroundColor: AppColors.cardBgColor,
-          child: CircleAvatar(
-            radius: 34,
-            backgroundColor: AppColors.avatarBgColor,
-            child: Icon(Icons.person, color: AppColors.darkGreyColor, size: 40),
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 6,
-            children: [
-              Text('Ethan Carter', style: AppTextStyles.headingTextStyle3),
-              Text(
-                'ethan.carter@email.com',
-                style: AppTextStyles.smallTextStyle.copyWith(
-                  color: AppColors.unSelectedGreyColor,
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: CircleAvatar(
+                  radius: 35,
+                  backgroundImage: CachedNetworkImageProvider(AppIcons.icDummyProfileUrl),
                 ),
+                title: Text("Ethan Carter"),
+                subtitle: Text("ethancarter@gmail.com"),
               ),
+              _buildSectionTitleWidget(
+                  title: 'ACCOUNT',
+                  children: [
+                    _buildSectionItemWidget(title: 'Edit Profile', onTap: (){}),
+                    _buildSectionItemWidget(title: 'Change Password', onTap: (){}),
+                    _buildSectionItemWidget(title: 'Linked Accounts', onTap: (){}),
+                  ]),
+
+              _buildSectionTitleWidget(
+                  title: 'PREFERENCES',
+                  children: [
+                    _buildSectionItemWidget(title: 'Notifications', onTap: () {}),
+                    _buildSectionItemWidget(title: 'Language', onTap: () {}, trailingText: 'English'),
+                    _SwitchTile(
+                        title: 'Dark Theme',
+                        value: isDarkTheme,
+                        onChanged: (val) => setState(() => isDarkTheme = val)),
+                  ]),
+
+              _buildSectionTitleWidget(
+                  title: 'SUPPORT',
+                  children: [
+                    _buildSectionItemWidget(title: 'Help Center', onTap: (){}),
+                    _buildSectionItemWidget(title: 'Contact Us', onTap: (){}),
+                    _buildSectionItemWidget(title: 'Privacy Policy', onTap: (){}),
+                  ]),
             ],
           ),
         ),
-      ],
-    );
-  }
-}
-
-class _SectionTitle extends StatelessWidget {
-  final String title;
-  const _SectionTitle({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: AppTextStyles.smallBoldTextStyle.copyWith(
-        color: AppColors.unSelectedGreyColor,
-        letterSpacing: 1.1,
       ),
     );
   }
-}
 
-class _SectionCard extends StatelessWidget {
-  final List<Widget> children;
-  const _SectionCard({required this.children});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.cardBgColor,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children),
-      ),
-    );
-  }
-}
-
-class _SectionDivider extends StatelessWidget {
-  const _SectionDivider();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      height: 1,
-      color: AppColors.darkGreyColor.withOpacity(0.3),
-    );
-  }
-}
-
-class _ArrowTile extends StatelessWidget {
-  final String title;
-  const _ArrowTile({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Text(title, style: AppTextStyles.tileTitleTextStyle),
-        ),
-        Icon(Icons.chevron_right, color: AppColors.unSelectedGreyColor),
-      ],
-    );
-  }
-}
-
-class _ValueArrowTile extends StatelessWidget {
-  final String title;
-  final String value;
-  const _ValueArrowTile({required this.title, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(child: Text(title, style: AppTextStyles.tileTitleTextStyle)),
-        Row(spacing: 8, children: [
-          Text(
-            value,
-            style: AppTextStyles.smallTextStyle.copyWith(color: AppColors.unSelectedGreyColor),
+  Widget _buildSectionItemWidget({required String title, required VoidCallback onTap, String? trailingText}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(title, style: AppTextStyles.tileTitleTextStyle,),
+                Row(
+                  children: [
+                    if(trailingText != null)
+                      Text(trailingText, style: AppTextStyles.smallTextStyle.copyWith(color: AppColors.unSelectedGreyColor),),
+                    Icon(Icons.navigate_next_rounded)
+                  ],
+                )
+              ],
+            ),
           ),
-          Icon(Icons.chevron_right, color: AppColors.unSelectedGreyColor),
-        ]),
+          Container(
+            height: 1,
+            width: double.infinity,
+            color: AppColors.cardBgColor,
+          )
+        ],
+      ),
+    );
+  }
+
+  _buildSectionTitleWidget({required String title, required List<Widget> children}) {
+    return Column(
+      spacing: 20,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: AppTextStyles.subHeadingTextStyle.copyWith(color: AppColors.unSelectedGreyColor),),
+        Container(
+          decoration: BoxDecoration(
+            color: AppColors.cardDarkBgColor,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children),
+        )
       ],
     );
   }
@@ -214,20 +135,23 @@ class _SwitchTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(child: Text(title, style: AppTextStyles.tileTitleTextStyle)),
-        Switch.adaptive(
-          value: value,
-          onChanged: onChanged,
-          activeColor: AppColors.whiteColor,
-          activeTrackColor: AppColors.primaryColor,
-          inactiveThumbColor: AppColors.whiteColor,
-          inactiveTrackColor: AppColors.darkGreyColor,
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(child: Text(title, style: AppTextStyles.tileTitleTextStyle)),
+          Switch.adaptive(
+            value: value,
+            onChanged: onChanged,
+            activeColor: AppColors.whiteColor,
+            activeTrackColor: AppColors.primaryColor,
+            inactiveThumbColor: AppColors.whiteColor,
+            inactiveTrackColor: AppColors.darkGreyColor,
+          ),
+        ],
+      ),
     );
   }
 }
