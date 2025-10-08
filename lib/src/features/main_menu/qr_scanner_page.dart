@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:flixbit/src/routes/router_enum.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../res/apptextstyles.dart';
 
@@ -93,12 +95,18 @@ class _ScannerPageState extends State<ScannerPage> with WidgetsBindingObserver{
     _disposeController();
 
     if (barcode.format == BarcodeFormat.qrCode) {
+      await context.push(RouterEnum.sellerProfileView.routeName, extra: {
+        'sellerId': '1',
+        'verificationMethod': 'qr_scan'
+      });
       /*  await Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => GuestVerifiedPage(barcode: barcode,)),
       );
+
+       */
       _hasScanned = false;
-      _initializeController();*/ // restart scanner after returning
+      _initializeController(); // restart scanner after returning
     }
   }
 

@@ -21,8 +21,11 @@ import 'package:flixbit/src/features/welcome_page.dart';
 import '../features/game_prediction/game_prediction_page.dart';
 import '../features/game_prediction/tournament_matches_page.dart';
 import '../features/game_prediction/make_prediction_page.dart';
+import '../features/reviews/seller_profile_page.dart';
+import '../features/reviews/write_review_page.dart';
 import '../models/match_model.dart';
 import '../models/tournament_model.dart';
+import '../models/review_model.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
@@ -87,6 +90,30 @@ final GoRouter appRouter = GoRouter(
         return MakePredictionPage(
           match: extra['match'] as Match,
           tournament: extra['tournament'] as Tournament,
+        );
+      },
+    ),
+    GoRoute(
+      path: RouterEnum.sellerProfileView.routeName,
+      builder: (BuildContext context, GoRouterState state) {
+        final sellerId = state.uri.queryParameters['sellerId'] ?? '';
+        final verificationMethod = state.uri.queryParameters['verificationMethod'];
+        return SellerProfilePage(
+          sellerId: sellerId,
+          verificationMethod: verificationMethod,
+        );
+      },
+    ),
+    GoRoute(
+      path: RouterEnum.writeReviewView.routeName,
+      builder: (BuildContext context, GoRouterState state) {
+        final extra = state.extra as Map<String, dynamic>;
+        return WriteReviewPage(
+          sellerId: extra['sellerId'] as String,
+          sellerName: extra['sellerName'] as String,
+          verificationMethod: extra['verificationMethod'] as String?,
+          offerId: extra['offerId'] as String?,
+          reviewType: extra['reviewType'] as ReviewType? ?? ReviewType.seller,
         );
       },
     ),

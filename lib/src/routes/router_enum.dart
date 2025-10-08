@@ -19,6 +19,12 @@ enum RouterEnum {
   makePredictionView('/make_prediction_view'),
   buyFlixbitPointsView('/buy_flixbit_points_view'),
 
+  //Reviews
+  sellerProfileView('/seller_profile_view'),
+  writeReviewView('/write_review_view'),
+  mySellersView('/my_sellers_view'),
+  reviewsListView('/reviews_list_view'),
+
   //BottomNav
   homeView('/home_view'),
   qrScannerView('/qr_scanner_view'),

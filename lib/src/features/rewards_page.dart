@@ -1,10 +1,17 @@
+import 'package:flixbit/src/routes/router_enum.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../res/app_colors.dart';
 import '../res/apptextstyles.dart';
 
-class RewardsPage extends StatelessWidget {
+class RewardsPage extends StatefulWidget {
   const RewardsPage({super.key});
 
+  @override
+  State<RewardsPage> createState() => _RewardsPageState();
+}
+
+class _RewardsPageState extends State<RewardsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,10 +24,10 @@ class RewardsPage extends StatelessWidget {
             children: [
               // Header
               _buildHeader(context),
-              
+
               // Available Rewards Section
               _buildAvailableRewardsSection(),
-              
+
               // Claimed Rewards Section
               _buildClaimedRewardsSection(),
             ],
@@ -146,7 +153,11 @@ class RewardsPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 ElevatedButton(
-                  onPressed: isClaimable ? () {
+                  onPressed: isClaimable ? () async {
+                    // await _claimReward(rewardId);
+
+                    // Show review prompt after successful redemption
+                    _showReviewPrompt('1', '1');
                     // Handle claim action
                   } : null,
                   style: ElevatedButton.styleFrom(
@@ -172,7 +183,7 @@ class RewardsPage extends StatelessWidget {
               ],
             ),
           ),
-          
+
           // Right side - Image
           Container(
             width: 80,
@@ -251,5 +262,34 @@ class RewardsPage extends StatelessWidget {
         ),
       );
     }
+  }
+
+  void _showReviewPrompt(String sellerId, String offerId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('How was your experience?'),
+        content: const Text('Rate your experience and earn Flixbit points!'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Maybe Later'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              context.pop();
+              context.push(RouterEnum.writeReviewView.routeName, extra: {
+                'sellerId': sellerId,
+                'offerId': offerId,
+                'sellerName' : 'Sheraz',
+                'verificationMethod': 'offer_redemption',
+              });
+
+            },
+            child: const Text('Write Review'),
+          ),
+        ],
+      ),
+    );
   }
 }

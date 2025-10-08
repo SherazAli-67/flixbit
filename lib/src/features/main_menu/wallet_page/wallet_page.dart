@@ -92,20 +92,20 @@ class WalletPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  
+
                   // Buy and Sell Buttons
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 40),
                     child: Row(
+                      spacing: 16,
                       children: [
                         Expanded(
                           child: PrimaryBtn(btnText: "Buy", icon: '', onTap: (){
+                            debugPrint("On tap");
                             context.push(RouterEnum.buyFlixbitPointsView.routeName);
                           }, borderRadius: 20,),
                         ),
-                        
-                        const SizedBox(width: 16),
-                        
+
                         Expanded(
                           child: PrimaryBtn(btnText: "Sell", icon: '', onTap: (){}, borderRadius: 20, bgColor: AppColors.primaryColor.withValues(alpha: 0.12),),
                         ),
@@ -116,7 +116,7 @@ class WalletPage extends StatelessWidget {
                 ],
               ),
             ),
-            
+
             // Transactions Section
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -134,13 +134,13 @@ class WalletPage extends StatelessWidget {
                 ),
               ),
             ),
-            
+
             // Transactions List
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
-                  (context, index) {
+                      (context, index) {
                     final transactions = [
                       {
                         'icon': Icons.trending_up,
@@ -185,7 +185,7 @@ class WalletPage extends StatelessWidget {
                         'isPositive': false,
                       },
                     ];
-                    
+
                     if (index < transactions.length) {
                       final transaction = transactions[index];
                       return _buildTransactionItem(
