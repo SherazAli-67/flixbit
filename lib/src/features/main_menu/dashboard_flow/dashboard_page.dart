@@ -24,7 +24,7 @@ class DashboardPage extends StatelessWidget {
                 _buildTopBar(),
 
                 // Media Section
-                _buildMediaSection(),
+                _buildMediaSection(context),
                 
                 // Quick Access Section
                 _buildQuickAccessSection(context),
@@ -68,7 +68,7 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMediaSection() {
+  Widget _buildMediaSection(BuildContext context) {
     return Container(
       height: 200,
       width: double.infinity,
@@ -80,25 +80,44 @@ class DashboardPage extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
       ),
-      child: Center(
-        child: Container(
-          width: 60,
-          height: 60,
-          decoration: BoxDecoration(
-            color: Colors.black,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.3),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: const Icon(
-            Icons.play_arrow,
-            color: Colors.white,
-            size: 30,
+      child: GestureDetector(
+        onTap: (){
+          final ad = VideoAd(
+            id: 'video_1',
+            title: 'Featured Seller Ad',
+            mediaUrl: 'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+            durationSeconds: 30,
+            rewardPoints: 5,
+            minWatchSeconds: 10,
+          );
+          context.push(
+            RouterEnum.videoDetailsView.routeName,
+            extra: {
+              'ad': ad,
+              'sellerId': 'seller_123',
+            },
+          );
+        },
+        child: Center(
+          child: Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              color: Colors.black,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: const Icon(
+              Icons.play_arrow,
+              color: Colors.white,
+              size: 30,
+            ),
           ),
         ),
       ),
@@ -170,24 +189,6 @@ class DashboardPage extends StatelessWidget {
       children: [
         _buildListCard(Icons.sports_soccer, 'Game Predictions', 'Predict matches and win prizes', (){
           context.push(RouterEnum.gamePredictionView.routeName);
-        }),
-        _buildListCard(Icons.ondemand_video, 'Watch & Earn', 'Watch ads to earn Flixbit', (){
-          // Navigate directly to VideoAdDetailPage with a sample ad
-          final ad = VideoAd(
-            id: 'video_1',
-            title: 'Featured Seller Ad',
-            mediaUrl: 'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
-            durationSeconds: 30,
-            rewardPoints: 5,
-            minWatchSeconds: 10,
-          );
-          context.push(
-            RouterEnum.videoDetailsView.routeName,
-            extra: {
-              'ad': ad,
-              'sellerId': 'seller_123',
-            },
-          );
         }),
         _buildListCard(Icons.stars, 'Subscription Packages', 'Upgrade for more features', (){
           context.push(RouterEnum.subscriptionView.routeName);
