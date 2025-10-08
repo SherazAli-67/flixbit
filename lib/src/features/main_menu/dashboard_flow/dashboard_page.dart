@@ -2,6 +2,7 @@ import 'package:flixbit/src/res/apptextstyles.dart';
 import 'package:flixbit/src/routes/router_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flixbit/src/models/video_ad.dart';
 import '../../../res/app_colors.dart';
 
 class DashboardPage extends StatelessWidget {
@@ -30,6 +31,7 @@ class DashboardPage extends StatelessWidget {
                 
                 // List Cards Section
                 _buildListCardsSection(context),
+
 
                 // Bottom Cards Section
                 _buildBottomCardsSection(context),
@@ -170,10 +172,28 @@ class DashboardPage extends StatelessWidget {
           context.push(RouterEnum.gamePredictionView.routeName);
         }),
         _buildListCard(Icons.ondemand_video, 'Watch & Earn', 'Watch ads to earn Flixbit', (){
-          context.push(RouterEnum.videoAdsView.routeName);
+          // Navigate directly to VideoAdDetailPage with a sample ad
+          final ad = VideoAd(
+            id: 'video_1',
+            title: 'Featured Seller Ad',
+            mediaUrl: 'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+            durationSeconds: 30,
+            rewardPoints: 5,
+            minWatchSeconds: 10,
+          );
+          context.push(
+            RouterEnum.videoDetailsView.routeName,
+            extra: {
+              'ad': ad,
+              'sellerId': 'seller_123',
+            },
+          );
         }),
         _buildListCard(Icons.stars, 'Subscription Packages', 'Upgrade for more features', (){
           context.push(RouterEnum.subscriptionView.routeName);
+        }),
+        _buildListCard(Icons.store, 'My Sellers', 'Manage your followed sellers', (){
+          context.push(RouterEnum.mySellersView.routeName); // New route
         }),
         _buildListCard(Icons.people, 'Referrals', 'Invite friends and earn', (){
           context.push(RouterEnum.referralView.routeName);

@@ -370,3 +370,4 @@ class ReviewsProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
+
