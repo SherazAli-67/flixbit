@@ -1,11 +1,14 @@
 
 import 'package:flixbit/src/providers/linked_accounts_provider.dart';
+import 'package:flixbit/src/providers/tab_change_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
 import '../res/app_colors.dart';
 import '../res/apptextstyles.dart';
+import '../routes/router_enum.dart';
 
 class LinkedAccountsPage extends StatelessWidget{
   const LinkedAccountsPage({super.key});
@@ -38,9 +41,16 @@ class LinkedAccountsPage extends StatelessWidget{
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 20,
               children: [
-                _buildAccountItem("User Account", !provider.isSellerAccount, onTap: ()=> provider.changeAccountType(isSeller: false)),
+                _buildAccountItem("User Account", !provider.isSellerAccount, onTap: (){
+                  provider.changeAccountType(isSeller: false);
+                  context.go(RouterEnum.homeView.routeName);
+                }),
 
-                _buildAccountItem("Seller Account", provider.isSellerAccount, onTap: ()=> provider.changeAccountType(isSeller: true))
+                _buildAccountItem("Seller Account", provider.isSellerAccount, onTap: (){
+                  provider.changeAccountType(isSeller: true);
+                  context.read<MainMenuTabChangeProvider>().onTabChange(0);
+                  context.go(RouterEnum.sellerHomeView.routeName);
+                })
               ],
             )
           ],

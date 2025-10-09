@@ -6,6 +6,7 @@ import 'package:flixbit/src/features/main_menu/qr_scanner_page.dart';
 import 'package:flixbit/src/features/main_menu/wallet_page/buy_flixbit_points_page.dart';
 import 'package:flixbit/src/features/referral_page.dart';
 import 'package:flixbit/src/features/rewards_page.dart';
+import 'package:flixbit/src/features/seller/seller_main_menu/seller_video_ads_page.dart';
 import 'package:flixbit/src/features/subscription_plans_page.dart';
 import 'package:flixbit/src/features/wheel_of_fortune_page.dart';
 import 'package:flixbit/src/features/video_ads/video_ads_list_page.dart';
@@ -14,11 +15,16 @@ import 'package:flixbit/src/routes/router_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flixbit/src/features/main_menu_page.dart';
+import 'package:flixbit/src/features/seller/seller_main_menu_page.dart';
 import 'package:flixbit/src/features/main_menu/dashboard_flow/dashboard_page.dart';
 import 'package:flixbit/src/features/offers_page.dart';
 import 'package:flixbit/src/features/main_menu/wallet_page/wallet_page.dart';
 import 'package:flixbit/src/features/main_menu/profile_page.dart';
 import 'package:flixbit/src/features/welcome_page.dart';
+import 'package:flixbit/src/features/seller/seller_main_menu/seller_dashboard_page.dart';
+import 'package:flixbit/src/features/seller/seller_main_menu/seller_offers_page.dart';
+import 'package:flixbit/src/features/seller/seller_main_menu/seller_tournaments_page.dart';
+import 'package:flixbit/src/features/seller/seller_main_menu/seller_profile_page.dart' as seller_main;
 
 import '../features/game_prediction/game_prediction_page.dart';
 import '../features/game_prediction/tournament_matches_page.dart';
@@ -134,6 +140,7 @@ final GoRouter appRouter = GoRouter(
       path: RouterEnum.linkedAccountsView.routeName,
       builder: (BuildContext context, GoRouterState state) => const LinkedAccountsPage(),
     ),
+    // USER SHELL
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state, StatefulNavigationShell navigationShell) {
         return MainMenuPage(navigationShell: navigationShell);
@@ -168,6 +175,55 @@ final GoRouter appRouter = GoRouter(
             GoRoute(
               path: RouterEnum.profileView.routeName,
               builder: (BuildContext context, GoRouterState state) => const ProfilePage(),
+            ),
+          ],
+        ),
+      ],
+    ),
+    // SELLER SHELL
+    StatefulShellRoute.indexedStack(
+      builder: (BuildContext context, GoRouterState state, StatefulNavigationShell navigationShell) {
+        return SellerMainMenuPage(navigationShell: navigationShell);
+      },
+      branches: <StatefulShellBranch>[
+        StatefulShellBranch(
+          routes: <RouteBase>[
+            GoRoute(
+              path: RouterEnum.sellerHomeView.routeName,
+              builder: (BuildContext context, GoRouterState state) => const SellerDashboardPage(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: <RouteBase>[
+            GoRoute(
+              path: RouterEnum.sellerOffersView.routeName,
+              builder: (BuildContext context, GoRouterState state) => const SellerOffersPage(),
+            ),
+          ],
+        ),
+
+        StatefulShellBranch(
+          routes: <RouteBase>[
+            GoRoute(
+              path: RouterEnum.sellerVideoAdsView.routeName,
+              builder: (BuildContext context, GoRouterState state) => const SellerVideoAdsPage(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: <RouteBase>[
+            GoRoute(
+              path: RouterEnum.sellerTournamentsView.routeName,
+              builder: (BuildContext context, GoRouterState state) => const SellerTournamentPage(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: <RouteBase>[
+            GoRoute(
+              path: RouterEnum.sellerMainProfileView.routeName,
+              builder: (BuildContext context, GoRouterState state) => const seller_main.SellerProfilePage(),
             ),
           ],
         ),

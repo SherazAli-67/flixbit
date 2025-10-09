@@ -36,7 +36,11 @@ enum RouterEnum {
   profileView('/profile_view'),
 
   //Seller-only bottom nav
-  sellerTournamentsView('/seller_tournaments_view');
+  sellerHomeView('/seller_home_view'),
+  sellerOffersView('/seller_offers_view'),
+  sellerVideoAdsView('/seller_video_ads_view'),
+  sellerTournamentsView('/seller_tournaments_view'),
+  sellerMainProfileView('/seller_main_profile_view');
 
 
   final String routeName;

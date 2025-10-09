@@ -46,18 +46,7 @@ class SellerMainMenuPage extends StatelessWidget{
             ),
             label: 'Dashboard',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.qr_code_scanner, color: AppColors.unSelectedGreyColor),
-            activeIcon: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: AppColors.primaryColor.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Icon(Icons.qr_code_scanner, color: AppColors.primaryColor),
-            ),
-            label: 'Scanner',
-          ),
+
           BottomNavigationBarItem(
             icon: Icon(Icons.price_change_rounded, color: AppColors.unSelectedGreyColor),
             activeIcon: Container(
@@ -69,6 +58,18 @@ class SellerMainMenuPage extends StatelessWidget{
               child: Icon(Icons.price_change_rounded, color: AppColors.primaryColor),
             ),
             label: 'Offers',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.video_collection_outlined, color: AppColors.unSelectedGreyColor),
+            activeIcon: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: AppColors.primaryColor.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(Icons.video_collection, color: AppColors.primaryColor),
+            ),
+            label: 'Video Ads',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.games_outlined, color: AppColors.unSelectedGreyColor),
