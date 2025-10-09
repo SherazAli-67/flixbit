@@ -19,4 +19,12 @@ class AppTextStyles {
   static const rewardDescStyle = TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: AppColors.whiteColor);
   // static const commentTextStyle = TextStyle(fontSize: 14, fontWeight: FontWeight.w300, color: AppColors.commentTextColor);
 
+  // Additional text styles for video ads page
+  static const whiteBold20 = TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.whiteColor);
+  static const whiteBold18 = TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.whiteColor);
+  static const whiteBold16 = TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.whiteColor);
+  static const lightGrayRegular14 = TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: AppColors.lightGreyColor);
+  static const whiteRegular12 = TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: AppColors.whiteColor);
+  static const lightGrayRegular12 = TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: AppColors.lightGreyColor);
+
 }

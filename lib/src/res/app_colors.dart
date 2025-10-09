@@ -26,4 +26,8 @@ class AppColors {
   static const paymentMethodBgColor = Color(0xff1e2a32);
   static const selectedPaymentMethodBgColor = Color(0xff2a3b45);
   static const orderSummaryBgColor = Color(0xff1e2a32);
+  static const vibrantBlueColor = Color(0xff007AFF);
+  static const darkBackground = Color(0xff0f1c22);
+  static const primaryBlue = Color(0xff17a3eb);
+  static const cardBackground = Color(0xff2a3b45);
 }
