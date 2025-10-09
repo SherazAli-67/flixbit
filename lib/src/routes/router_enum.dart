@@ -26,11 +26,17 @@ enum RouterEnum {
   mySellersView('/my_sellers_view'),
   reviewsListView('/reviews_list_view'),
 
+  //Profile pages
+  linkedAccountsView('/linked_accounts_view'),
+
   //BottomNav
   homeView('/home_view'),
   qrScannerView('/qr_scanner_view'),
   walletView('/wallet_view'),
-  profileView('/profile_view');
+  profileView('/profile_view'),
+
+  //Seller-only bottom nav
+  sellerTournamentsView('/seller_tournaments_view');
 
 
   final String routeName;

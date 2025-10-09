@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flixbit/src/features/authentication/login_page.dart';
 import 'package:flixbit/src/features/authentication/signup_page.dart';
+import 'package:flixbit/src/features/linked_accounts_page.dart';
 import 'package:flixbit/src/features/main_menu/qr_scanner_page.dart';
 import 'package:flixbit/src/features/main_menu/wallet_page/buy_flixbit_points_page.dart';
 import 'package:flixbit/src/features/referral_page.dart';
@@ -128,6 +129,10 @@ final GoRouter appRouter = GoRouter(
           reviewType: extra['reviewType'] as ReviewType? ?? ReviewType.seller,
         );
       },
+    ),
+    GoRoute(
+      path: RouterEnum.linkedAccountsView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const LinkedAccountsPage(),
     ),
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state, StatefulNavigationShell navigationShell) {

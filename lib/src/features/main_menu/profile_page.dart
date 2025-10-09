@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flixbit/src/res/app_icons.dart';
+import 'package:flixbit/src/routes/router_enum.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../res/app_colors.dart';
 import '../../res/apptextstyles.dart';
 
@@ -21,6 +23,7 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         backgroundColor: AppColors.darkBgColor,
         elevation: 0,
+        scrolledUnderElevation: 0,
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios_new, color: AppColors.whiteColor),
@@ -49,7 +52,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: [
                     _buildSectionItemWidget(title: 'Edit Profile', onTap: (){}),
                     _buildSectionItemWidget(title: 'Change Password', onTap: (){}),
-                    _buildSectionItemWidget(title: 'Linked Accounts', onTap: (){}),
+                    _buildSectionItemWidget(title: 'Linked Accounts', onTap: _onLinkedAccountsTap),
                   ]),
 
               _buildSectionTitleWidget(
@@ -77,6 +80,9 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  void _onLinkedAccountsTap(){
+    context.push(RouterEnum.linkedAccountsView.routeName);
+  }
   Widget _buildSectionItemWidget({required String title, required VoidCallback onTap, String? trailingText}) {
     return GestureDetector(
       onTap: onTap,

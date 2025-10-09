@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flixbit/src/providers/authentication_provider.dart';
+import 'package:flixbit/src/providers/linked_accounts_provider.dart';
 import 'package:flixbit/src/providers/tab_change_provider.dart';
 import 'package:flixbit/src/providers/reviews_provider.dart';
 import 'package:flixbit/src/res/app_colors.dart';
@@ -16,6 +17,7 @@ void main() async {
         ChangeNotifierProvider(create: (_)=> MainMenuTabChangeProvider()),
         ChangeNotifierProvider(create: (_)=> AuthenticationProvider()),
         ChangeNotifierProvider(create: (_)=> ReviewsProvider()),
+        ChangeNotifierProvider(create: (_)=> LinkedAccountsProvider()),
       ],
       child: const MyApp()));
 }
