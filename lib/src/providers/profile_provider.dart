@@ -1,14 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flixbit/src/models/seller_model.dart';
 import 'package:flixbit/src/res/firebase_constants.dart';
 import 'package:flutter/cupertino.dart';
 
 class ProfileProvider extends ChangeNotifier{
   bool _isRegisteredAsSeller = false;
   bool _loading = false;
+  Seller? _seller;
 
   bool get isRegisteredAsSeller => _isRegisteredAsSeller;
   bool get loading => _loading;
+  Seller? get seller => _seller;
 
   ProfileProvider(){
     _initUserInfo();
@@ -33,6 +36,7 @@ class ProfileProvider extends ChangeNotifier{
     String userID = FirebaseAuth.instance.currentUser!.uid;
     final docSnap = await FirebaseFirestore.instance.collection(FirebaseConstants.sellersCollection).doc(userID).get();
     if(docSnap.exists){
+      _seller = Seller.fromJson(docSnap.data()!);
       _isRegisteredAsSeller = true;
       notifyListeners();
     }
