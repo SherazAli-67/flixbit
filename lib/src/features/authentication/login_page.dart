@@ -25,52 +25,55 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(child: Column(
-        spacing: 20,
-        children: [
-          Image.asset(AppIcons.signInHeaderImg),
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Column(
-              spacing: 10,
-              children: [
-                AppTextField(textController: _emailController, prefixIcon: AppIcons.icEmail, hintText: 'Enter your email', titleText: 'Email address'),
-                AppTextField(textController: _passwordController, prefixIcon: AppIcons.icPassword, hintText: 'Enter your password', titleText: 'Password'),
-                Align(
-                  alignment: Alignment.topRight,
-                  child: TextButton(onPressed: (){}, child: Text("Forget Password?")),
-                ),
-                const SizedBox(height: 20,),
-                Consumer<AuthenticationProvider>(
-                  builder: (context, authProvider, child) {
-                    return PrimaryBtn(
-                      btnText: authProvider.isLoading ? 'Signing In...' : 'Login',
-                      icon: '',
-                      onTap: authProvider.isLoading ? () {} : () => _onLoginTap(),
-                    );
-                  },
-                ),
-                RichText(
-
-                    text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: "Don't have an account? ",
-                      style: AppTextStyles.smallTextStyle
-                    ),
-                    TextSpan(
-                      recognizer: TapGestureRecognizer()..onTap = (){
-                        context.push(RouterEnum.signupView.routeName);
-                      },
-                        text: "Create Here",
-                        style: AppTextStyles.smallTextStyle.copyWith(color: AppColors.primaryColor)
-                    )
-                  ]
-                ))
-              ],
-            ),
-          )
-        ],
+      body: SafeArea(child: SingleChildScrollView(
+        child: Column(
+          spacing: 20,
+          children: [
+            Image.asset(AppIcons.signInHeaderImg),
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                spacing: 10,
+                children: [
+                  AppTextField(textController: _emailController, prefixIcon: AppIcons.icEmail, hintText: 'Enter your email', titleText: 'Email address', textInputType: TextInputType.emailAddress,),
+                  AppTextField(textController: _passwordController, prefixIcon: AppIcons.icPassword, hintText: 'Enter your password', titleText: 'Password', isPassword: true
+                    ,),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: TextButton(onPressed: (){}, child: Text("Forget Password?")),
+                  ),
+                  const SizedBox(height: 20,),
+                  Consumer<AuthenticationProvider>(
+                    builder: (context, authProvider, child) {
+                      return PrimaryBtn(
+                        btnText: authProvider.isLoading ? 'Signing In...' : 'Login',
+                        icon: '',
+                        onTap: authProvider.isLoading ? () {} : () => _onLoginTap(),
+                      );
+                    },
+                  ),
+                  RichText(
+        
+                      text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: "Don't have an account? ",
+                        style: AppTextStyles.smallTextStyle
+                      ),
+                      TextSpan(
+                        recognizer: TapGestureRecognizer()..onTap = (){
+                          context.push(RouterEnum.signupView.routeName);
+                        },
+                          text: "Create Here",
+                          style: AppTextStyles.smallTextStyle.copyWith(color: AppColors.primaryColor)
+                      )
+                    ]
+                  ))
+                ],
+              ),
+            )
+          ],
+        ),
       )),
     );
   }

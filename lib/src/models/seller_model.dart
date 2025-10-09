@@ -20,7 +20,7 @@ class Seller {
   final int followersCount;
   final List<String> badges;
   final Map<String, dynamic>? businessHours;
-  final String? qrCodeData;
+  // final String? qrCodeData;
 
   Seller({
     required this.id,
@@ -42,7 +42,7 @@ class Seller {
     this.followersCount = 0,
     this.badges = const [],
     this.businessHours,
-    this.qrCodeData,
+    // this.qrCodeData,
   });
 
   factory Seller.fromJson(Map<String, dynamic> json) {
@@ -68,7 +68,7 @@ class Seller {
       followersCount: json['followersCount'] ?? 0,
       badges: List<String>.from(json['badges'] ?? []),
       businessHours: json['businessHours'],
-      qrCodeData: json['qrCodeData'],
+      // qrCodeData: json['qrCodeData'],
     );
   }
 
@@ -93,7 +93,7 @@ class Seller {
       'followersCount': followersCount,
       'badges': badges,
       'businessHours': businessHours,
-      'qrCodeData': qrCodeData,
+      // 'qrCodeData': qrCodeData,
     };
   }
 
@@ -117,7 +117,7 @@ class Seller {
     int? followersCount,
     List<String>? badges,
     Map<String, dynamic>? businessHours,
-    String? qrCodeData,
+    // String? qrCodeData,
   }) {
     return Seller(
       id: id ?? this.id,
@@ -139,7 +139,7 @@ class Seller {
       followersCount: followersCount ?? this.followersCount,
       badges: badges ?? this.badges,
       businessHours: businessHours ?? this.businessHours,
-      qrCodeData: qrCodeData ?? this.qrCodeData,
+      // qrCodeData: qrCodeData ?? this.qrCodeData,
     );
   }
 
