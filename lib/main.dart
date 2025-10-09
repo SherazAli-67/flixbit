@@ -8,16 +8,20 @@ import 'package:flixbit/src/res/app_constants.dart';
 import 'package:flixbit/src/routes/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final bool initialIsSeller = prefs.getBool('isSeller') ?? false;
+
   runApp(MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_)=> MainMenuTabChangeProvider()),
         ChangeNotifierProvider(create: (_)=> AuthenticationProvider()),
         ChangeNotifierProvider(create: (_)=> ReviewsProvider()),
-        ChangeNotifierProvider(create: (_)=> LinkedAccountsProvider()),
+        ChangeNotifierProvider(create: (_)=> LinkedAccountsProvider(initialIsSellerAccount: initialIsSeller)),
       ],
       child: const MyApp()));
 }

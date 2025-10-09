@@ -43,6 +43,8 @@ class LinkedAccountsPage extends StatelessWidget{
               children: [
                 _buildAccountItem("User Account", !provider.isSellerAccount, onTap: (){
                   provider.changeAccountType(isSeller: false);
+
+                  context.read<MainMenuTabChangeProvider>().onTabChange(0);
                   context.go(RouterEnum.homeView.routeName);
                 }),
 

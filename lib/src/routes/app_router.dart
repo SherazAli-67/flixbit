@@ -11,6 +11,7 @@ import 'package:flixbit/src/features/subscription_plans_page.dart';
 import 'package:flixbit/src/features/wheel_of_fortune_page.dart';
 import 'package:flixbit/src/features/video_ads/video_ads_list_page.dart';
 import 'package:flixbit/src/models/video_ad.dart';
+import 'package:flixbit/src/providers/linked_accounts_provider.dart';
 import 'package:flixbit/src/routes/router_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -24,7 +25,8 @@ import 'package:flixbit/src/features/welcome_page.dart';
 import 'package:flixbit/src/features/seller/seller_main_menu/seller_dashboard_page.dart';
 import 'package:flixbit/src/features/seller/seller_main_menu/seller_offers_page.dart';
 import 'package:flixbit/src/features/seller/seller_main_menu/seller_tournaments_page.dart';
-import 'package:flixbit/src/features/seller/seller_main_menu/seller_profile_page.dart' as seller_main;
+// import 'package:flixbit/src/features/seller/seller_main_menu/seller_profile_page.dart' as seller_main;
+import 'package:provider/provider.dart';
 
 import '../features/game_prediction/game_prediction_page.dart';
 import '../features/game_prediction/tournament_matches_page.dart';
@@ -223,7 +225,9 @@ final GoRouter appRouter = GoRouter(
           routes: <RouteBase>[
             GoRoute(
               path: RouterEnum.sellerMainProfileView.routeName,
-              builder: (BuildContext context, GoRouterState state) => const seller_main.SellerProfilePage(),
+              builder: (BuildContext context, GoRouterState state) => ProfilePage(),
+
+              // builder: (BuildContext context, GoRouterState state) => const seller_main.SellerProfilePage(),
             ),
           ],
         ),
@@ -243,11 +247,24 @@ final GoRouter appRouter = GoRouter(
 
     if (!loggedIn && !publicPaths.contains(goingTo)) {
       // Not logged in and trying to access a private route
+
       return RouterEnum.loginView.routeName;
     }
 
+    final provider = Provider.of<LinkedAccountsProvider>(context,listen: false);
+
     if (loggedIn && publicPaths.contains(goingTo)) {
       // Logged in and trying to access public route (e.g., login or welcome)
+      return provider.isSellerAccount
+          ? RouterEnum.sellerHomeView.routeName
+          : RouterEnum.homeView.routeName;
+    }
+
+    // Ensure main menu matches selected account at startup and navigation
+    if (loggedIn && provider.isSellerAccount && goingTo == RouterEnum.homeView.routeName) {
+      return RouterEnum.sellerHomeView.routeName;
+    }
+    if (loggedIn && !provider.isSellerAccount && goingTo == RouterEnum.sellerHomeView.routeName) {
       return RouterEnum.homeView.routeName;
     }
 

@@ -7,8 +7,12 @@ class LinkedAccountsProvider extends ChangeNotifier{
 
   bool get isSellerAccount => _isSellerAccount;
 
-  LinkedAccountsProvider(){
-    _initSelectedAccountType();
+  LinkedAccountsProvider({bool? initialIsSellerAccount}){
+    if (initialIsSellerAccount != null) {
+      _isSellerAccount = initialIsSellerAccount;
+    } else {
+      _initSelectedAccountType();
+    }
   }
 
   void _initSelectedAccountType() async{
