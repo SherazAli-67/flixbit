@@ -168,6 +168,113 @@ class SellerTournamentPage extends StatelessWidget {
                   _UpcomingGameTile(title: 'Team Gamma vs. Team Delta', subtitle: 'Oct 27, 2023 - 20:00'),
                 ],
               ),
+
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 15,
+                children: [
+                  Text('Update Game Scores', style: AppTextStyles.headingTextStyle3),
+                  _SectionCard(child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 15,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 8,
+                        children: [
+                          Text('Select Game', style: AppTextStyles.smallBoldTextStyle),
+                          _DarkInputField(hint: 'Select a game to update', isDropdown: true,),
+                        ],
+                      ),
+                      Row(
+                        spacing: 12,
+                        children: [
+                          Expanded(child: Column(
+                            spacing: 10,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Team Alpha Score', style: AppTextStyles.smallBoldTextStyle),
+                              _DarkInputField(hint: 'Enter score',),
+                            ],
+                          )),
+                          Expanded(child: Column(
+                            spacing: 10,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Team Beta Score', style: AppTextStyles.smallBoldTextStyle),
+                              _DarkInputField(hint: 'Enter score',),
+                            ],
+                          )),
+                        ],
+                      ),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: ElevatedButton.icon(
+                          onPressed: () {},
+                          icon: const Icon(Icons.refresh, color: Colors.white),
+                          label: Text('Update Scores', style: AppTextStyles.smallBoldTextStyle),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primaryColor,
+                            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                      ),
+                      Divider(color: AppColors.borderColor.withValues(alpha: 0.4)),
+                    ],
+                  ),),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 15,
+                children: [
+                  Text('Reward Management', style: AppTextStyles.headingTextStyle3),
+                  _SectionCard(child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 15,
+                    children: [
+
+                      Row(
+                        spacing: 12,
+                        children: [
+                          Expanded(child: Column(
+                            spacing: 10,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Winner Points', style: AppTextStyles.smallBoldTextStyle),
+                              _DarkInputField(hint: 'e.g 100',),
+                            ],
+                          )),
+                          Expanded(child: Column(
+                            spacing: 10,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Loser points', style: AppTextStyles.smallBoldTextStyle),
+                              _DarkInputField(hint: 'e.g 10',),
+                            ],
+                          )),
+                        ],
+                      ),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: ElevatedButton.icon(
+                          onPressed: () {},
+                          icon: const Icon(Icons.noise_aware, color: Colors.white),
+                          label: Text('Assign rewards', style: AppTextStyles.smallBoldTextStyle),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primaryColor.withValues(alpha: 0.12),
+                            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                      ),
+                      Divider(color: AppColors.borderColor.withValues(alpha: 0.4)),
+                    ],
+                  ),),
+                ],
+              ),
+
             ],
           ),
         ),
@@ -196,7 +303,8 @@ class _SectionCard extends StatelessWidget {
 
 class _DarkInputField extends StatelessWidget {
   final String hint;
-  const _DarkInputField({required this.hint});
+  final bool isDropdown;
+  const _DarkInputField({required this.hint, this.isDropdown = false});
 
   @override
   Widget build(BuildContext context) {
@@ -212,6 +320,7 @@ class _DarkInputField extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(color: AppColors.borderColor),
         ),
+        suffixIcon: isDropdown ? Icon(Icons.expand_more): null,
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(color: AppColors.primaryColor),
