@@ -38,4 +38,6 @@ class AppColors {
   static const completedStatusColor = Color(0xff34C759);
   static const searchBarBgColor = Color(0xff1e2a32);
   static const tournamentCardBgColor = Color(0xff2a3b45);
+  static const inputFieldBgColor = Color(0xff1e2a32);
+  static const selectionItemBgColor = Color(0xff2a3b45);
 }

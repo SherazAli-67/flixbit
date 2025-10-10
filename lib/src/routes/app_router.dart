@@ -7,6 +7,10 @@ import 'package:flixbit/src/features/main_menu/wallet_page/buy_flixbit_points_pa
 import 'package:flixbit/src/features/referral_page.dart';
 import 'package:flixbit/src/features/rewards_page.dart';
 import 'package:flixbit/src/features/seller/seller_main_menu/seller_video_ads_page.dart';
+import 'package:flixbit/src/features/seller/seller_profile_page.dart';
+import 'package:flixbit/src/features/seller/seller_push_notification_page.dart';
+import 'package:flixbit/src/features/seller/seller_qr_code_tracking_page.dart';
+import 'package:flixbit/src/features/seller/seller_referral_management.dart';
 import 'package:flixbit/src/features/subscription_plans_page.dart';
 import 'package:flixbit/src/features/video_ads/upload_video_ad_page.dart';
 import 'package:flixbit/src/features/wheel_of_fortune_page.dart';
@@ -151,6 +155,18 @@ final GoRouter appRouter = GoRouter(
       path: RouterEnum.linkedAccountsView.routeName,
       builder: (BuildContext context, GoRouterState state) => const LinkedAccountsPage(),
     ),
+    GoRoute(
+      path: RouterEnum.sellerQRCodeTrackingView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const SellerQRCodeTrackingPage(),
+    ),
+    GoRoute(
+      path: RouterEnum.sellerPushNotificationsView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const SellerPushNotificationPage(),
+    ),
+    GoRoute(
+      path: RouterEnum.sellerReferralManagementView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const SellerReferralManagement(),
+    ),
     // USER SHELL
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state, StatefulNavigationShell navigationShell) {
@@ -234,7 +250,7 @@ final GoRouter appRouter = GoRouter(
           routes: <RouteBase>[
             GoRoute(
               path: RouterEnum.sellerMainProfileView.routeName,
-              builder: (BuildContext context, GoRouterState state) => ProfilePage(),
+              builder: (BuildContext context, GoRouterState state) => SellerProfileSettingsPage(),
 
               // builder: (BuildContext context, GoRouterState state) => const seller_main.SellerProfilePage(),
             ),

@@ -7,9 +7,11 @@ import 'package:flixbit/src/providers/profile_provider.dart';
 import 'package:flixbit/src/res/app_colors.dart';
 import 'package:flixbit/src/res/app_icons.dart';
 import 'package:flixbit/src/res/apptextstyles.dart';
+import 'package:flixbit/src/routes/router_enum.dart';
 import 'package:flixbit/src/widgets/loading_widget.dart';
 import 'package:flixbit/src/widgets/primary_btn.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -23,7 +25,7 @@ class SellerDashboardPage extends StatelessWidget{
     return provider.loading
         ? LoadingWidget()
         : provider.isRegisteredAsSeller
-        ?  _buildSellerInfoWidget(provider.seller): _buildRegisterAsSellerWidget(context);
+        ?  _buildSellerInfoWidget(context, provider.seller): _buildRegisterAsSellerWidget(context);
   }
 
   _buildRegisterAsSellerWidget(BuildContext context) {
@@ -64,8 +66,9 @@ class SellerDashboardPage extends StatelessWidget{
     );
   }
 
-  _buildSellerInfoWidget(Seller? seller) {
+  _buildSellerInfoWidget(BuildContext context, Seller? seller) {
     return seller != null ? Scaffold(
+
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(15.0),
@@ -95,7 +98,7 @@ class SellerDashboardPage extends StatelessWidget{
                       Text("Your Unique QR Code", style: AppTextStyles.tileTitleTextStyle,),
                       Text("Display this QR code at your business location for customers to scan, and receive special notification", style: AppTextStyles.captionTextStyle, textAlign: TextAlign.center,),
 
-                      _buildQRImage(seller: seller),
+                      _buildQRImage(context, seller: seller),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: PrimaryBtn(btnText: "Print QR Code", icon: '', onTap: (){}),
@@ -153,7 +156,7 @@ class SellerDashboardPage extends StatelessWidget{
     );
   }
 
-  Widget _buildQRImage({required Seller seller}) {
+  Widget _buildQRImage(BuildContext context,{required Seller seller}) {
     final map = {
       'userID' : seller.id
     };

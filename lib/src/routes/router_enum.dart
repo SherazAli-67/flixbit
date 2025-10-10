@@ -42,7 +42,12 @@ enum RouterEnum {
   sellerOffersView('/seller_offers_view'),
   sellerVideoAdsView('/seller_video_ads_view'),
   sellerTournamentsView('/seller_tournaments_view'),
-  sellerMainProfileView('/seller_main_profile_view');
+  sellerMainProfileView('/seller_main_profile_view'),
+  sellerQRCodeTrackingView('/seller_qr_code_tracking_view'),
+  sellerPushNotificationsView('/seller_push_notification_view'),
+  sellerReferralManagementView('/seller_referral_management_view')
+
+  ;
 
   final String routeName;
 
