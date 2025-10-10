@@ -8,6 +8,7 @@ import 'package:flixbit/src/features/referral_page.dart';
 import 'package:flixbit/src/features/rewards_page.dart';
 import 'package:flixbit/src/features/seller/seller_main_menu/seller_video_ads_page.dart';
 import 'package:flixbit/src/features/subscription_plans_page.dart';
+import 'package:flixbit/src/features/video_ads/upload_video_ad_page.dart';
 import 'package:flixbit/src/features/wheel_of_fortune_page.dart';
 import 'package:flixbit/src/features/video_ads/video_ads_list_page.dart';
 import 'package:flixbit/src/models/video_ad.dart';
@@ -71,6 +72,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: RouterEnum.videoAdsView.routeName,
       builder: (BuildContext context, GoRouterState state) => const VideoAdsListPage(),
+    ),
+    GoRoute(
+      path: RouterEnum.uploadVideoAdView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const UploadVideoAdPage(),
     ),
     GoRoute(
       path: RouterEnum.videoDetailsView.routeName,
@@ -137,6 +142,10 @@ final GoRouter appRouter = GoRouter(
           reviewType: extra['reviewType'] as ReviewType? ?? ReviewType.seller,
         );
       },
+    ),
+    GoRoute(
+      path: RouterEnum.linkedAccountsView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const LinkedAccountsPage(),
     ),
     GoRoute(
       path: RouterEnum.linkedAccountsView.routeName,

@@ -30,4 +30,12 @@ class AppColors {
   static const darkBackground = Color(0xff0f1c22);
   static const primaryBlue = Color(0xff17a3eb);
   static const cardBackground = Color(0xff2a3b45);
+  static const uploadAreaColor = Color(0xff1e2a32);
+  static const borderColor = Color(0xff4a5568);
+  static const uploadTextColor = Color(0xff4a9eff);
+  static const liveStatusColor = Color(0xffFF3B30);
+  static const upcomingStatusColor = Color(0xffFF9500);
+  static const completedStatusColor = Color(0xff34C759);
+  static const searchBarBgColor = Color(0xff1e2a32);
+  static const tournamentCardBgColor = Color(0xff2a3b45);
 }

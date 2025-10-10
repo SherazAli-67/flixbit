@@ -13,6 +13,8 @@ enum RouterEnum {
   offersView('/offers_view'),
   referralView('/referral_view'),
   videoAdsView('/video_ads_view'),
+
+  uploadVideoAdView('/upload_video_ad_view'),
   videoDetailsView('/video_details_view'),
   wheelOfFortuneView('/wheel_of_fortune_view'),
   gamePredictionView('/game_predication_view'),
@@ -41,7 +43,6 @@ enum RouterEnum {
   sellerVideoAdsView('/seller_video_ads_view'),
   sellerTournamentsView('/seller_tournaments_view'),
   sellerMainProfileView('/seller_main_profile_view');
-
 
   final String routeName;
 

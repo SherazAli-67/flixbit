@@ -1,4 +1,6 @@
+import 'package:flixbit/src/routes/router_enum.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/apptextstyles.dart';
 
@@ -35,27 +37,30 @@ class SellerVideoAdsPage extends StatelessWidget {
             const SizedBox(height: 16),
             
             // Upload Video Button
-            Container(
-              width: double.infinity,
-              height: 60,
-              decoration: BoxDecoration(
-                color: AppColors.primaryBlue,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  const SizedBox(width: 16),
-                  const Icon(
-                    Icons.upload_file,
-                    color: AppColors.whiteColor,
-                    size: 24,
-                  ),
-                  const SizedBox(width: 12),
-                  const Text(
-                    'Upload Video',
-                    style: AppTextStyles.whiteBold16,
-                  ),
-                ],
+            GestureDetector(
+              onTap: ()=> context.push(RouterEnum.uploadVideoAdView.routeName),
+              child: Container(
+                width: double.infinity,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: AppColors.primaryBlue,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    const SizedBox(width: 16),
+                    const Icon(
+                      Icons.upload_file,
+                      color: AppColors.whiteColor,
+                      size: 24,
+                    ),
+                    const SizedBox(width: 12),
+                    const Text(
+                      'Upload Video',
+                      style: AppTextStyles.whiteBold16,
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 12),
@@ -238,3 +243,8 @@ class SellerVideoAdsPage extends StatelessWidget {
     );
   }
 }
+
+/*
+*   Create backend control for sub-admin, to create tournaments and groups of the tournaments and update the scores of the games, with the rewarding system.
+*   Sub-Admin Tournament & Group Management: This screen would enable sub-admins to create and manage tournaments, organize groups within tournaments, and update game scores, all integrated with the rewarding system.
+* */
