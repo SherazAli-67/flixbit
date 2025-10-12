@@ -2,9 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flixbit/src/res/app_icons.dart';
 import 'package:flixbit/src/routes/router_enum.dart';
 import 'package:flutter/material.dart';
+import '../../../l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import '../../res/app_colors.dart';
 import '../../res/apptextstyles.dart';
+import '../language_settings_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -18,6 +20,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       backgroundColor: AppColors.darkBgColor,
       appBar: AppBar(
@@ -29,7 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
           icon: Icon(Icons.arrow_back_ios_new, color: AppColors.whiteColor),
           onPressed: () => Navigator.of(context).maybePop(),
         ),
-        title: Text('Settings', style: AppTextStyles.headingTextStyle3),
+        title: Text(l10n.settings, style: AppTextStyles.headingTextStyle3),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -50,7 +54,7 @@ class _ProfilePageState extends State<ProfilePage> {
               _buildSectionTitleWidget(
                   title: 'ACCOUNT',
                   children: [
-                    _buildSectionItemWidget(title: 'Edit Profile', onTap: (){}),
+                    _buildSectionItemWidget(title: l10n.editProfile, onTap: (){}),
                     _buildSectionItemWidget(title: 'Change Password', onTap: (){}),
                     _buildSectionItemWidget(title: 'Linked Accounts', onTap: _onLinkedAccountsTap),
                   ]),
@@ -58,8 +62,18 @@ class _ProfilePageState extends State<ProfilePage> {
               _buildSectionTitleWidget(
                   title: 'PREFERENCES',
                   children: [
-                    _buildSectionItemWidget(title: 'Notifications', onTap: () {}),
-                    _buildSectionItemWidget(title: 'Language', onTap: () {}, trailingText: 'English'),
+                    _buildSectionItemWidget(title: l10n.notifications, onTap: () {}),
+                    _buildSectionItemWidget(
+                      title: l10n.language, 
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const LanguageSettingsPage(),
+                          ),
+                        );
+                      }, 
+                      trailingText: l10n.english
+                    ),
                     _SwitchTile(
                         title: 'Dark Theme',
                         value: isDarkTheme,

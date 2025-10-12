@@ -6,10 +6,12 @@ import 'package:flixbit/src/widgets/apptextfield_widget.dart';
 import 'package:flixbit/src/widgets/primary_btn.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import '../../../l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../res/app_icons.dart';
+import '../../widgets/language_switcher.dart';
 
 class LoginPage extends StatefulWidget{
   const LoginPage({super.key});
@@ -24,7 +26,16 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          const LanguageToggleButton(),
+        ],
+      ),
       body: SafeArea(child: SingleChildScrollView(
         child: Column(
           spacing: 20,
@@ -35,36 +46,35 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 spacing: 10,
                 children: [
-                  AppTextField(textController: _emailController, prefixIcon: AppIcons.icEmail, hintText: 'Enter your email', titleText: 'Email address', textInputType: TextInputType.emailAddress,),
-                  AppTextField(textController: _passwordController, prefixIcon: AppIcons.icPassword, hintText: 'Enter your password', titleText: 'Password', isPassword: true
+                  AppTextField(textController: _emailController, prefixIcon: AppIcons.icEmail, hintText: l10n.email, titleText: l10n.email, textInputType: TextInputType.emailAddress,),
+                  AppTextField(textController: _passwordController, prefixIcon: AppIcons.icPassword, hintText: l10n.password, titleText: l10n.password, isPassword: true
                     ,),
                   Align(
                     alignment: Alignment.topRight,
-                    child: TextButton(onPressed: (){}, child: Text("Forget Password?")),
+                    child: TextButton(onPressed: (){}, child: Text(l10n.forgotPassword)),
                   ),
                   const SizedBox(height: 20,),
                   Consumer<AuthenticationProvider>(
                     builder: (context, authProvider, child) {
                       return PrimaryBtn(
-                        btnText: authProvider.isLoading ? 'Signing In...' : 'Login',
+                        btnText: authProvider.isLoading ? l10n.loading : l10n.login,
                         icon: '',
                         onTap: authProvider.isLoading ? () {} : () => _onLoginTap(),
                       );
                     },
                   ),
                   RichText(
-        
                       text: TextSpan(
                     children: [
                       TextSpan(
-                        text: "Don't have an account? ",
+                        text: "${l10n.dontHaveAccount} ",
                         style: AppTextStyles.smallTextStyle
                       ),
                       TextSpan(
                         recognizer: TapGestureRecognizer()..onTap = (){
                           context.push(RouterEnum.signupView.routeName);
                         },
-                          text: "Create Here",
+                          text: l10n.signup,
                           style: AppTextStyles.smallTextStyle.copyWith(color: AppColors.primaryColor)
                       )
                     ]

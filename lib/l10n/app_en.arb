@@ -1,0 +1,252 @@
+{
+  "@@locale": "en",
+  "appTitle": "Flixbit",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  
+  "welcome": "Welcome",
+  "@welcome": {
+    "description": "Welcome text"
+  },
+  "login": "Login",
+  "@login": {
+    "description": "Login button text"
+  },
+  "signup": "Sign Up",
+  "@signup": {
+    "description": "Sign up button text"
+  },
+  "email": "Email",
+  "@email": {
+    "description": "Email field label"
+  },
+  "password": "Password",
+  "@password": {
+    "description": "Password field label"
+  },
+  "name": "Name",
+  "@name": {
+    "description": "Name field label"
+  },
+  "confirmPassword": "Confirm Password",
+  "@confirmPassword": {
+    "description": "Confirm password field label"
+  },
+  "forgotPassword": "Forgot Password?",
+  "@forgotPassword": {
+    "description": "Forgot password link text"
+  },
+  "dontHaveAccount": "Don't have an account?",
+  "@dontHaveAccount": {
+    "description": "Text for users who don't have account"
+  },
+  "alreadyHaveAccount": "Already have an account?",
+  "@alreadyHaveAccount": {
+    "description": "Text for users who already have account"
+  },
+  
+  "dashboard": "Dashboard",
+  "@dashboard": {
+    "description": "Dashboard page title"
+  },
+  "quickAccess": "Quick Access",
+  "@quickAccess": {
+    "description": "Quick access section title"
+  },
+  "offers": "Offers",
+  "@offers": {
+    "description": "Offers section"
+  },
+  "gifts": "Gifts",
+  "@gifts": {
+    "description": "Gifts section"
+  },
+  "rewards": "Rewards",
+  "@rewards": {
+    "description": "Rewards section"
+  },
+  "notifications": "Notifications",
+  "@notifications": {
+    "description": "Notifications section"
+  },
+  
+  "gamePredictions": "Game Predictions",
+  "@gamePredictions": {
+    "description": "Game predictions page title"
+  },
+  "predictMatchOutcomes": "Predict match outcomes and win prizes",
+  "@predictMatchOutcomes": {
+    "description": "Game predictions description"
+  },
+  "activeTournaments": "Active Tournaments",
+  "@activeTournaments": {
+    "description": "Active tournaments section"
+  },
+  "startPredicting": "Start Predicting",
+  "@startPredicting": {
+    "description": "Start predicting button"
+  },
+  "viewMatches": "View Matches",
+  "@viewMatches": {
+    "description": "View matches button"
+  },
+  "qualificationProgress": "Qualification Progress",
+  "@qualificationProgress": {
+    "description": "Qualification progress label"
+  },
+  "qualifiedForFinalDraw": "Qualified for Final Draw!",
+  "@qualifiedForFinalDraw": {
+    "description": "Qualified status message"
+  },
+  "accuracy": "Accuracy",
+  "@accuracy": {
+    "description": "Accuracy label"
+  },
+  "points": "Points",
+  "@points": {
+    "description": "Points label"
+  },
+  "predictions": "Predictions",
+  "@predictions": {
+    "description": "Predictions label"
+  },
+  
+  "qrScanner": "QR Scanner",
+  "@qrScanner": {
+    "description": "QR Scanner page title"
+  },
+  "scanQRCode": "Scan QR Code",
+  "@scanQRCode": {
+    "description": "Scan QR code instruction"
+  },
+  
+  "wallet": "Wallet",
+  "@wallet": {
+    "description": "Wallet page title"
+  },
+  "flixbitBalance": "Flixbit Balance",
+  "@flixbitBalance": {
+    "description": "Flixbit balance label"
+  },
+  "buyFlixbitPoints": "Buy Flixbit Points",
+  "@buyFlixbitPoints": {
+    "description": "Buy Flixbit points button"
+  },
+  
+  "profile": "Profile",
+  "@profile": {
+    "description": "Profile page title"
+  },
+  "editProfile": "Edit Profile",
+  "@editProfile": {
+    "description": "Edit profile button"
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings button"
+  },
+  "logout": "Logout",
+  "@logout": {
+    "description": "Logout button"
+  },
+  
+  "referrals": "Referrals",
+  "@referrals": {
+    "description": "Referrals page title"
+  },
+  "inviteFriends": "Invite friends and earn",
+  "@inviteFriends": {
+    "description": "Referrals description"
+  },
+  "shareReferralCode": "Share Referral Code",
+  "@shareReferralCode": {
+    "description": "Share referral code button"
+  },
+  
+  "wheelOfFortune": "Wheel of Fortune",
+  "@wheelOfFortune": {
+    "description": "Wheel of Fortune page title"
+  },
+  "spinToWin": "Spin to win",
+  "@spinToWin": {
+    "description": "Wheel of Fortune description"
+  },
+  
+  "subscriptionPackages": "Subscription Packages",
+  "@subscriptionPackages": {
+    "description": "Subscription packages page title"
+  },
+  "upgradeForMoreFeatures": "Upgrade for more features",
+  "@upgradeForMoreFeatures": {
+    "description": "Subscription packages description"
+  },
+  
+  "coupons": "Coupons",
+  "@coupons": {
+    "description": "Coupons section"
+  },
+  "viewCoupons": "View coupons",
+  "@viewCoupons": {
+    "description": "View coupons description"
+  },
+  
+  "sellerDashboard": "Seller Dashboard",
+  "@sellerDashboard": {
+    "description": "Seller dashboard page title"
+  },
+  "sellerOffers": "Offers",
+  "@sellerOffers": {
+    "description": "Seller offers page title"
+  },
+  "videoAds": "Video Ads",
+  "@videoAds": {
+    "description": "Video ads page title"
+  },
+  "tournaments": "Tournaments",
+  "@tournaments": {
+    "description": "Tournaments page title"
+  },
+  
+  "language": "Language",
+  "@language": {
+    "description": "Language setting"
+  },
+  "english": "English",
+  "@english": {
+    "description": "English language option"
+  },
+  "arabic": "العربية",
+  "@arabic": {
+    "description": "Arabic language option"
+  },
+  "changeLanguage": "Change Language",
+  "@changeLanguage": {
+    "description": "Change language button"
+  },
+  
+  "save": "Save",
+  "@save": {
+    "description": "Save button"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button"
+  },
+  "ok": "OK",
+  "@ok": {
+    "description": "OK button"
+  },
+  "loading": "Loading...",
+  "@loading": {
+    "description": "Loading text"
+  },
+  "error": "Error",
+  "@error": {
+    "description": "Error title"
+  },
+  "success": "Success",
+  "@success": {
+    "description": "Success title"
+  }
+}

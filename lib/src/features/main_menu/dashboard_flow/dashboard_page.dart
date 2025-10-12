@@ -3,13 +3,17 @@ import 'package:flixbit/src/routes/router_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flixbit/src/models/video_ad.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../res/app_colors.dart';
+import '../../../widgets/language_switcher.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       backgroundColor: AppColors.darkBgColor,
       body: SafeArea(
@@ -21,20 +25,20 @@ class DashboardPage extends StatelessWidget {
               spacing: 24,
               children: [
                 // Top Bar
-                _buildTopBar(),
+                _buildTopBar(context, l10n),
 
                 // Media Section
                 _buildMediaSection(context),
                 
                 // Quick Access Section
-                _buildQuickAccessSection(context),
+                _buildQuickAccessSection(context, l10n),
                 
                 // List Cards Section
-                _buildListCardsSection(context),
+                _buildListCardsSection(context, l10n),
 
 
                 // Bottom Cards Section
-                _buildBottomCardsSection(context),
+                _buildBottomCardsSection(context, l10n),
               ],
             ),
           ),
@@ -43,26 +47,31 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTopBar() {
+  Widget _buildTopBar(BuildContext context, AppLocalizations l10n) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Text(
-          'Dashboard',
+        Text(
+          l10n.dashboard,
           style: AppTextStyles.headingTextStyle3
         ),
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: AppColors.primaryColor.withValues(alpha: 0.2),
-            // border: Border.all(color: AppColors.primaryColor, width: 1),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            Icons.settings,
-            color: AppColors.primaryColor,
-            size: 20,
-          ),
+        Row(
+          children: [
+            const LanguageToggleButton(),
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.primaryColor.withValues(alpha: 0.2),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.settings,
+                color: AppColors.primaryColor,
+                size: 20,
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -124,27 +133,27 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickAccessSection(BuildContext context) {
+  Widget _buildQuickAccessSection(BuildContext context, AppLocalizations l10n) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,
       children: [
-        const Text(
-          'Quick Access',
+        Text(
+          l10n.quickAccess,
           style: AppTextStyles.subHeadingTextStyle
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           spacing: 5,
           children: [
-            _buildQuickAccessButton(Icons.card_giftcard, 'Offers', (){
+            _buildQuickAccessButton(Icons.card_giftcard, l10n.offers, (){
               context.push(RouterEnum.offersView.routeName);
             }),
-            _buildQuickAccessButton(Icons.wb_sunny, 'Gifts', (){}),
-            _buildQuickAccessButton(Icons.account_tree, 'Rewards', (){
+            _buildQuickAccessButton(Icons.wb_sunny, l10n.gifts, (){}),
+            _buildQuickAccessButton(Icons.account_tree, l10n.rewards, (){
               context.push(RouterEnum.rewardsView.routeName);
             }),
-            _buildQuickAccessButton(Icons.notifications, 'Notifications', (){}),
+            _buildQuickAccessButton(Icons.notifications, l10n.notifications, (){}),
           ],
         ),
       ],
@@ -183,20 +192,17 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  Widget _buildListCardsSection(BuildContext context) {
+  Widget _buildListCardsSection(BuildContext context, AppLocalizations l10n) {
     return Column(
       spacing: 20,
       children: [
-        _buildListCard(Icons.sports_soccer, 'Game Predictions', 'Predict matches and win prizes', (){
+        _buildListCard(Icons.sports_soccer, l10n.gamePredictions, l10n.predictMatchOutcomes, (){
           context.push(RouterEnum.gamePredictionView.routeName);
         }),
-        _buildListCard(Icons.stars, 'Subscription Packages', 'Upgrade for more features', (){
+        _buildListCard(Icons.stars, l10n.subscriptionPackages, l10n.upgradeForMoreFeatures, (){
           context.push(RouterEnum.subscriptionView.routeName);
         }),
-        /*_buildListCard(Icons.store, 'My Sellers', 'Manage your followed sellers', (){
-          context.push(RouterEnum.mySellersView.routeName); // New route
-        }),*/
-        _buildListCard(Icons.people, 'Referrals', 'Invite friends and earn', (){
+        _buildListCard(Icons.people, l10n.referrals, l10n.inviteFriends, (){
           context.push(RouterEnum.referralView.routeName);
         }),
       ],
@@ -251,15 +257,15 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomCardsSection(BuildContext context) {
+  Widget _buildBottomCardsSection(BuildContext context, AppLocalizations l10n) {
     return Row(
       spacing: 10,
       children: [
         Expanded(
-          child: _buildBottomCard(Icons.confirmation_number, 'Coupons', 'View coupons', (){}),
+          child: _buildBottomCard(Icons.confirmation_number, l10n.coupons, l10n.viewCoupons, (){}),
         ),
         Expanded(
-          child: _buildBottomCard(Icons.casino, 'Wheel of Fortune', 'Spin to win', (){
+          child: _buildBottomCard(Icons.casino, l10n.wheelOfFortune, l10n.spinToWin, (){
             context.push(RouterEnum.wheelOfFortuneView.routeName);
           }),
         ),

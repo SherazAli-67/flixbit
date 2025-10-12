@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flixbit/src/providers/authentication_provider.dart';
 import 'package:flixbit/src/providers/linked_accounts_provider.dart';
+import 'package:flixbit/src/providers/locale_provider.dart';
 import 'package:flixbit/src/providers/profile_provider.dart';
 import 'package:flixbit/src/providers/tab_change_provider.dart';
 import 'package:flixbit/src/providers/reviews_provider.dart';
@@ -8,8 +9,10 @@ import 'package:flixbit/src/res/app_colors.dart';
 import 'package:flixbit/src/res/app_constants.dart';
 import 'package:flixbit/src/routes/app_router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +22,7 @@ void main() async {
 
   runApp(MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_)=> LocaleProvider()),
         ChangeNotifierProvider(create: (_)=> MainMenuTabChangeProvider()),
         ChangeNotifierProvider(create: (_)=> AuthenticationProvider()),
         ChangeNotifierProvider(create: (_)=> ReviewsProvider()),
@@ -34,9 +38,25 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: AppConstants.appTitle,
-      themeMode: ThemeMode.dark,
+    return Consumer<LocaleProvider>(
+      builder: (context, localeProvider, child) {
+        return MaterialApp.router(
+          title: AppConstants.appTitle,
+          themeMode: ThemeMode.dark,
+          locale: localeProvider.currentLocale,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: LocaleProvider.supportedLocales,
+          builder: (context, child) {
+            return Directionality(
+              textDirection: localeProvider.isArabic ? TextDirection.rtl : TextDirection.ltr,
+              child: child!,
+            );
+          },
       theme: ThemeData(
         brightness: Brightness.dark,
         fontFamily: AppConstants.appFontFamily,
@@ -90,6 +110,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       routerConfig: appRouter,
+        );
+      },
     );
   }
 }
