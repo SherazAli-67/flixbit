@@ -7,6 +7,7 @@ import '../../res/app_colors.dart';
 import '../../res/apptextstyles.dart';
 import '../../routes/router_enum.dart';
 import '../../service/tournament_service.dart';
+import '../../../l10n/app_localizations.dart';
 
 class GamePredicationPage extends StatefulWidget {
   const GamePredicationPage({super.key});
@@ -34,6 +35,8 @@ class _GamePredicationPageState extends State<GamePredicationPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       backgroundColor: AppColors.darkBgColor,
       body: SafeArea(
@@ -47,12 +50,12 @@ class _GamePredicationPageState extends State<GamePredicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 8,
                   children: [
-                    const Text(
-                      'Game Predictions',
+                    Text(
+                      l10n.gamePredictions,
                       style: AppTextStyles.headingTextStyle3,
                     ),
                     Text(
-                      'Predict match outcomes and win prizes',
+                      l10n.predictMatchOutcomes,
                       style: AppTextStyles.bodyTextStyle.copyWith(
                         color: AppColors.lightGreyColor,
                       ),

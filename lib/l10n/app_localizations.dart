@@ -170,6 +170,24 @@ abstract class AppLocalizations {
   /// **'Dashboard'**
   String get dashboard;
 
+  /// No description provided for @scanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Scanner'**
+  String get scanner;
+
+  /// No description provided for @wallet.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet'**
+  String get wallet;
+
+  /// Profile page title
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profile;
+
   /// Quick access section title
   ///
   /// In en, this message translates to:
@@ -272,12 +290,6 @@ abstract class AppLocalizations {
   /// **'Scan QR Code'**
   String get scanQRCode;
 
-  /// Wallet page title
-  ///
-  /// In en, this message translates to:
-  /// **'Wallet'**
-  String get wallet;
-
   /// Flixbit balance label
   ///
   /// In en, this message translates to:
@@ -287,14 +299,26 @@ abstract class AppLocalizations {
   /// Buy Flixbit points button
   ///
   /// In en, this message translates to:
+  /// **'Buy'**
+  String get buy;
+
+  /// Sell Flixbit points button
+  ///
+  /// In en, this message translates to:
+  /// **'Sell'**
+  String get sell;
+
+  /// Buy Flixbit points button
+  ///
+  /// In en, this message translates to:
   /// **'Buy Flixbit Points'**
   String get buyFlixbitPoints;
 
-  /// Profile page title
+  /// No description provided for @transactions.
   ///
   /// In en, this message translates to:
-  /// **'Profile'**
-  String get profile;
+  /// **'Transactions'**
+  String get transactions;
 
   /// Edit profile button
   ///
@@ -451,6 +475,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Success'**
   String get success;
+
+  /// No description provided for @soldFlixbit.
+  ///
+  /// In en, this message translates to:
+  /// **'Sold Flixbits'**
+  String get soldFlixbit;
+
+  /// No description provided for @boughtFlixbit.
+  ///
+  /// In en, this message translates to:
+  /// **'Bought Flixbits'**
+  String get boughtFlixbit;
+
+  /// No description provided for @redeemPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Redeem Points'**
+  String get redeemPoints;
+
+  /// No description provided for @account.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get account;
+
+  /// No description provided for @changePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Password'**
+  String get changePassword;
+
+  /// No description provided for @linkedAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked Accounts'**
+  String get linkedAccounts;
+
+  /// No description provided for @preferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get preferences;
+
+  /// No description provided for @darkTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark Theme'**
+  String get darkTheme;
+
+  /// No description provided for @support.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get support;
+
+  /// No description provided for @helpCenter.
+  ///
+  /// In en, this message translates to:
+  /// **'Help Center'**
+  String get helpCenter;
+
+  /// No description provided for @contactUs.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Us'**
+  String get contactUs;
+
+  /// No description provided for @privacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacyPolicy;
 }
 
 class _AppLocalizationsDelegate

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/apptextstyles.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class SellerOffersPage extends StatefulWidget {
   const SellerOffersPage({super.key});
@@ -15,6 +16,8 @@ class _SellerOffersPageState extends State<SellerOffersPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       backgroundColor: AppColors.darkBgColor,
       body: SafeArea(
@@ -33,9 +36,9 @@ class _SellerOffersPageState extends State<SellerOffersPage> {
                       size: 20,
                     ),
                   ),
-                  const Expanded(
+                  Expanded(
                     child: Text(
-                      'Offers',
+                      l10n.offers,
                       style: AppTextStyles.headingTextStyle3,
                       textAlign: TextAlign.center,
                     ),

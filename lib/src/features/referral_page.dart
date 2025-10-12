@@ -1,6 +1,7 @@
 import 'package:flixbit/src/res/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../l10n/app_localizations.dart';
 import '../res/app_colors.dart';
 import '../res/apptextstyles.dart';
 
@@ -9,6 +10,8 @@ class ReferralPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       backgroundColor: AppColors.darkBgColor,
       body: SafeArea(
@@ -18,19 +21,19 @@ class ReferralPage extends StatelessWidget {
             spacing: 24,
             children: [
               // Header
-              _buildHeader(context),
+              _buildHeader(context, l10n),
               
               // Main Illustration Card
-              _buildIllustrationCard(),
+              _buildIllustrationCard(l10n),
               
               // Invite and Earn Rewards Section
-              _buildInviteSection(),
+              _buildInviteSection(l10n),
               
               // Share Your Referral Link Section
-              _buildShareSection(),
+              _buildShareSection(l10n),
               
               // Referral Status Section
-              _buildReferralStatusSection(),
+              _buildReferralStatusSection(l10n),
             ],
           ),
         ),
@@ -38,7 +41,7 @@ class ReferralPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, AppLocalizations l10n) {
     return Row(
       children: [
         IconButton(
@@ -49,9 +52,9 @@ class ReferralPage extends StatelessWidget {
             size: 24,
           ),
         ),
-        const Expanded(
+        Expanded(
           child: Text(
-            'Invite Friends',
+            l10n.referrals,
             textAlign: TextAlign.center,
             style: AppTextStyles.subHeadingTextStyle,
           ),
@@ -61,18 +64,18 @@ class ReferralPage extends StatelessWidget {
     );
   }
 
-  Widget _buildIllustrationCard() {
+  Widget _buildIllustrationCard(AppLocalizations l10n) {
     return ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: Image.asset(AppIcons.referralPageImg, fit: BoxFit.cover,));
   }
 
-  Widget _buildInviteSection() {
+  Widget _buildInviteSection(AppLocalizations l10n) {
     return Column(
       spacing: 12,
       children: [
-        const Text(
-          'Invite your friends and earn rewards',
+         Text(
+          l10n.inviteFriends,
           textAlign: TextAlign.center,
           style: AppTextStyles.headingTextStyle3,
         ),
@@ -87,7 +90,7 @@ class ReferralPage extends StatelessWidget {
     );
   }
 
-  Widget _buildShareSection() {
+  Widget _buildShareSection(AppLocalizations l10n) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,
@@ -154,7 +157,7 @@ class ReferralPage extends StatelessWidget {
     );
   }
 
-  Widget _buildReferralStatusSection() {
+  Widget _buildReferralStatusSection(AppLocalizations l10n) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,

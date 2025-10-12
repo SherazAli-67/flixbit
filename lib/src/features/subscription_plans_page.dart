@@ -1,12 +1,15 @@
 import 'package:flixbit/src/res/apptextstyles.dart';
 import 'package:flutter/material.dart';
 import '../res/app_colors.dart';
+import '../../../l10n/app_localizations.dart';
 
 class SubscriptionPlansPage extends StatelessWidget {
   const SubscriptionPlansPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       backgroundColor: AppColors.darkBgColor,
       body: SafeArea(
@@ -16,7 +19,7 @@ class SubscriptionPlansPage extends StatelessWidget {
             spacing: 26,
             children: [
               // Header
-              _buildHeader(context),
+              _buildHeader(context, l10n),
               
               // Subscription Plans
               Column(
@@ -67,7 +70,7 @@ class SubscriptionPlansPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, AppLocalizations l10n) {
     return Row(
       children: [
         IconButton(
@@ -78,11 +81,11 @@ class SubscriptionPlansPage extends StatelessWidget {
             size: 24,
           ),
         ),
-        const Expanded(
+        Expanded(
           child: Text(
-            'Subscription Plans',
+            l10n.subscriptionPackages,
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w700,
               color: AppColors.whiteColor,

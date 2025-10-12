@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flixbit/l10n/app_localizations.dart';
 import 'package:flixbit/src/res/app_icons.dart';
 import 'package:flixbit/src/routes/router_enum.dart';
 import 'package:flixbit/src/widgets/primary_btn.dart';
@@ -22,8 +23,8 @@ class WalletPage extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          'Wallet',
+        title:  Text(
+          AppLocalizations.of(context)!.wallet,
           style: AppTextStyles.headingTextStyle3,
         ),
         centerTitle: true,
@@ -76,7 +77,7 @@ class WalletPage extends StatelessWidget {
 
                       // Balance label
                       Text(
-                        'Flixbit Balance',
+                        AppLocalizations.of(context)!.flixbitBalance,
                         style: AppTextStyles.bodyTextStyle.copyWith(
                           color: AppColors.lightGreyColor,
                         ),
@@ -100,14 +101,13 @@ class WalletPage extends StatelessWidget {
                       spacing: 16,
                       children: [
                         Expanded(
-                          child: PrimaryBtn(btnText: "Buy", icon: '', onTap: (){
-                            debugPrint("On tap");
+                          child: PrimaryBtn(btnText: AppLocalizations.of(context)!.buy, icon: '', onTap: (){
                             context.push(RouterEnum.buyFlixbitPointsView.routeName);
                           }, borderRadius: 20,),
                         ),
 
                         Expanded(
-                          child: PrimaryBtn(btnText: "Sell", icon: '', onTap: (){}, borderRadius: 20, bgColor: AppColors.primaryColor.withValues(alpha: 0.12),),
+                          child: PrimaryBtn(btnText: AppLocalizations.of(context)!.sell, icon: '', onTap: (){}, borderRadius: 20, bgColor: AppColors.primaryColor.withValues(alpha: 0.12),),
                         ),
                       ],
                     ),
@@ -125,8 +125,8 @@ class WalletPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 10,
                   children: [
-                    const Text(
-                      'Transactions',
+                     Text(
+                       AppLocalizations.of(context)!.transactions,
                       style: AppTextStyles.subHeadingTextStyle,
                     ),
 
@@ -144,42 +144,42 @@ class WalletPage extends StatelessWidget {
                     final transactions = [
                       {
                         'icon': Icons.trending_up,
-                        'title': 'Sold Flixbits',
+                        'title': AppLocalizations.of(context)!.soldFlixbit,
                         'date': '2024-03-15',
                         'amount': '-500',
                         'isPositive': false,
                       },
                       {
                         'icon': Icons.trending_down,
-                        'title': 'Bought Flixbits',
+                        'title': AppLocalizations.of(context)!.boughtFlixbit,
                         'date': '2024-03-10',
                         'amount': '+1000',
                         'isPositive': true,
                       },
                       {
                         'icon': Icons.card_giftcard,
-                        'title': 'Redeemed Points',
+                        'title': AppLocalizations.of(context)!.redeemPoints,
                         'date': '2024-03-05',
                         'amount': '-250',
                         'isPositive': false,
                       },
                       {
                         'icon': Icons.trending_up,
-                        'title': 'Sold Flixbits',
+                        'title': AppLocalizations.of(context)!.soldFlixbit,
                         'date': '2024-02-28',
                         'amount': '-750',
                         'isPositive': false,
                       },
                       {
                         'icon': Icons.trending_down,
-                        'title': 'Bought Flixbits',
+                        'title': AppLocalizations.of(context)!.boughtFlixbit,
                         'date': '2024-02-25',
                         'amount': '+2000',
                         'isPositive': true,
                       },
                       {
                         'icon': Icons.card_giftcard,
-                        'title': 'Redeemed Points',
+                        'title': AppLocalizations.of(context)!.redeemPoints,
                         'date': '2024-02-20',
                         'amount': '-100',
                         'isPositive': false,

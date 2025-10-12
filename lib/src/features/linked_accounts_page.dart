@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import '../res/app_colors.dart';
 import '../res/apptextstyles.dart';
 import '../routes/router_enum.dart';
+import '../../../l10n/app_localizations.dart';
 
 class LinkedAccountsPage extends StatelessWidget{
   const LinkedAccountsPage({super.key});
@@ -16,6 +17,7 @@ class LinkedAccountsPage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<LinkedAccountsProvider>(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: AppColors.darkBgColor,
@@ -28,7 +30,7 @@ class LinkedAccountsPage extends StatelessWidget{
           icon: Icon(Icons.arrow_back_ios_new, color: AppColors.whiteColor),
           onPressed: () => Navigator.of(context).maybePop(),
         ),
-        title: Text('Linked Accounts', style: AppTextStyles.headingTextStyle3),
+        title: Text(l10n.linkedAccounts, style: AppTextStyles.headingTextStyle3),
       ),
       body: SafeArea(child: SingleChildScrollView(
         padding: const EdgeInsets.all(15.0),

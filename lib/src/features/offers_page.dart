@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import '../res/app_colors.dart';
 import '../res/apptextstyles.dart';
+import '../../../l10n/app_localizations.dart';
 
 class OffersPage extends StatelessWidget {
   const OffersPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       backgroundColor: AppColors.darkBgColor,
       body: SafeArea(
@@ -16,13 +19,13 @@ class OffersPage extends StatelessWidget {
             spacing: 24,
             children: [
               // Header
-              _buildHeader(context),
+              _buildHeader(context, l10n),
               
               // Featured Offers Section
-              _buildFeaturedOffersSection(),
+              _buildFeaturedOffersSection(l10n),
               
               // Nearby Offers Section
-              _buildNearbyOffersSection(),
+              _buildNearbyOffersSection(l10n),
             ],
           ),
         ),
@@ -30,7 +33,7 @@ class OffersPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, AppLocalizations l10n) {
     return Row(
       children: [
         IconButton(
@@ -41,9 +44,9 @@ class OffersPage extends StatelessWidget {
             size: 24,
           ),
         ),
-        const Expanded(
+        Expanded(
           child: Text(
-            'Offers',
+            l10n.offers,
             textAlign: TextAlign.center,
             style: AppTextStyles.subHeadingTextStyle,
           ),
@@ -53,13 +56,13 @@ class OffersPage extends StatelessWidget {
     );
   }
 
-  Widget _buildFeaturedOffersSection() {
+  Widget _buildFeaturedOffersSection(AppLocalizations l10n) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,
       children: [
-        const Text(
-          'Featured Offers',
+        Text(
+          l10n.offers,
           style: AppTextStyles.subHeadingTextStyle,
         ),
         SizedBox(
@@ -211,13 +214,13 @@ class OffersPage extends StatelessWidget {
     }
   }
 
-  Widget _buildNearbyOffersSection() {
+  Widget _buildNearbyOffersSection(AppLocalizations l10n) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,
       children: [
-        const Text(
-          'Nearby Offers',
+        Text(
+          l10n.offers,
           style: AppTextStyles.subHeadingTextStyle,
         ),
         Column(

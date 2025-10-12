@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../res/app_colors.dart';
 import '../res/apptextstyles.dart';
+import '../../../l10n/app_localizations.dart';
 
 class RewardsPage extends StatefulWidget {
   const RewardsPage({super.key});
@@ -14,6 +15,8 @@ class RewardsPage extends StatefulWidget {
 class _RewardsPageState extends State<RewardsPage> {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       backgroundColor: AppColors.darkBgColor,
       body: SafeArea(
@@ -23,13 +26,13 @@ class _RewardsPageState extends State<RewardsPage> {
             spacing: 26,
             children: [
               // Header
-              _buildHeader(context),
+              _buildHeader(context, l10n),
 
               // Available Rewards Section
-              _buildAvailableRewardsSection(),
+              _buildAvailableRewardsSection(l10n),
 
               // Claimed Rewards Section
-              _buildClaimedRewardsSection(),
+              _buildClaimedRewardsSection(l10n),
             ],
           ),
         ),
@@ -37,7 +40,7 @@ class _RewardsPageState extends State<RewardsPage> {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, AppLocalizations l10n) {
     return Row(
       children: [
         IconButton(
@@ -48,9 +51,9 @@ class _RewardsPageState extends State<RewardsPage> {
             size: 24,
           ),
         ),
-        const Expanded(
+        Expanded(
           child: Text(
-            'Rewards',
+            l10n.rewards,
             textAlign: TextAlign.center,
             style: AppTextStyles.subHeadingTextStyle,
           ),
@@ -60,12 +63,12 @@ class _RewardsPageState extends State<RewardsPage> {
     );
   }
 
-  Widget _buildAvailableRewardsSection() {
+  Widget _buildAvailableRewardsSection(AppLocalizations l10n) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,
       children: [
-        const Text(
+        Text(
           'Available Rewards',
           style: AppTextStyles.subHeadingTextStyle,
         ),
@@ -94,12 +97,12 @@ class _RewardsPageState extends State<RewardsPage> {
     );
   }
 
-  Widget _buildClaimedRewardsSection() {
+  Widget _buildClaimedRewardsSection(AppLocalizations l10n) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,
       children: [
-        const Text(
+        Text(
           'Claimed Rewards',
           style: AppTextStyles.subHeadingTextStyle,
         ),

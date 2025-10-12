@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/apptextstyles.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class SellerTournamentPage extends StatelessWidget {
   const SellerTournamentPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       backgroundColor: AppColors.darkBgColor,
       body: SafeArea(
@@ -26,8 +29,7 @@ class SellerTournamentPage extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text('Tournament & Group', style: AppTextStyles.smallBoldTextStyle),
-                            Text('Management', style: AppTextStyles.subHeadingTextStyle),
+                            Text(l10n.tournaments, style: AppTextStyles.subHeadingTextStyle),
                           ],
                         ),
                       ),

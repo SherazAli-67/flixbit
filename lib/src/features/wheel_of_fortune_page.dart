@@ -8,6 +8,7 @@ import '../config/wheel_config.dart';
 import '../models/gift_model.dart';
 import '../models/wheel_result_model.dart';
 import '../service/gift_service.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Independent Wheel of Fortune Widget
 /// Can be used anywhere in the app without parameters

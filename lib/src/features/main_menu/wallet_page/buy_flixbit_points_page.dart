@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/apptextstyles.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class BuyFlixbitPointsPage extends StatefulWidget {
   const BuyFlixbitPointsPage({super.key});
@@ -14,6 +15,8 @@ class _BuyFlixbitPointsPageState extends State<BuyFlixbitPointsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       backgroundColor: AppColors.darkBgColor,
       body: SafeArea(
@@ -34,7 +37,7 @@ class _BuyFlixbitPointsPageState extends State<BuyFlixbitPointsPage> {
                   ),
                   const Spacer(),
                   Text(
-                    'Payment',
+                    l10n.buyFlixbitPoints,
                     style: AppTextStyles.subHeadingTextStyle,
                   ),
                   const Spacer(),

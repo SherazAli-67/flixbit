@@ -45,6 +45,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dashboard => 'لوحة التحكم';
 
   @override
+  String get scanner => 'Scanner';
+
+  @override
+  String get wallet => 'المحفظة';
+
+  @override
+  String get profile => 'الملف الشخصي';
+
+  @override
   String get quickAccess => 'الوصول السريع';
 
   @override
@@ -96,16 +105,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get scanQRCode => 'امسح رمز QR';
 
   @override
-  String get wallet => 'المحفظة';
+  String get flixbitBalance => 'رصيد فليكس بيت';
 
   @override
-  String get flixbitBalance => 'رصيد فليكس بيت';
+  String get buy => 'Buy';
+
+  @override
+  String get sell => 'Sell';
 
   @override
   String get buyFlixbitPoints => 'شراء نقاط فليكس بيت';
 
   @override
-  String get profile => 'الملف الشخصي';
+  String get transactions => 'Transactions';
 
   @override
   String get editProfile => 'تعديل الملف الشخصي';
@@ -184,4 +196,40 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get success => 'نجح';
+
+  @override
+  String get soldFlixbit => 'Sold Flixbits';
+
+  @override
+  String get boughtFlixbit => 'Bought Flixbits';
+
+  @override
+  String get redeemPoints => 'Redeem Points';
+
+  @override
+  String get account => 'Account';
+
+  @override
+  String get changePassword => 'Change Password';
+
+  @override
+  String get linkedAccounts => 'Linked Accounts';
+
+  @override
+  String get preferences => 'Preferences';
+
+  @override
+  String get darkTheme => 'Dark Theme';
+
+  @override
+  String get support => 'Support';
+
+  @override
+  String get helpCenter => 'Help Center';
+
+  @override
+  String get contactUs => 'Contact Us';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
 }

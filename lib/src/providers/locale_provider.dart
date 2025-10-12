@@ -56,3 +56,5 @@ class LocaleProvider extends ChangeNotifier {
     }
   }
 }
+
+

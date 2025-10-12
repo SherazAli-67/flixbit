@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flixbit/l10n/app_localizations.dart';
 import 'package:flixbit/src/routes/router_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -122,7 +123,7 @@ class _ScannerPageState extends State<ScannerPage> with WidgetsBindingObserver{
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               BackButton(color: Colors.white,),
-              Text("Scan QR Code", style: AppTextStyles.bodyTextStyle,),
+              Text(AppLocalizations.of(context)!.scanQRCode, style: AppTextStyles.bodyTextStyle,),
               const SizedBox(width: 40,)
               // IconButton(onPressed: ()=> _showEditBottomSheet(context), icon: Icon(Icons.more_vert_rounded, color: Colors.white,))
             ],

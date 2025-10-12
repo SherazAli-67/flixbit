@@ -52,15 +52,15 @@ class _ProfilePageState extends State<ProfilePage> {
                 subtitle: Text("ethancarter@gmail.com"),
               ),
               _buildSectionTitleWidget(
-                  title: 'ACCOUNT',
+                  title: AppLocalizations.of(context)!.account.toUpperCase(),
                   children: [
                     _buildSectionItemWidget(title: l10n.editProfile, onTap: (){}),
-                    _buildSectionItemWidget(title: 'Change Password', onTap: (){}),
-                    _buildSectionItemWidget(title: 'Linked Accounts', onTap: _onLinkedAccountsTap),
+                    _buildSectionItemWidget(title: AppLocalizations.of(context)!.changePassword, onTap: (){}),
+                    _buildSectionItemWidget(title: AppLocalizations.of(context)!.linkedAccounts, onTap: _onLinkedAccountsTap),
                   ]),
 
               _buildSectionTitleWidget(
-                  title: 'PREFERENCES',
+                  title: AppLocalizations.of(context)!.preferences.toUpperCase(),
                   children: [
                     _buildSectionItemWidget(title: l10n.notifications, onTap: () {}),
                     _buildSectionItemWidget(
@@ -75,17 +75,17 @@ class _ProfilePageState extends State<ProfilePage> {
                       trailingText: l10n.english
                     ),
                     _SwitchTile(
-                        title: 'Dark Theme',
+                        title: AppLocalizations.of(context)!.darkTheme,
                         value: isDarkTheme,
                         onChanged: (val) => setState(() => isDarkTheme = val)),
                   ]),
 
               _buildSectionTitleWidget(
-                  title: 'SUPPORT',
+                  title: AppLocalizations.of(context)!.support.toUpperCase(),
                   children: [
-                    _buildSectionItemWidget(title: 'Help Center', onTap: (){}),
-                    _buildSectionItemWidget(title: 'Contact Us', onTap: (){}),
-                    _buildSectionItemWidget(title: 'Privacy Policy', onTap: (){}),
+                    _buildSectionItemWidget(title: AppLocalizations.of(context)!.helpCenter, onTap: (){}),
+                    _buildSectionItemWidget(title: AppLocalizations.of(context)!.contactUs, onTap: (){}),
+                    _buildSectionItemWidget(title: AppLocalizations.of(context)!.privacyPolicy, onTap: (){}),
                   ]),
             ],
           ),

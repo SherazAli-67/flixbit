@@ -1,3 +1,4 @@
+import 'package:flixbit/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -43,7 +44,7 @@ class MainMenuPage extends StatelessWidget{
               ),
               child: Icon(Icons.home_filled, color: AppColors.primaryColor),
             ),
-            label: 'Dashboard',
+            label: AppLocalizations.of(context)!.dashboard,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.qr_code_scanner, color: AppColors.unSelectedGreyColor),
@@ -55,7 +56,7 @@ class MainMenuPage extends StatelessWidget{
               ),
               child: Icon(Icons.qr_code_scanner, color: AppColors.primaryColor),
             ),
-            label: 'Scanner',
+            label: AppLocalizations.of(context)!.scanner,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.wallet_outlined, color: AppColors.unSelectedGreyColor),
@@ -67,7 +68,7 @@ class MainMenuPage extends StatelessWidget{
               ),
               child: Icon(Icons.wallet, color: AppColors.primaryColor),
             ),
-            label: 'Wallet',
+            label: AppLocalizations.of(context)!.wallet,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_outline, color: AppColors.unSelectedGreyColor),
@@ -79,7 +80,7 @@ class MainMenuPage extends StatelessWidget{
               ),
               child: Icon(Icons.person, color: AppColors.primaryColor),
             ),
-            label: 'Profile',
+            label: AppLocalizations.of(context)!.profile,
           ),
         ],
         type: BottomNavigationBarType.fixed,

@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class SellerDashboardPage extends StatelessWidget{
   const SellerDashboardPage({super.key});
@@ -22,13 +23,14 @@ class SellerDashboardPage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<ProfileProvider>(context);
+    final l10n = AppLocalizations.of(context)!;
     return provider.loading
         ? LoadingWidget()
         : provider.isRegisteredAsSeller
-        ?  _buildSellerInfoWidget(context, provider.seller): _buildRegisterAsSellerWidget(context);
+        ?  _buildSellerInfoWidget(context, provider.seller, l10n): _buildRegisterAsSellerWidget(context, l10n);
   }
 
-  _buildRegisterAsSellerWidget(BuildContext context) {
+  _buildRegisterAsSellerWidget(BuildContext context, AppLocalizations l10n) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(15.0),
@@ -66,7 +68,7 @@ class SellerDashboardPage extends StatelessWidget{
     );
   }
 
-  _buildSellerInfoWidget(BuildContext context, Seller? seller) {
+  _buildSellerInfoWidget(BuildContext context, Seller? seller, AppLocalizations l10n) {
     return seller != null ? Scaffold(
 
       body: SafeArea(

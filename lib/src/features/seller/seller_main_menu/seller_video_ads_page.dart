@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/apptextstyles.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class SellerVideoAdsPage extends StatelessWidget {
   const SellerVideoAdsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       backgroundColor: AppColors.darkBackground,
       appBar: AppBar(
@@ -18,8 +21,8 @@ class SellerVideoAdsPage extends StatelessWidget {
           icon: const Icon(Icons.arrow_back, color: AppColors.whiteColor),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          'Video Ads',
+        title: Text(
+          l10n.videoAds,
           style: AppTextStyles.whiteBold20,
         ),
         centerTitle: true,

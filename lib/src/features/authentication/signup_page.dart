@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 import '../../res/app_constants.dart';
 import '../../res/app_icons.dart';
 import '../../res/spacing_constant.dart';
+import '../../../l10n/app_localizations.dart';
 
 class SignupPage extends StatefulWidget{
   const SignupPage({super.key});
@@ -33,9 +34,11 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       appBar: AppBar(
-        title: Text("Registration", style: AppTextStyles.headingTextStyle3,),
+        title: Text(l10n.signup, style: AppTextStyles.headingTextStyle3,),
         centerTitle: false,
       ),
       body: SafeArea(child:   SingleChildScrollView(
@@ -83,20 +86,20 @@ class _SignupPageState extends State<SignupPage> {
                   ),
                 ),
                 AppTextField(textController: _nameController,
-                    prefixIcon: AppIcons.icEmail,
+                    prefixIcon: AppIcons.icUser,
                     hintText: "i.e John Doe",
-                    titleText: "Full name"),
+                    titleText: l10n.name),
 
                 AppTextField(textController: _emailController,
                     prefixIcon: AppIcons.icEmail,
                     textInputType: TextInputType.emailAddress,
                     hintText: "iejohndoe@gmail.com",
-                    titleText: "Email/Username"),
+                    titleText: l10n.email),
 
                 AppTextField(textController: _passwordController,
                   prefixIcon: AppIcons.icPassword,
                   hintText: "**************",
-                  titleText: "Password", isPassword: true,),
+                  titleText: l10n.password, isPassword: true,),
 
                 RichText(text: TextSpan(
                     children: [
@@ -109,7 +112,7 @@ class _SignupPageState extends State<SignupPage> {
                 Consumer<AuthenticationProvider>(
                   builder: (context, authProvider, child) {
                     return PrimaryBtn(
-                      btnText:  'Sign up',
+                      btnText: authProvider.isLoading ? l10n.loading : l10n.signup,
                       icon: '',
                       isLoading: authProvider.isLoading,
                       onTap: authProvider.isLoading ? () {} : () => _onSignupTap(),
@@ -118,12 +121,12 @@ class _SignupPageState extends State<SignupPage> {
                 ),
                 RichText(text: TextSpan(
                     children: [
-                      TextSpan(text: "Already have any account? ", style: AppTextStyles.bodyTextStyle.copyWith(color: Colors.white, fontFamily: AppConstants.appFontFamily)),
+                      TextSpan(text: "${l10n.alreadyHaveAccount} ", style: AppTextStyles.bodyTextStyle.copyWith(color: Colors.white, fontFamily: AppConstants.appFontFamily)),
                       TextSpan(
                           recognizer: TapGestureRecognizer()..onTap = (){
                             context.pushReplacement(RouterEnum.loginView.routeName);
                           },
-                          text: "Sign in!", style: AppTextStyles.bodyTextStyle.copyWith(color: AppColors.primaryColor, fontFamily: AppConstants.appFontFamily)),
+                          text: l10n.login, style: AppTextStyles.bodyTextStyle.copyWith(color: AppColors.primaryColor, fontFamily: AppConstants.appFontFamily)),
 
                     ]
                 ))
