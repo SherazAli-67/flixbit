@@ -3,7 +3,7 @@ import '../models/match_model.dart';
 import '../models/user_tournament_stats.dart';
 
 class TournamentService {
-  // Dummy data for tournaments
+  // Dummy data for flixbit_tournaments
   static List<Tournament> getDummyTournaments() {
     final now = DateTime.now();
     
@@ -53,7 +53,7 @@ class TournamentService {
     ];
   }
 
-  // Dummy user stats for tournaments
+  // Dummy user stats for flixbit_tournaments
   static Map<String, UserTournamentStats> getDummyUserStats() {
     return {
       'tour_001': UserTournamentStats(

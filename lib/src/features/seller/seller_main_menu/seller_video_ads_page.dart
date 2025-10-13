@@ -248,6 +248,6 @@ class SellerVideoAdsPage extends StatelessWidget {
 }
 
 /*
-*   Create backend control for sub-admin, to create tournaments and groups of the tournaments and update the scores of the games, with the rewarding system.
-*   Sub-Admin Tournament & Group Management: This screen would enable sub-admins to create and manage tournaments, organize groups within tournaments, and update game scores, all integrated with the rewarding system.
+*   Create backend control for sub-admin, to create flixbit_tournaments and groups of the flixbit_tournaments and update the scores of the games, with the rewarding system.
+*   Sub-Admin Tournament & Group Management: This screen would enable sub-admins to create and manage flixbit_tournaments, organize groups within flixbit_tournaments, and update game scores, all integrated with the rewarding system.
 * */

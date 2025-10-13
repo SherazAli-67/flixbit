@@ -1,0 +1,242 @@
+🏆 Tournament Management in Flixbit App
+
+(User Side + Seller/Sub-Admin Side)
+
+⸻
+
+🎯 Purpose
+
+The Tournament Management System is the heart of Flixbit’s gamification model.
+It allows:
+	•	Sub-admins/sellers to organize and manage prediction-based tournaments.
+	•	Users to participate in those tournaments by making predictions and earning rewards or Flixbit points.
+
+It turns regular sports events (football, cricket, basketball, etc.) into interactive prediction contests — helping drive engagement, app traffic, and marketing exposure for sellers.
+
+⸻
+
+⚙️ A. Seller / Sub-Admin Side — Tournament Creation & Management
+
+The tournament lifecycle begins from the Seller/Sub-Admin panel (backend).
+
+⸻
+
+1. Tournament Creation
+
+A Sub-Admin (or seller with permission) creates tournaments from their backend dashboard.
+
+Information entered:
+	•	Tournament name (e.g., “World Cup Predictions 2025”).
+	•	Sport type (Football, Cricket, etc.).
+	•	Description (optional).
+	•	Start and end date.
+	•	Number of matches.
+	•	Prediction type (Winner only / Scoreline / Player stats).
+	•	Points per correct prediction (e.g., 10 Flixbit each).
+	•	Minimum accuracy for qualification (e.g., 80%).
+	•	Entry type (Free or Paid using Flixbit).
+	•	Associated rewards (Physical / Digital).
+
+🟢 Result: A tournament is published and visible to users in the “Predictions” or “Contests” section.
+
+⸻
+
+2. Grouping & Organization
+
+Sub-Admin can group multiple tournaments by:
+	•	Region or city (e.g., Dubai League, Riyadh League).
+	•	Seller partnerships (e.g., Sponsored by XYZ Brand).
+	•	Category (Football, Basketball, etc.).
+
+This helps them manage multiple contests efficiently and send targeted notifications.
+
+⸻
+
+3. Match Management
+
+For each tournament, Sub-Admin adds individual matches:
+	•	Team A vs Team B
+	•	Match date and time
+	•	Match location (optional)
+	•	Match ID or code
+
+When matches are added, users can start making predictions.
+
+⸻
+
+4. Score Updates & Results
+
+After each match:
+	•	The Sub-Admin updates the final score manually (or automatically via integrated API, if implemented later).
+	•	The system recalculates:
+	•	Each user’s prediction accuracy.
+	•	Total Flixbit points earned.
+	•	Qualification status for the final draw.
+
+⸻
+
+5. Reward Distribution Setup
+
+Sub-Admin can:
+	•	Define reward tiers (Top 3 winners, random draw, etc.).
+	•	Attach digital or physical rewards to specific outcomes.
+	•	Decide if rewards are given:
+	•	Automatically via in-app wallet or
+	•	Manually (physical items marked “shipped”).
+
+⸻
+
+6. Sponsor / Seller Involvement
+
+Some tournaments are sponsored by sellers:
+	•	Seller’s brand name appears in the tournament listing (e.g., “Sponsored by ABC Store”).
+	•	The seller may fund rewards or give exclusive coupons to winners.
+	•	This gives them visibility while driving real traffic to their business.
+
+⸻
+
+7. Tournament Analytics
+
+Sub-Admin/Seller Dashboard shows:
+	•	Total participants.
+	•	Correct prediction ratio.
+	•	Number of users qualified (≥80%).
+	•	Flixbit points awarded.
+	•	Redemption history.
+	•	Revenue (if users bought points for entry).
+
+🟢 Admin/Sub-Admin can also export data or leaderboard reports.
+
+⸻
+
+⸻
+
+👤 B. User Side — Tournament Participation & Experience
+
+Now let’s look at how users experience the same tournament flow.
+
+⸻
+
+1. Tournament Discovery
+
+Users open the “Predictions” or “Contests” section in the app.
+They can:
+	•	Browse available tournaments (ongoing/upcoming).
+	•	Filter by category, region, or sport.
+	•	See details:
+	•	Tournament name, prize, start time, and sponsor.
+	•	Entry type (Free / Paid using Flixbit).
+	•	Rules and point system.
+
+🟢 If the tournament is sponsored, users also see the seller’s logo and special offer.
+
+⸻
+
+2. Joining a Tournament
+
+Users tap on a tournament and join:
+	•	If free, they can join instantly.
+	•	If paid, they use Flixbit points from their wallet to enter (e.g., “Join for 50 Flixbit”).
+
+After joining, they can access the list of matches.
+
+⸻
+
+3. Making Predictions
+
+Users make predictions for each match:
+	•	Choose winning team or enter scoreline.
+	•	Must submit prediction at least 1 hour before match start.
+	•	Predictions are locked once the match begins.
+
+🟢 Example:
+
+Match: Team A vs Team B
+Prediction: Team A wins 2–1
+
+⸻
+
+4. Earning & Tracking Points
+
+After the match result is updated:
+	•	System compares user’s prediction with actual result.
+	•	Points are added based on accuracy:
+	•	Correct Winner = +10 Flixbit
+	•	Correct Scoreline = +20 Flixbit
+	•	Points reflect instantly in user’s wallet and tournament dashboard.
+
+Users can view:
+	•	Prediction history.
+	•	Accuracy percentage.
+	•	Rank on the leaderboard.
+
+⸻
+
+5. Qualification System
+
+To qualify for the Final Prize Draw, user must have:
+	•	At least 80% correct predictions (configurable by admin).
+
+If user’s score is below threshold:
+	•	App prompts:
+“You’re at 60% accuracy. Buy 20 more Flixbit points to qualify for the final draw.”
+
+Users can buy points through in-app purchase and continue participating.
+
+⸻
+
+6. Leaderboard & Rankings
+
+Each tournament has a live Leaderboard:
+	•	Displays:
+	•	Top players by points.
+	•	Their prediction accuracy.
+	•	Country/region.
+	•	Updates automatically as matches finish.
+
+Leaderboards make the experience competitive and social.
+
+⸻
+
+7. Final Draw & Rewards
+
+Once the tournament ends:
+	•	Admin/Sub-Admin conducts the final draw among eligible users (≥80% correct).
+	•	Winners are announced inside the app:
+	•	Notification: “🎉 Congratulations, you won the World Cup Prediction Contest!”
+	•	Reward added to wallet or redeemable section.
+
+If reward is physical:
+	•	Admin marks it as “Shipped” in backend.
+	•	User can track delivery status in notification feed.
+
+⸻
+
+8. User Reviews & Seller Feedback
+
+If a tournament was sponsored by a seller, user gets a review prompt:
+
+“How was your experience with ABC Store’s Prediction Contest?”
+They can leave a rating and comment — contributing to the seller’s reputation.
+
+⸻
+Feature                      -    Integration
+Wallet (Flixbit)             -    Earn points from predictions or buy them to qualify.
+Rewards System               -    Winners receive coupons, vouchers, or physical prizes.
+QR System                    -    Seller sponsors get QR tracking for their tournaments.
+Push Notifications           -    Reminders to join, predict before deadline, or check results.
+Referral System              -    Users can invite friends to join tournaments and earn bonus points.
+Review System                -    Participants can review sponsored tournaments or sellers.
+
+🧠 Example Scenario
+
+Tournament: “Champions League Prediction Contest”
+
+Role                       -     Action
+Sub-Admin                  -     Creates tournament (10 matches, 10 points each, 80% threshold).
+Seller                     -     Sponsors tournament with $100 vouchers for winners.
+User                       -     Joins free, predicts 8 out of 10 correctly → earns 80 points.
+Admin                      -     Marks user as qualified for final draw.
+User                       -     Wins prize → gets notification + 100 Flixbit voucher.
+User                       -     Reviews the sponsor “ABC Sports” after receiving reward.
+
