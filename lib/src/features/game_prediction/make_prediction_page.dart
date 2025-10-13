@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../models/match_model.dart';
 import '../../models/tournament_model.dart';
 import '../../res/app_colors.dart';
 import '../../res/apptextstyles.dart';
+import '../../service/prediction_service.dart';
 
 class MakePredictionPage extends StatefulWidget {
   final Match match;
@@ -487,40 +489,65 @@ class _MakePredictionPageState extends State<MakePredictionPage> {
     );
   }
 
-  void _savePrediction() {
-    // TODO: Save prediction to Firebase
-    // For now, just show success message
-    
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            Icon(
-              Icons.check_circle,
-              color: AppColors.whiteColor,
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                'Prediction submitted successfully!',
-                style: AppTextStyles.bodyTextStyle.copyWith(
+  Future<void> _savePrediction() async {
+    try {
+      final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+      if (userId.isEmpty) {
+        throw Exception('User not logged in');
+      }
+
+      // Submit prediction to Firebase
+      await PredictionService.submitPrediction(
+        userId: userId,
+        tournamentId: widget.tournament.id,
+        match: widget.match,
+        predictedWinner: _selectedWinner!,
+        predictedHomeScore: _predictScore ? _homeScore : null,
+        predictedAwayScore: _predictScore ? _awayScore : null,
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(
+                  Icons.check_circle,
                   color: AppColors.whiteColor,
                 ),
-              ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Prediction submitted successfully!',
+                    style: AppTextStyles.bodyTextStyle.copyWith(
+                      color: AppColors.whiteColor,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-        backgroundColor: AppColors.greenColor,
-        duration: const Duration(seconds: 3),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
-    );
+            backgroundColor: AppColors.greenColor,
+            duration: const Duration(seconds: 3),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        );
 
-    // Navigate back to matches page
-    Navigator.pop(context);
+        // Navigate back to matches page
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
+            backgroundColor: AppColors.redColor,
+          ),
+        );
+      }
+    }
   }
 
   String _getPredictionText() {

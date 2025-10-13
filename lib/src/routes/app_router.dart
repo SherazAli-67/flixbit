@@ -29,7 +29,7 @@ import 'package:flixbit/src/features/main_menu/profile_page.dart';
 import 'package:flixbit/src/features/welcome_page.dart';
 import 'package:flixbit/src/features/seller/seller_main_menu/seller_dashboard_page.dart';
 import 'package:flixbit/src/features/seller/seller_main_menu/seller_offers_page.dart';
-import 'package:flixbit/src/features/seller/seller_main_menu/seller_tournaments_page.dart';
+import 'package:flixbit/src/features/seller/seller_main_menu/enhanced_seller_tournaments_page.dart';
 // import 'package:flixbit/src/features/seller/seller_main_menu/seller_profile_page.dart' as seller_main;
 import 'package:provider/provider.dart';
 
@@ -242,7 +242,7 @@ final GoRouter appRouter = GoRouter(
           routes: <RouteBase>[
             GoRoute(
               path: RouterEnum.sellerTournamentsView.routeName,
-              builder: (BuildContext context, GoRouterState state) => const SellerTournamentPage(),
+              builder: (BuildContext context, GoRouterState state) => const EnhancedSellerTournamentsPage(),
             ),
           ],
         ),

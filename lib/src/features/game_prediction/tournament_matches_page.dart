@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../models/match_model.dart';
 import '../../models/tournament_model.dart';
 import '../../res/app_colors.dart';
 import '../../res/apptextstyles.dart';
-import '../../service/tournament_service.dart';
+import '../../service/enhanced_tournament_service.dart';
+import '../../service/prediction_service.dart';
 
 class TournamentMatchesPage extends StatefulWidget {
   final String tournamentId;
@@ -18,6 +20,7 @@ class TournamentMatchesPage extends StatefulWidget {
 class _TournamentMatchesPageState extends State<TournamentMatchesPage> {
   Tournament? _tournament;
   List<Match> _matches = [];
+  bool _isLoading = false;
   
   // Store predictions: matchId -> {'winner': 'home'/'away'/'draw', 'homeScore': 0, 'awayScore': 0}
   final Map<String, Map<String, dynamic>> _predictions = {};
@@ -28,13 +31,42 @@ class _TournamentMatchesPageState extends State<TournamentMatchesPage> {
     _loadData();
   }
 
-  void _loadData() {
-    final tournaments = TournamentService.getDummyTournaments();
-    _tournament = tournaments.firstWhere((t) => t.id == widget.tournamentId);
-    _matches = TournamentService.getDummyMatches(widget.tournamentId)
-        .where((m) => m.status == MatchStatus.upcoming && m.isPredictionOpen)
-        .toList();
-    setState(() {});
+  Future<void> _loadData() async {
+    setState(() => _isLoading = true);
+    
+    try {
+      // Load tournament
+      final tournament = await EnhancedTournamentService.getTournament(widget.tournamentId);
+      
+      if (tournament == null) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Tournament not found')),
+          );
+          Navigator.pop(context);
+        }
+        return;
+      }
+
+      // Load matches (only upcoming with open predictions)
+      final allMatches = await EnhancedTournamentService.getTournamentMatches(widget.tournamentId);
+      final openMatches = allMatches
+          .where((m) => m.status == MatchStatus.upcoming && m.isPredictionOpen)
+          .toList();
+
+      setState(() {
+        _tournament = tournament;
+        _matches = openMatches;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() => _isLoading = false);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error loading matches: $e')),
+        );
+      }
+    }
   }
 
   int get _completedPredictions {
@@ -47,9 +79,12 @@ class _TournamentMatchesPageState extends State<TournamentMatchesPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (_tournament == null) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+    if (_isLoading || _tournament == null) {
+      return Scaffold(
+        backgroundColor: AppColors.darkBgColor,
+        body: const Center(
+          child: CircularProgressIndicator(color: AppColors.primaryColor),
+        ),
       );
     }
 
@@ -430,39 +465,74 @@ class _TournamentMatchesPageState extends State<TournamentMatchesPage> {
     );
   }
 
-  void _savePredictions() {
-    // TODO: Save predictions to Firebase
-    // For now, just show success message
-    
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            Icon(
-              Icons.check_circle,
-              color: AppColors.whiteColor,
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                '${_matches.length} predictions submitted successfully!',
-                style: AppTextStyles.bodyTextStyle.copyWith(
+  Future<void> _savePredictions() async {
+    setState(() => _isLoading = true);
+
+    try {
+      final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+      if (userId.isEmpty) {
+        throw Exception('User not logged in');
+      }
+
+      // Submit all predictions
+      for (var entry in _predictions.entries) {
+        final matchId = entry.key;
+        final prediction = entry.value;
+        final match = _matches.firstWhere((m) => m.id == matchId);
+
+        await PredictionService.submitPrediction(
+          userId: userId,
+          tournamentId: widget.tournamentId,
+          match: match,
+          predictedWinner: prediction['winner'] as String,
+          predictedHomeScore: prediction['homeScore'] as int?,
+          predictedAwayScore: prediction['awayScore'] as int?,
+        );
+      }
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(
+                  Icons.check_circle,
                   color: AppColors.whiteColor,
                 ),
-              ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    '${_matches.length} predictions submitted successfully!',
+                    style: AppTextStyles.bodyTextStyle.copyWith(
+                      color: AppColors.whiteColor,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-        backgroundColor: AppColors.greenColor,
-        duration: const Duration(seconds: 3),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
-    );
+            backgroundColor: AppColors.greenColor,
+            duration: const Duration(seconds: 3),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        );
 
-    // Navigate back
-    Navigator.pop(context);
+        // Navigate back
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
+            backgroundColor: AppColors.redColor,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 }

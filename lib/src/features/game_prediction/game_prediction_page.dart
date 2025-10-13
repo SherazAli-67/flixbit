@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../models/tournament_model.dart';
 import '../../models/user_tournament_stats.dart';
 import '../../res/app_colors.dart';
 import '../../res/apptextstyles.dart';
+import '../../res/firebase_constants.dart';
 import '../../routes/router_enum.dart';
-import '../../service/tournament_service.dart';
+import '../../service/enhanced_tournament_service.dart';
 import '../../../l10n/app_localizations.dart';
 
 class GamePredicationPage extends StatefulWidget {
@@ -19,6 +22,7 @@ class GamePredicationPage extends StatefulWidget {
 class _GamePredicationPageState extends State<GamePredicationPage> {
   List<Tournament> _tournaments = [];
   Map<String, UserTournamentStats> _userStats = {};
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -26,11 +30,50 @@ class _GamePredicationPageState extends State<GamePredicationPage> {
     _loadTournaments();
   }
 
-  void _loadTournaments() {
-    setState(() {
-      _tournaments = TournamentService.getDummyTournaments();
-      _userStats = TournamentService.getDummyUserStats();
-    });
+  Future<void> _loadTournaments() async {
+    setState(() => _isLoading = true);
+    
+    try {
+      // Load active tournaments (ongoing and upcoming)
+      final tournaments = await EnhancedTournamentService.getAllTournaments();
+      
+      // Filter to show only ongoing and upcoming tournaments
+      final activeTournaments = tournaments
+          .where((t) =>
+              t.status == TournamentStatus.ongoing ||
+              t.status == TournamentStatus.upcoming)
+          .toList();
+
+      // Load user stats for each tournament
+      final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+      final Map<String, UserTournamentStats> userStats = {};
+
+      if (userId.isNotEmpty) {
+        for (var tournament in activeTournaments) {
+          final statsDoc = await FirebaseFirestore.instance
+              .collection(FirebaseConstants.userTournamentStatsCollection)
+              .doc('${userId}_${tournament.id}')
+              .get();
+
+          if (statsDoc.exists) {
+            userStats[tournament.id] = UserTournamentStats.fromJson(statsDoc.data()!);
+          }
+        }
+      }
+
+      setState(() {
+        _tournaments = activeTournaments;
+        _userStats = userStats;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() => _isLoading = false);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error loading tournaments: $e')),
+        );
+      }
+    }
   }
 
   @override
@@ -40,59 +83,92 @@ class _GamePredicationPageState extends State<GamePredicationPage> {
     return Scaffold(
       backgroundColor: AppColors.darkBgColor,
       body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            // Header
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 8,
-                  children: [
-                    Text(
-                      l10n.gamePredictions,
-                      style: AppTextStyles.headingTextStyle3,
-                    ),
-                    Text(
-                      l10n.predictMatchOutcomes,
-                      style: AppTextStyles.bodyTextStyle.copyWith(
-                        color: AppColors.lightGreyColor,
+        child: _isLoading
+            ? const Center(
+                child: CircularProgressIndicator(
+                  color: AppColors.primaryColor,
+                ),
+              )
+            : CustomScrollView(
+                slivers: [
+                  // Header
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 8,
+                        children: [
+                          Text(
+                            l10n.gamePredictions,
+                            style: AppTextStyles.headingTextStyle3,
+                          ),
+                          Text(
+                            l10n.predictMatchOutcomes,
+                            style: AppTextStyles.bodyTextStyle.copyWith(
+                              color: AppColors.lightGreyColor,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
+                  ),
 
-            // Active Tournaments
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-                child: Text(
-                  'Active Tournaments',
-                  style: AppTextStyles.subHeadingTextStyle,
-                ),
-              ),
-            ),
+                  // Active Tournaments
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+                      child: Text(
+                        'Active Tournaments',
+                        style: AppTextStyles.subHeadingTextStyle,
+                      ),
+                    ),
+                  ),
 
-            // Tournament List
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final tournament = _tournaments[index];
-                    final stats = _userStats[tournament.id];
-                    
-                    return _buildTournamentCard(tournament, stats);
-                  },
-                  childCount: _tournaments.length,
-                ),
+                  // Tournament List
+                  _tournaments.isEmpty
+                      ? SliverFillRemaining(
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.emoji_events_outlined,
+                                  size: 80,
+                                  color: AppColors.unSelectedGreyColor,
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  'No active tournaments',
+                                  style: AppTextStyles.subHeadingTextStyle,
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Check back soon for new tournaments',
+                                  style: AppTextStyles.bodyTextStyle.copyWith(
+                                    color: AppColors.lightGreyColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      : SliverPadding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          sliver: SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                final tournament = _tournaments[index];
+                                final stats = _userStats[tournament.id];
+
+                                return _buildTournamentCard(tournament, stats);
+                              },
+                              childCount: _tournaments.length,
+                            ),
+                          ),
+                        ),
+                ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }
