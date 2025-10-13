@@ -76,6 +76,7 @@ class _EnhancedSellerTournamentsPageState
               color: AppColors.cardBgColor,
               child: TabBar(
                 controller: _tabController,
+                tabAlignment: TabAlignment.start,
                 isScrollable: true,
                 indicatorColor: AppColors.primaryColor,
                 labelColor: AppColors.primaryColor,
@@ -246,7 +247,7 @@ class _EnhancedSellerTournamentsPageState
 
   // ==================== ANALYTICS TAB ====================
   Widget _buildAnalyticsTab() {
-    return AnalyticsView(tournaments: _myTournaments);
+    return SellerTournamentAnalyticsView(tournaments: _myTournaments);
   }
 }
 

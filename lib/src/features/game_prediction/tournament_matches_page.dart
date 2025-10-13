@@ -22,8 +22,11 @@ class _TournamentMatchesPageState extends State<TournamentMatchesPage> {
   List<Match> _matches = [];
   bool _isLoading = false;
   
-  // Store predictions: matchId -> {'winner': 'home'/'away'/'draw', 'homeScore': 0, 'awayScore': 0}
+  // Store NEW predictions: matchId -> {'winner': 'home'/'away'/'draw', 'homeScore': 0, 'awayScore': 0}
   final Map<String, Map<String, dynamic>> _predictions = {};
+  
+  // Store EXISTING predictions from Firebase (already submitted)
+  final Map<String, Map<String, dynamic>> _existingPredictions = {};
 
   @override
   void initState() {
@@ -54,6 +57,36 @@ class _TournamentMatchesPageState extends State<TournamentMatchesPage> {
           .where((m) => m.status == MatchStatus.upcoming && m.isPredictionOpen)
           .toList();
 
+      // Load existing predictions for this user
+      final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+      if (userId.isNotEmpty) {
+        for (var match in openMatches) {
+          final hasPredicted = await PredictionService.hasPredicted(
+            userId: userId,
+            matchId: match.id,
+          );
+          
+          if (hasPredicted) {
+            // Get the existing prediction details
+            final predictions = await PredictionService.getUserPredictions(
+              userId: userId,
+              tournamentId: widget.tournamentId,
+            );
+            
+            final matchPredictions = predictions.where((p) => p.matchId == match.id);
+            if (matchPredictions.isNotEmpty) {
+              final matchPrediction = matchPredictions.first;
+              _existingPredictions[match.id] = {
+                'winner': matchPrediction.predictedWinner,
+                'homeScore': matchPrediction.predictedHomeScore,
+                'awayScore': matchPrediction.predictedAwayScore,
+                'submittedAt': matchPrediction.submittedAt,
+              };
+            }
+          }
+        }
+      }
+
       setState(() {
         _tournament = tournament;
         _matches = openMatches;
@@ -69,12 +102,24 @@ class _TournamentMatchesPageState extends State<TournamentMatchesPage> {
     }
   }
 
-  int get _completedPredictions {
-    return _predictions.values.where((p) => p['winner'] != null).length;
+  int get _newPredictionsCount {
+    // Only count new predictions (not already submitted)
+    return _predictions.entries
+        .where((entry) => !_existingPredictions.containsKey(entry.key))
+        .where((entry) => entry.value['winner'] != null)
+        .length;
+  }
+  
+  int get _unpredictedMatchesCount {
+    // Count matches without any prediction (new or existing)
+    return _matches.where((m) => 
+      !_predictions.containsKey(m.id) && 
+      !_existingPredictions.containsKey(m.id)
+    ).length;
   }
 
   bool get _canSubmit {
-    return _completedPredictions == _matches.length && _matches.isNotEmpty;
+    return _newPredictionsCount > 0;
   }
 
   @override
@@ -171,7 +216,8 @@ class _TournamentMatchesPageState extends State<TournamentMatchesPage> {
               child: Column(
                 spacing: 12,
                 children: [
-                  if (!_canSubmit)
+                  // Info message
+                  if (_unpredictedMatchesCount > 0 && _newPredictionsCount == 0)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       spacing: 8,
@@ -182,9 +228,27 @@ class _TournamentMatchesPageState extends State<TournamentMatchesPage> {
                           color: AppColors.lightGreyColor,
                         ),
                         Text(
-                          'Please complete all predictions to submit',
+                          'Select winners for $_unpredictedMatchesCount remaining matches',
                           style: AppTextStyles.captionTextStyle.copyWith(
                             color: AppColors.lightGreyColor,
+                          ),
+                        ),
+                      ],
+                    )
+                  else if (_newPredictionsCount > 0)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      spacing: 8,
+                      children: [
+                        Icon(
+                          Icons.check_circle_outline,
+                          size: 16,
+                          color: AppColors.greenColor,
+                        ),
+                        Text(
+                          '$_newPredictionsCount new predictions ready to submit',
+                          style: AppTextStyles.captionTextStyle.copyWith(
+                            color: AppColors.greenColor,
                           ),
                         ),
                       ],
@@ -204,7 +268,9 @@ class _TournamentMatchesPageState extends State<TournamentMatchesPage> {
                         elevation: 0,
                       ),
                       child: Text(
-                        _matches.length == 1 ? 'Submit Prediction' : 'Submit All Predictions',
+                        _newPredictionsCount == 1 
+                            ? 'Submit $_newPredictionsCount Prediction'
+                            : 'Submit $_newPredictionsCount Predictions',
                         style: AppTextStyles.buttonTextStyle.copyWith(
                           color: _canSubmit ? AppColors.whiteColor : AppColors.lightGreyColor,
                           fontSize: 18,
@@ -222,21 +288,35 @@ class _TournamentMatchesPageState extends State<TournamentMatchesPage> {
 
   Widget _buildQuizQuestion(int index, Match match) {
     final dateFormat = DateFormat('MMM dd, yyyy');
-    final prediction = _predictions[match.id];
-    final selectedWinner = prediction?['winner'];
+    
+    // Check if this match has an existing submitted prediction
+    final hasExistingPrediction = _existingPredictions.containsKey(match.id);
+    
+    // Determine which prediction to show
+    String? selectedWinner;
+    if (hasExistingPrediction) {
+      selectedWinner = _existingPredictions[match.id]?['winner'] as String?;
+    } else {
+      selectedWinner = _predictions[match.id]?['winner'] as String?;
+    }
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.cardBgColor,
+        color: hasExistingPrediction 
+            ? AppColors.cardBgColor.withValues(alpha: 0.5)
+            : AppColors.cardBgColor,
         borderRadius: BorderRadius.circular(16),
+        border: hasExistingPrediction 
+            ? Border.all(color: AppColors.greenColor.withValues(alpha: 0.3), width: 2)
+            : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 16,
         children: [
-          // Top card: round, game title, image
+          // Top card: round, game title, image, status badge
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -245,11 +325,43 @@ class _TournamentMatchesPageState extends State<TournamentMatchesPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 6,
                   children: [
-                    Text('Round ${index + 1}', style: AppTextStyles.captionTextStyle.copyWith(color: AppColors.lightGreyColor)),
+                    Row(
+                      children: [
+                        Text('Round ${index + 1}', 
+                            style: AppTextStyles.captionTextStyle.copyWith(
+                              color: AppColors.lightGreyColor)),
+                        if (hasExistingPrediction) ...[
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: AppColors.greenColor.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.check_circle, 
+                                    size: 12, color: AppColors.greenColor),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'Submitted',
+                                  style: AppTextStyles.captionTextStyle.copyWith(
+                                    color: AppColors.greenColor,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
                     Text('Game ${index + 1}', style: AppTextStyles.subHeadingTextStyle),
                     Text(
                       '${match.homeTeam} vs. ${match.awayTeam}',
-                      style: AppTextStyles.smallTextStyle.copyWith(color: AppColors.lightGreyColor),
+                      style: AppTextStyles.smallTextStyle.copyWith(
+                        color: AppColors.lightGreyColor),
                     ),
                   ],
                 ),
@@ -270,33 +382,59 @@ class _TournamentMatchesPageState extends State<TournamentMatchesPage> {
             ],
           ),
 
-          // Instruction text
-          Text(
-            "Select the team you think will win or choose 'Tie' if you predict a draw.",
-            style: AppTextStyles.smallTextStyle.copyWith(color: AppColors.lightGreyColor),
-          ),
+          // Instruction text or locked message
+          if (hasExistingPrediction)
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.greenColor.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.lock, size: 16, color: AppColors.greenColor),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Prediction locked. You cannot change it after submission.',
+                      style: AppTextStyles.captionTextStyle.copyWith(
+                        color: AppColors.greenColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          else
+            Text(
+              "Select the team you think will win or choose 'Tie' if you predict a draw.",
+              style: AppTextStyles.smallTextStyle.copyWith(color: AppColors.lightGreyColor),
+            ),
 
-          // Radio-style options
+          // Radio-style options (disabled if already predicted)
           _optionTile(
             matchId: match.id,
             value: 'home',
             label: match.homeTeam,
             selected: selectedWinner == 'home',
+            disabled: hasExistingPrediction,
           ),
           _optionTile(
             matchId: match.id,
             value: 'away',
             label: match.awayTeam,
             selected: selectedWinner == 'away',
+            disabled: hasExistingPrediction,
           ),
           _optionTile(
             matchId: match.id,
             value: 'draw',
             label: 'Tie',
             selected: selectedWinner == 'draw',
+            disabled: hasExistingPrediction,
           ),
 
-          // Date/time footer like subtle caption
+          // Date/time footer
           Row(
             children: [
               Icon(Icons.calendar_today, size: 12, color: AppColors.unSelectedGreyColor),
@@ -317,9 +455,10 @@ class _TournamentMatchesPageState extends State<TournamentMatchesPage> {
     required String value,
     required String label,
     required bool selected,
+    bool disabled = false,
   }) {
     return InkWell(
-      onTap: () {
+      onTap: disabled ? null : () {
         setState(() {
           _predictions[matchId] = {
             'winner': value,
@@ -332,43 +471,73 @@ class _TournamentMatchesPageState extends State<TournamentMatchesPage> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
         decoration: BoxDecoration(
-          color: selected ? AppColors.primaryColor.withValues(alpha: 0.2) : AppColors.darkBgColor,
+          color: disabled && selected
+              ? AppColors.greenColor.withValues(alpha: 0.15)
+              : selected
+                  ? AppColors.primaryColor.withValues(alpha: 0.2)
+                  : AppColors.darkBgColor,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: selected ? AppColors.primaryColor : AppColors.unSelectedGreyColor.withValues(alpha: 0.25),
+            color: disabled && selected
+                ? AppColors.greenColor
+                : selected
+                    ? AppColors.primaryColor
+                    : AppColors.unSelectedGreyColor.withValues(alpha: 0.25),
             width: selected ? 2 : 1,
           ),
         ),
         child: Row(
           children: [
-            _radioDot(selected: selected),
+            _radioDot(
+              selected: selected, 
+              disabled: disabled,
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
                 label,
                 style: AppTextStyles.tileTitleTextStyle.copyWith(
-                  color: AppColors.whiteColor,
+                  color: disabled
+                      ? AppColors.lightGreyColor
+                      : AppColors.whiteColor,
                   fontWeight: FontWeight.w700,
                 ),
               ),
             ),
+            if (disabled && selected)
+              Icon(
+                Icons.check_circle,
+                color: AppColors.greenColor,
+                size: 20,
+              ),
           ],
         ),
       ),
     );
   }
 
-  Widget _radioDot({required bool selected}) {
+  Widget _radioDot({
+    required bool selected, 
+    bool disabled = false,
+  }) {
     return Container(
       width: 22,
       height: 22,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
-          color: selected ? AppColors.whiteColor : AppColors.unSelectedGreyColor,
+          color: disabled && selected
+              ? AppColors.greenColor
+              : selected
+                  ? AppColors.whiteColor
+                  : AppColors.unSelectedGreyColor,
           width: 2,
         ),
-        color: selected ? AppColors.primaryColor : Colors.transparent,
+        color: disabled && selected
+            ? AppColors.greenColor
+            : selected
+                ? AppColors.primaryColor
+                : Colors.transparent,
       ),
       child: selected
           ? const Center(
@@ -396,9 +565,18 @@ class _TournamentMatchesPageState extends State<TournamentMatchesPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'You are about to submit predictions for ${_matches.length} matches.',
+              'You are about to submit $_newPredictionsCount new ${_newPredictionsCount == 1 ? "prediction" : "predictions"}.',
               style: AppTextStyles.bodyTextStyle,
             ),
+            if (_existingPredictions.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(
+                '${_existingPredictions.length} ${_existingPredictions.length == 1 ? "prediction" : "predictions"} already submitted earlier.',
+                style: AppTextStyles.captionTextStyle.copyWith(
+                  color: AppColors.lightGreyColor,
+                ),
+              ),
+            ],
             const SizedBox(height: 16),
             Container(
               padding: const EdgeInsets.all(12),
@@ -416,7 +594,7 @@ class _TournamentMatchesPageState extends State<TournamentMatchesPage> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'You can earn up to ${_matches.length * (_tournament?.pointsPerCorrectPrediction ?? 10)} Flixbit points!',
+                      'You can earn up to ${_newPredictionsCount * (_tournament?.pointsPerCorrectPrediction ?? 10)} Flixbit points!',
                       style: AppTextStyles.captionTextStyle.copyWith(
                         color: AppColors.primaryColor,
                       ),
@@ -474,9 +652,17 @@ class _TournamentMatchesPageState extends State<TournamentMatchesPage> {
         throw Exception('User not logged in');
       }
 
-      // Submit all predictions
+      int submittedCount = 0;
+
+      // Submit only NEW predictions (not already submitted)
       for (var entry in _predictions.entries) {
         final matchId = entry.key;
+        
+        // Skip if this match already has a submitted prediction
+        if (_existingPredictions.containsKey(matchId)) {
+          continue;
+        }
+        
         final prediction = entry.value;
         final match = _matches.firstWhere((m) => m.id == matchId);
 
@@ -488,6 +674,8 @@ class _TournamentMatchesPageState extends State<TournamentMatchesPage> {
           predictedHomeScore: prediction['homeScore'] as int?,
           predictedAwayScore: prediction['awayScore'] as int?,
         );
+        
+        submittedCount++;
       }
 
       if (mounted) {
@@ -502,7 +690,7 @@ class _TournamentMatchesPageState extends State<TournamentMatchesPage> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    '${_matches.length} predictions submitted successfully!',
+                    '$submittedCount ${submittedCount == 1 ? "prediction" : "predictions"} submitted successfully!',
                     style: AppTextStyles.bodyTextStyle.copyWith(
                       color: AppColors.whiteColor,
                     ),

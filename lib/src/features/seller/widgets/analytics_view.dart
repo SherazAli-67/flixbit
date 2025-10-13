@@ -5,16 +5,16 @@ import '../../../res/app_colors.dart';
 import '../../../res/apptextstyles.dart';
 import '../../../service/enhanced_tournament_service.dart';
 
-class AnalyticsView extends StatefulWidget {
+class SellerTournamentAnalyticsView extends StatefulWidget {
   final List<Tournament> tournaments;
 
-  const AnalyticsView({super.key, required this.tournaments});
+  const SellerTournamentAnalyticsView({super.key, required this.tournaments});
 
   @override
-  State<AnalyticsView> createState() => _AnalyticsViewState();
+  State<SellerTournamentAnalyticsView> createState() => _SellerTournamentAnalyticsViewState();
 }
 
-class _AnalyticsViewState extends State<AnalyticsView> {
+class _SellerTournamentAnalyticsViewState extends State<SellerTournamentAnalyticsView> {
   Tournament? _selectedTournament;
   Map<String, dynamic> _stats = {};
   List<UserTournamentStats> _leaderboard = [];
@@ -50,6 +50,7 @@ class _AnalyticsViewState extends State<AnalyticsView> {
     } catch (e) {
       setState(() => _isLoading = false);
       if (mounted) {
+        debugPrint('Error loading analytics: $e');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error loading analytics: $e')),
         );

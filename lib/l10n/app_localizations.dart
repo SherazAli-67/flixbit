@@ -410,7 +410,7 @@ abstract class AppLocalizations {
   /// **'Video Ads'**
   String get videoAds;
 
-  /// No description provided for @flixbit_tournaments.
+  /// No description provided for @tournaments.
   ///
   /// In en, this message translates to:
   /// **'Tournaments'**

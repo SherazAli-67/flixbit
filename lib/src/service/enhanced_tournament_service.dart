@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import '../models/tournament_model.dart';
 import '../models/match_model.dart';
 import '../models/user_tournament_stats.dart';
@@ -113,6 +114,7 @@ class EnhancedTournamentService {
           .map((doc) => Tournament.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
     } catch (e) {
+      debugPrint('Failed to get tournaments: $e');
       throw Exception('Failed to get tournaments: $e');
     }
   }
@@ -320,6 +322,7 @@ class EnhancedTournamentService {
         'totalPointsAwarded': totalPointsAwarded,
       };
     } catch (e) {
+      debugPrint("Failed to get tournament stats: $e");
       throw Exception('Failed to get tournament stats: $e');
     }
   }
