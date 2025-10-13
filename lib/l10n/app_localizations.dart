@@ -98,73 +98,73 @@ abstract class AppLocalizations {
     Locale('en'),
   ];
 
-  /// The title of the application
+  /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
   /// **'Flixbit'**
   String get appTitle;
 
-  /// Welcome text
+  /// No description provided for @welcome.
   ///
   /// In en, this message translates to:
   /// **'Welcome'**
   String get welcome;
 
-  /// Login button text
+  /// No description provided for @login.
   ///
   /// In en, this message translates to:
   /// **'Login'**
   String get login;
 
-  /// Sign up button text
+  /// No description provided for @signup.
   ///
   /// In en, this message translates to:
   /// **'Sign Up'**
   String get signup;
 
-  /// Email field label
+  /// No description provided for @email.
   ///
   /// In en, this message translates to:
   /// **'Email'**
   String get email;
 
-  /// Password field label
+  /// No description provided for @password.
   ///
   /// In en, this message translates to:
   /// **'Password'**
   String get password;
 
-  /// Name field label
+  /// No description provided for @name.
   ///
   /// In en, this message translates to:
   /// **'Name'**
   String get name;
 
-  /// Confirm password field label
+  /// No description provided for @confirmPassword.
   ///
   /// In en, this message translates to:
   /// **'Confirm Password'**
   String get confirmPassword;
 
-  /// Forgot password link text
+  /// No description provided for @forgotPassword.
   ///
   /// In en, this message translates to:
   /// **'Forgot Password?'**
   String get forgotPassword;
 
-  /// Text for users who don't have account
+  /// No description provided for @dontHaveAccount.
   ///
   /// In en, this message translates to:
   /// **'Don\'t have an account?'**
   String get dontHaveAccount;
 
-  /// Text for users who already have account
+  /// No description provided for @alreadyHaveAccount.
   ///
   /// In en, this message translates to:
   /// **'Already have an account?'**
   String get alreadyHaveAccount;
 
-  /// Dashboard page title
+  /// No description provided for @dashboard.
   ///
   /// In en, this message translates to:
   /// **'Dashboard'**
@@ -182,133 +182,133 @@ abstract class AppLocalizations {
   /// **'Wallet'**
   String get wallet;
 
-  /// Profile page title
+  /// No description provided for @profile.
   ///
   /// In en, this message translates to:
   /// **'Profile'**
   String get profile;
 
-  /// Quick access section title
+  /// No description provided for @quickAccess.
   ///
   /// In en, this message translates to:
   /// **'Quick Access'**
   String get quickAccess;
 
-  /// Offers section
+  /// No description provided for @offers.
   ///
   /// In en, this message translates to:
   /// **'Offers'**
   String get offers;
 
-  /// Gifts section
+  /// No description provided for @gifts.
   ///
   /// In en, this message translates to:
   /// **'Gifts'**
   String get gifts;
 
-  /// Rewards section
+  /// No description provided for @rewards.
   ///
   /// In en, this message translates to:
   /// **'Rewards'**
   String get rewards;
 
-  /// Notifications section
+  /// No description provided for @notifications.
   ///
   /// In en, this message translates to:
   /// **'Notifications'**
   String get notifications;
 
-  /// Game predictions page title
+  /// No description provided for @gamePredictions.
   ///
   /// In en, this message translates to:
   /// **'Game Predictions'**
   String get gamePredictions;
 
-  /// Game predictions description
+  /// No description provided for @predictMatchOutcomes.
   ///
   /// In en, this message translates to:
   /// **'Predict match outcomes and win prizes'**
   String get predictMatchOutcomes;
 
-  /// Active tournaments section
+  /// No description provided for @activeTournaments.
   ///
   /// In en, this message translates to:
   /// **'Active Tournaments'**
   String get activeTournaments;
 
-  /// Start predicting button
+  /// No description provided for @startPredicting.
   ///
   /// In en, this message translates to:
   /// **'Start Predicting'**
   String get startPredicting;
 
-  /// View matches button
+  /// No description provided for @viewMatches.
   ///
   /// In en, this message translates to:
   /// **'View Matches'**
   String get viewMatches;
 
-  /// Qualification progress label
+  /// No description provided for @qualificationProgress.
   ///
   /// In en, this message translates to:
   /// **'Qualification Progress'**
   String get qualificationProgress;
 
-  /// Qualified status message
+  /// No description provided for @qualifiedForFinalDraw.
   ///
   /// In en, this message translates to:
   /// **'Qualified for Final Draw!'**
   String get qualifiedForFinalDraw;
 
-  /// Accuracy label
+  /// No description provided for @accuracy.
   ///
   /// In en, this message translates to:
   /// **'Accuracy'**
   String get accuracy;
 
-  /// Points label
+  /// No description provided for @points.
   ///
   /// In en, this message translates to:
   /// **'Points'**
   String get points;
 
-  /// Predictions label
+  /// No description provided for @predictions.
   ///
   /// In en, this message translates to:
   /// **'Predictions'**
   String get predictions;
 
-  /// QR Scanner page title
+  /// No description provided for @qrScanner.
   ///
   /// In en, this message translates to:
   /// **'QR Scanner'**
   String get qrScanner;
 
-  /// Scan QR code instruction
+  /// No description provided for @scanQRCode.
   ///
   /// In en, this message translates to:
   /// **'Scan QR Code'**
   String get scanQRCode;
 
-  /// Flixbit balance label
+  /// No description provided for @flixbitBalance.
   ///
   /// In en, this message translates to:
   /// **'Flixbit Balance'**
   String get flixbitBalance;
 
-  /// Buy Flixbit points button
+  /// No description provided for @buy.
   ///
   /// In en, this message translates to:
   /// **'Buy'**
   String get buy;
 
-  /// Sell Flixbit points button
+  /// No description provided for @sell.
   ///
   /// In en, this message translates to:
   /// **'Sell'**
   String get sell;
 
-  /// Buy Flixbit points button
+  /// No description provided for @buyFlixbitPoints.
   ///
   /// In en, this message translates to:
   /// **'Buy Flixbit Points'**
@@ -320,157 +320,157 @@ abstract class AppLocalizations {
   /// **'Transactions'**
   String get transactions;
 
-  /// Edit profile button
+  /// No description provided for @editProfile.
   ///
   /// In en, this message translates to:
   /// **'Edit Profile'**
   String get editProfile;
 
-  /// Settings button
+  /// No description provided for @settings.
   ///
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
 
-  /// Logout button
+  /// No description provided for @logout.
   ///
   /// In en, this message translates to:
   /// **'Logout'**
   String get logout;
 
-  /// Referrals page title
+  /// No description provided for @referrals.
   ///
   /// In en, this message translates to:
   /// **'Referrals'**
   String get referrals;
 
-  /// Referrals description
+  /// No description provided for @inviteFriends.
   ///
   /// In en, this message translates to:
   /// **'Invite friends and earn'**
   String get inviteFriends;
 
-  /// Share referral code button
+  /// No description provided for @shareReferralCode.
   ///
   /// In en, this message translates to:
   /// **'Share Referral Code'**
   String get shareReferralCode;
 
-  /// Wheel of Fortune page title
+  /// No description provided for @wheelOfFortune.
   ///
   /// In en, this message translates to:
   /// **'Wheel of Fortune'**
   String get wheelOfFortune;
 
-  /// Wheel of Fortune description
+  /// No description provided for @spinToWin.
   ///
   /// In en, this message translates to:
   /// **'Spin to win'**
   String get spinToWin;
 
-  /// Subscription packages page title
+  /// No description provided for @subscriptionPackages.
   ///
   /// In en, this message translates to:
   /// **'Subscription Packages'**
   String get subscriptionPackages;
 
-  /// Subscription packages description
+  /// No description provided for @upgradeForMoreFeatures.
   ///
   /// In en, this message translates to:
   /// **'Upgrade for more features'**
   String get upgradeForMoreFeatures;
 
-  /// Coupons section
+  /// No description provided for @coupons.
   ///
   /// In en, this message translates to:
   /// **'Coupons'**
   String get coupons;
 
-  /// View coupons description
+  /// No description provided for @viewCoupons.
   ///
   /// In en, this message translates to:
   /// **'View coupons'**
   String get viewCoupons;
 
-  /// Seller dashboard page title
+  /// No description provided for @sellerDashboard.
   ///
   /// In en, this message translates to:
   /// **'Seller Dashboard'**
   String get sellerDashboard;
 
-  /// Seller offers page title
+  /// No description provided for @sellerOffers.
   ///
   /// In en, this message translates to:
   /// **'Offers'**
   String get sellerOffers;
 
-  /// Video ads page title
+  /// No description provided for @videoAds.
   ///
   /// In en, this message translates to:
   /// **'Video Ads'**
   String get videoAds;
 
-  /// Tournaments page title
+  /// No description provided for @tournaments.
   ///
   /// In en, this message translates to:
   /// **'Tournaments'**
   String get tournaments;
 
-  /// Language setting
+  /// No description provided for @language.
   ///
   /// In en, this message translates to:
   /// **'Language'**
   String get language;
 
-  /// English language option
+  /// No description provided for @english.
   ///
   /// In en, this message translates to:
   /// **'English'**
   String get english;
 
-  /// Arabic language option
+  /// No description provided for @arabic.
   ///
   /// In en, this message translates to:
   /// **'العربية'**
   String get arabic;
 
-  /// Change language button
+  /// No description provided for @changeLanguage.
   ///
   /// In en, this message translates to:
   /// **'Change Language'**
   String get changeLanguage;
 
-  /// Save button
+  /// No description provided for @save.
   ///
   /// In en, this message translates to:
   /// **'Save'**
   String get save;
 
-  /// Cancel button
+  /// No description provided for @cancel.
   ///
   /// In en, this message translates to:
   /// **'Cancel'**
   String get cancel;
 
-  /// OK button
+  /// No description provided for @ok.
   ///
   /// In en, this message translates to:
   /// **'OK'**
   String get ok;
 
-  /// Loading text
+  /// No description provided for @loading.
   ///
   /// In en, this message translates to:
   /// **'Loading...'**
   String get loading;
 
-  /// Error title
+  /// No description provided for @error.
   ///
   /// In en, this message translates to:
   /// **'Error'**
   String get error;
 
-  /// Success title
+  /// No description provided for @success.
   ///
   /// In en, this message translates to:
   /// **'Success'**

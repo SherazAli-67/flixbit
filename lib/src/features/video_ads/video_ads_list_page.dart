@@ -7,20 +7,17 @@ import '../../models/video_ad.dart';
 import '../../providers/video_ads_providers.dart';
 import '../../res/apptextstyles.dart';
 import '../../res/app_colors.dart';
-import '../../../l10n/app_localizations.dart';
 
 class VideoAdsListPage extends StatelessWidget {
   const VideoAdsListPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    
     return Scaffold(
       backgroundColor: AppColors.darkBgColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: Text(l10n.videoAds),
+        title: const Text('Watch & Earn'),
       ),
       body: ChangeNotifierProvider(
         create: (ctx) => VideoAdsListProvider(createSeededFakeRepository())..load(),
