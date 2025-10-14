@@ -73,7 +73,30 @@
   "support": "Support",
   "helpCenter": "Help Center",
   "contactUs": "Contact Us",
-  "privacyPolicy": "Privacy Policy"
+  "privacyPolicy": "سياسة الخصوصية",
+  "retry": "إعادة المحاولة",
+  "noTransactions": "لا توجد معاملات حتى الآن",
+  "tournamentPoints": "نقاط البطولة",
+  "earned": "النقاط المكتسبة",
+  "spent": "النقاط المنفقة",
+  "bought": "النقاط المشتراة",
+  "sold": "النقاط المباعة",
+  "giftReceived": "هدية مستلمة",
+  "rewardEarned": "مكافأة مكتسبة",
+  "refunded": "نقاط مستردة",
+  "filterTransactions": "تصفية المعاملات",
+  "transactionType": "نوع المعاملة",
+  "source": "المصدر",
+  "clearAll": "مسح الكل",
+  "close": "إغلاق",
+  "noTournamentPoints": "لا توجد نقاط بطولة متاحة",
+  "convertPoints": "تحويل النقاط",
+  "convertPointsDescription": "حول نقاط البطولة الخاصة بك إلى نقاط فليكس بيت. كل نقطة بطولة تساوي 5 نقاط فليكس بيت.",
+  "pointsToConvert": "النقاط للتحويل",
+  "invalidPointsAmount": "قيمة النقاط غير صالحة",
+  "pointsConverted": "تم تحويل النقاط بنجاح",
+  "convert": "تحويل"
 }
+
 
 

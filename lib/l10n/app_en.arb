@@ -73,7 +73,30 @@
   "support": "Support",
   "helpCenter": "Help Center",
   "contactUs": "Contact Us",
-  "privacyPolicy": "Privacy Policy"
+  "privacyPolicy": "Privacy Policy",
+  "retry": "Retry",
+  "noTransactions": "No transactions yet",
+  "tournamentPoints": "Tournament Points",
+  "earned": "Points Earned",
+  "spent": "Points Spent",
+  "bought": "Points Bought",
+  "sold": "Points Sold",
+  "giftReceived": "Gift Received",
+  "rewardEarned": "Reward Earned",
+  "refunded": "Points Refunded",
+  "filterTransactions": "Filter Transactions",
+  "transactionType": "Transaction Type",
+  "source": "Source",
+  "clearAll": "Clear All",
+  "close": "Close",
+  "noTournamentPoints": "No tournament points available",
+  "convertPoints": "Convert Points",
+  "convertPointsDescription": "Convert your tournament points to Flixbit points. Each tournament point is worth 5 Flixbit points.",
+  "pointsToConvert": "Points to Convert",
+  "invalidPointsAmount": "Invalid points amount",
+  "pointsConverted": "Points converted successfully",
+  "convert": "Convert"
 }
+
 
 

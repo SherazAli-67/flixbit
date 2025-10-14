@@ -40,4 +40,6 @@ class AppColors {
   static const tournamentCardBgColor = Color(0xff2a3b45);
   static const inputFieldBgColor = Color(0xff1e2a32);
   static const selectionItemBgColor = Color(0xff2a3b45);
+  static const successColor = Color(0xff34C759);
+  static const errorColor = Color(0xffFF3B30);
 }

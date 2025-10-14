@@ -14,10 +14,14 @@ class FirebaseConstants{
   // Points & Transactions
   static const flixbitTransactionsCollection = 'flixbit_transactions';
   
+  // Video Ads Collections
+  static const videoAdsCollection = 'video_ads';
+  static const videoAdEngagementsCollection = 'video_ad_engagements';
+  static const videoAdVotesCollection = 'video_ad_votes';
+  
   // Other Collections
   static const offersCollection = 'offers';
   static const reviewsCollection = 'reviews';
-  static const videoAdsCollection = 'video_ads';
   static const giftsCollection = 'gifts';
   static const notificationsCollection = 'notifications';
 }

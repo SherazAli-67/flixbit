@@ -1,24 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../config/points_config.dart';
 import '../models/flixbit_transaction_model.dart';
 import '../res/firebase_constants.dart';
 
 class FlixbitPointsManager {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Earning rates configuration
-  static const Map<TransactionSource, int> earningRates = {
-    TransactionSource.tournamentPrediction: 10,
-    TransactionSource.tournamentQualification: 50,
-    TransactionSource.tournamentWin: 500,
-    TransactionSource.videoAd: 5,
-    TransactionSource.referralSignup: 20,
-    TransactionSource.referralPrediction: 30,
-    TransactionSource.sellerReview: 15,
-    TransactionSource.offerReview: 25,
-    TransactionSource.qrScan: 10,
-    TransactionSource.dailyLogin: 5,
-    TransactionSource.weeklyStreak: 50,
-  };
+  // Earning rates configuration from PointsConfig
+  static Map<TransactionSource, int> get earningRates {
+    return {
+      TransactionSource.tournamentPrediction: PointsConfig.getPoints('tournament_prediction'),
+      TransactionSource.tournamentQualification: PointsConfig.getPoints('tournament_qualification'),
+      TransactionSource.tournamentWin: PointsConfig.getPoints('tournament_win'),
+      TransactionSource.videoAd: PointsConfig.getPoints('video_ad'),
+      TransactionSource.referral: PointsConfig.getPoints('referral'),
+      TransactionSource.review: PointsConfig.getPoints('review'),
+      TransactionSource.qrScan: PointsConfig.getPoints('qr_scan'),
+      TransactionSource.dailyLogin: PointsConfig.getPoints('daily_login'),
+    };
+  }
 
   /// Award points to user wallet
   static Future<void> awardPoints({

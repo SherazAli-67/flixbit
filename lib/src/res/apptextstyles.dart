@@ -26,5 +26,5 @@ class AppTextStyles {
   static const lightGrayRegular14 = TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: AppColors.lightGreyColor);
   static const whiteRegular12 = TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: AppColors.whiteColor);
   static const lightGrayRegular12 = TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: AppColors.lightGreyColor);
-
+  static const errorTextStyle = TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.errorColor);
 }

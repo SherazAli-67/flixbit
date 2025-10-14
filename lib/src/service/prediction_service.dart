@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../config/points_config.dart';
 import '../models/prediction_model.dart';
 import '../models/match_model.dart';
 import '../models/tournament_model.dart';
@@ -6,6 +7,7 @@ import '../models/user_tournament_stats.dart';
 import '../models/flixbit_transaction_model.dart';
 import '../res/firebase_constants.dart';
 import 'flixbit_points_manager.dart';
+import 'wallet_service.dart';
 
 class PredictionService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -137,16 +139,26 @@ class PredictionService {
   }) {
     int points = 0;
 
+    // Get base points from config
+    final basePoints = PointsConfig.getPoints('tournament_prediction');
+
     // Check if winner prediction is correct
     if (prediction.predictedWinner == actualResult.winner) {
-      points += tournament.pointsPerCorrectPrediction;
+      points += basePoints;
 
       // Bonus for exact score prediction
       if (prediction.predictedHomeScore != null &&
           prediction.predictedAwayScore != null &&
           prediction.predictedHomeScore == actualResult.homeScore &&
           prediction.predictedAwayScore == actualResult.awayScore) {
-        points += tournament.bonusPointsForExactScore;
+        // Double points for exact score
+        points *= 2;
+      }
+
+      // Apply any active event multipliers
+      final activeMultipliers = WalletService().getActiveMultipliers();
+      for (var multiplier in activeMultipliers.entries) {
+        points = (points * multiplier.value).toInt();
       }
     }
 
@@ -206,12 +218,17 @@ class PredictionService {
 
         // If newly qualified, award bonus points
         if (isQualified && !(data['isQualified'] as bool? ?? false)) {
+          final qualificationPoints = PointsConfig.getPoints('tournament_qualification');
           await FlixbitPointsManager.awardPoints(
             userId: userId,
-            pointsEarned: 50,
+            pointsEarned: qualificationPoints,
             source: TransactionSource.tournamentQualification,
             description: 'Qualified for tournament final draw',
-            metadata: {'tournamentId': tournamentId},
+            metadata: {
+              'tournamentId': tournamentId,
+              'accuracy': accuracy,
+              'threshold': threshold,
+            },
           );
         }
       } else {
@@ -235,9 +252,21 @@ class PredictionService {
     }
   }
 
-  /// Update tournament leaderboard
+  /// Update tournament leaderboard and award prizes
   static Future<void> _updateTournamentLeaderboard(String tournamentId) async {
     try {
+      // Get tournament details
+      final tournamentDoc = await _firestore
+          .collection(FirebaseConstants.tournamentsCollection)
+          .doc(tournamentId)
+          .get();
+
+      if (!tournamentDoc.exists) {
+        throw Exception('Tournament not found');
+      }
+
+      final tournament = Tournament.fromJson(tournamentDoc.data()!);
+
       // Get all user stats for this tournament
       final statsSnapshot = await _firestore
           .collection(FirebaseConstants.userTournamentStatsCollection)
@@ -246,15 +275,38 @@ class PredictionService {
           .orderBy('totalPointsEarned', descending: true)
           .get();
 
-      // Update ranks
+      // Update ranks and award prizes
       int rank = 1;
       for (var statDoc in statsSnapshot.docs) {
+        final data = statDoc.data();
+        final userId = data['userId'] as String;
+        final previousRank = data['rank'] as int?;
+
+        // Update rank
         await statDoc.reference.update({'rank': rank});
+
+        // Award prize for first place if tournament is completed
+        if (rank == 1 && tournament.status == TournamentStatus.completed && previousRank != 1) {
+          final winPoints = PointsConfig.getPoints('tournament_win');
+          await FlixbitPointsManager.awardPoints(
+            userId: userId,
+            pointsEarned: winPoints,
+            source: TransactionSource.tournamentWin,
+            description: 'Tournament winner: ${tournament.name}',
+            metadata: {
+              'tournamentId': tournamentId,
+              'rank': rank,
+              'accuracy': data['accuracyPercentage'],
+              'totalPredictions': data['totalPredictions'],
+            },
+          );
+        }
+
         rank++;
       }
     } catch (e) {
-      // Leaderboard update is not critical, just log error
       print('Failed to update leaderboard: $e');
+      rethrow;
     }
   }
 

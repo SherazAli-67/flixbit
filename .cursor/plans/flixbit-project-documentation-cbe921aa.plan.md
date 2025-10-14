@@ -32,12 +32,84 @@
 - User and Seller separate data in Firestore collections
 - Profile image storage in Firebase Storage
 
-2. **Game Prediction System**
+2. **Game Prediction System** (DETAILED MODULE)
 
-- Tournament-based match predictions
-- Points system with qualification thresholds
-- Prediction submission deadline: 1 hour before match
-- User stats tracking (accuracy, points earned)
+**Core Integration:**
+
+- Accessible from Dashboard via "Game Predictions" quick access icon
+- Route: `/game_predication_view` → `GamePredicationPage`
+- Three-page flow: Tournament List → Match List → Make Prediction
+
+**Tournament Management:**
+
+- Service: `TournamentService.getDummyTournaments()`
+- Currently using dummy data (3 tournaments: Premier League, Champions League, La Liga)
+- Real implementation will connect to Firestore `tournaments` collection
+- Admin/Sub-admin create tournaments with:
+  - Points per prediction (10-15 points typical)
+  - Qualification threshold (75-80% accuracy)
+  - Prize pool and winner count
+  - Date range and match count
+
+**User Prediction Flow:**
+
+1. View tournament cards with live stats
+2. Click "View Matches" → `TournamentMatchesPage`
+3. Select match → `MakePredictionPage`
+4. Submit before 1-hour deadline
+5. Stats auto-update after match completion
+
+**Stats Tracking (`UserTournamentStats`):**
+
+- Total predictions made vs total matches
+- Correct predictions count
+- Real-time accuracy percentage
+- Points earned (correct × pointsPerPrediction)
+- Qualification status (isQualified flag)
+- Purchased points to boost qualification
+
+**UI Components:**
+
+- Tournament cards with status badges (upcoming/live/completed)
+- Three-column stats display (Accuracy/Points/Predictions)
+- Linear progress bar toward qualification threshold
+- Color-coded indicators (green=qualified, blue=active)
+- Qualification badge or action button
+
+**Point Integration:**
+
+- Connects to Flixbit virtual currency system
+- Points earned → Added to user wallet
+- Points can be purchased to reach qualification
+- Qualified users → Eligible for prize draw
+
+**Prize Distribution Logic:**
+
+- After tournament ends (status: completed)
+- Filter qualified users (accuracy >= threshold)
+- Random selection from qualified pool
+- Number of winners defined in tournament
+- Notification sent to winners
+- Prizes can be: cash, coupons, physical rewards
+
+**Data Flow:**
+
+```
+Tournament → contains Matches
+User → makes Predictions on Matches
+System → calculates accuracy after Match.status = completed
+Stats → updated in UserTournamentStats
+Qualification → checked against threshold
+Prize Draw → random selection of qualified users
+```
+
+**Firebase Collections Structure:**
+
+- `tournaments/{tournamentId}` - Tournament data
+- `matches/{matchId}` - Match details with tournamentId reference
+- `predictions/{predictionId}` - User predictions
+- `user_tournament_stats/{userId}_{tournamentId}` - Performance tracking
+- `tournament_winners/{tournamentId}` - Winner records after draw
 
 3. **QR Code System**
 
@@ -174,6 +246,19 @@
 ## Build Configuration
 
 **Platforms**: Android, iOS, Web, Linux, Windows, macOS
+
 **Firebase**: Configured with google-services.json (Android) and GoogleService-Info.plist (iOS)
+
 **Material 3**: Enabled with dark theme
+
 **Localization**: Flutter gen enabled in pubspec.yaml
+
+### To-dos
+
+- [ ] Update Match model with new fields and methods for status management
+- [ ] Create Firebase Cloud Function for automatic status updates
+- [ ] Create MatchStatusValidator service for status transition validation
+- [ ] Enhance EnhancedTournamentService with real-time status updates
+- [ ] Update seller UI with new status controls and match phases
+- [ ] Add status change notifications and history tracking
+- [ ] Enhance user UI with real-time status indicators and notifications

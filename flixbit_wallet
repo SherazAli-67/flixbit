@@ -1,0 +1,195 @@
+💰 Flixbit Wallet — Complete Explanation
+
+⸻
+
+🎯 Purpose of the Flixbit Wallet
+
+The Flixbit Wallet is an in-app virtual wallet where users can:
+	•	Earn, buy, and redeem Flixbit points.
+	•	Track their prediction performance and rewards.
+	•	Use Flixbit to enter tournaments, redeem coupons, or unlock offers.
+
+For admins and sellers, it helps:
+	•	Control and monitor the entire in-app economy.
+	•	Set the value of points and how they’re distributed.
+	•	Track user spending and reward flow.
+
+⸻
+
+⚙️ 1. Wallet Structure
+
+Each registered user automatically gets a Flixbit Wallet upon account creation.
+
+The wallet has 3 main components:
+
+Section       -                Description
+Balance       -                Shows total Flixbit points available (earned + purchased). Transaction History          -        Records all activities — earned, redeemed, or purchased.
+Redeem Section -               Shows available offers, coupons, and reward options that can be purchased using Flixbit.
+
+⚙️ 2. Ways to Earn Flixbit Points
+
+Users can earn Flixbit through multiple in-app actions.
+
+Action                     -       Reward Type              -       Example
+✅ Correct Game Prediction -      Earn points for accuracy  -       10 Flixbit per correct prediction
+🎬 Watch Video Ads         -      Rewarded engagement       -       5 Flixbit for each full video watched
+🧠 Trivia Quizzes          -      Right answers             -       10 Flixbit for perfect quiz
+🧾 Leave Seller Review     -      Verified review           -       5–10 Flixbit reward
+💬 Refer a Friend          -      Referral bonus            -       20 Flixbit per verified signup
+🛍️ Complete Offer / Coupon Redemption - Marketing reward    -       5 Flixbit for redeeming seller’s offer
+🎯 Participate in Campaigns or Contests -  Bonus events     -       50 Flixbit for completing a sponsored activity
+
+
+All earnings automatically update in the user’s wallet and transaction history.
+
+⸻
+
+🛒 3. Buying Flixbit Points (In-App Purchase)
+
+If users want to buy more points (for tournaments or offers):
+	1.	Go to Wallet → Buy Points.
+	2.	Choose from Admin-defined packages (e.g., 50, 100, 200 Flixbit).
+	3.	Pay via:
+	•	Google Play / Apple Pay (in-app purchase), or
+	•	Stripe/PayPal (if supported).
+	4.	Wallet updates instantly after successful payment.
+
+📜 Every purchase is stored in Firestore under the user’s transaction log.
+
+⸻
+
+💸 4. Using (Spending) Flixbit Points
+
+Users can spend or redeem Flixbit in several ways:
+
+Use Case                      -            Description
+🎮 Join Paid Tournaments      -           Some contests require Flixbit entry (e.g., “Join for 50 Flixbit”).
+🏆 Buy Qualification Points   -           To reach 80% accuracy threshold in predictions.
+🎁 Redeem Rewards/Coupons     -           Use Flixbit to unlock digital vouchers or merchandise.
+💬 Send Gifts or Spin Wheel   -          Spend Flixbit for sending gifts or spinning the wheel (e.g., $10 = 100 Flixbit).
+🔔 Buy Extra Notifications (Sellers) -   Sellers can pay Flixbit to send extra promotional pushes.
+
+
+After every spend, wallet balance decreases automatically and a record is added to “Transaction History.”
+
+⸻
+
+🧾 5. Transaction History
+
+Every wallet action is recorded in a ledger-style history:
+	•	Earned points (source, date, and reason).
+	•	Spent points (destination, date, and item purchased).
+	•	Purchased points (payment proof and ID).
+
+Example record:
+
+Date        -      Type       -       Description                         -       Amount      -      Balance
+2025-10-03  -      Earned     -      Correct prediction                   -       +10         -      120
+2025-10-04  -      Spent      -      Joined Premier League Tournament     -       -50         -      70
+2025-10-05  -      Purchased  -      Bought 100 Flixbit package           -       +100        -      170
+
+
+This makes it transparent and verifiable for users and admin.
+
+⸻
+
+🧠 6. Admin Control Over Wallet
+
+Admins (and Sub-Admins with permissions) can manage the wallet ecosystem.
+
+🔹 Admin Capabilities:
+	•	Set Flixbit value (e.g., 1 Flixbit = $0.10).
+	•	Define earning rates (how much reward per activity).
+	•	Create bonus events (e.g., “Double Flixbit Weekend!”).
+	•	Set max wallet limits per user.
+	•	Track:
+	•	Total active points in circulation.
+	•	Points purchased vs. earned.
+	•	Redemption and transaction reports.
+
+🔹 Sub-Admin Capabilities:
+	•	Manage wallet activity in their assigned region.
+	•	Monitor user and seller balances.
+	•	Trigger manual adjustments (add/remove points).
+	•	Resolve disputes (e.g., refund Flixbit for failed reward).
+
+⸻
+
+🧾 7. Wallet Integration Across the App
+
+Feature                 -         Wallet Function
+Prediction Contests     -         Earn points for correct outcomes or buy points to qualify.
+Rewards System          -         Redeem Flixbit for digital/physical gifts.
+Video Ads & Quizzes     -         Reward users with Flixbit after completion.
+Referral Program        -         Add Flixbit when new users join via referral link.
+Sellers’ Push Notifications -     Deduct Flixbit when sending paid promotional notifications.
+Coupons/Offers          -         Pay Flixbit to claim premium coupons.
+
+
+🟢 The wallet is connected to every reward and transaction event in the app — it’s the bridge between engagement and monetization.
+
+⸻
+
+🔐 8. Security & Transparency
+
+The wallet is powered by Firebase Firestore and is fully traceable.
+
+Security features include:
+	•	All balance updates go through cloud functions (no client-side manipulation).
+	•	Each transaction has a unique ID and digital timestamp.
+	•	Users can’t modify their balance manually.
+	•	Admins can monitor every transaction history.
+
+⸻
+
+🔗 9. Seller Interaction with Wallet
+
+Sellers can:
+	•	Earn Flixbit (from app campaigns or purchases).
+	•	Spend Flixbit to send push notifications or promote offers.
+	•	Accept Flixbit as payment for offers (if enabled by Admin).
+
+For example:
+
+“Buy coffee for 20 Flixbit” — users pay from wallet, and seller gets credited.
+
+Admin later converts that Flixbit to seller’s payable amount or keeps it as credit.
+
+⸻
+
+💡 10. Example Flow
+
+Scenario:
+	•	User joins a Football Prediction Tournament.
+	•	Correctly predicts 8 matches → earns 80 Flixbit.
+	•	Wants to redeem a 50-Flixbit restaurant coupon.
+	•	Wallet updates automatically after redemption.
+
+Transaction summary:
+Type    -    Action               -        Flixbit            -      New Balance
+Earn    -    Prediction Accuracy  -         +80               -      80
+Spend   -    Coupon Redemption    -         -50               -      30
+
+📊 11. Analytics (For Admin/Sub-Admin)
+
+The admin panel shows insights such as:
+	•	Total Flixbit earned by all users.
+	•	Points purchased through in-app payments.
+	•	Redemption rates (how many points are being spent).
+	•	Seller-to-user transaction ratio.
+	•	Monthly and regional breakdowns.
+
+This data helps the platform maintain economic balance and prevent inflation of points.
+
+✅ In Summary
+Role   -  Wallet Function
+User   -  Earn, buy, and spend Flixbit on tournaments, offers, and rewards.
+Seller -  Send push notifications, accept Flixbit as payment, earn credit.
+Sub-Admin - Monitor wallets in assigned regions, adjust balances if needed.
+Admin     - Control the economy, set rates, track flow, and ensure transparency.
+
+
+🔄 In short:
+
+The Flixbit Wallet is the central currency system that powers every feature in the app.
+It connects predictions, rewards, ads, and offers — giving users real motivation to stay active and giving the platform a scalable monetization engine.
