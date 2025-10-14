@@ -1,12 +1,109 @@
 import 'package:flixbit/src/res/app_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../l10n/app_localizations.dart';
+import '../config/points_config.dart';
 import '../res/app_colors.dart';
 import '../res/apptextstyles.dart';
+import '../service/referral_service.dart';
 
-class ReferralPage extends StatelessWidget {
+class ReferralPage extends StatefulWidget {
   const ReferralPage({super.key});
+
+  @override
+  State<ReferralPage> createState() => _ReferralPageState();
+}
+
+class _ReferralPageState extends State<ReferralPage> {
+  final ReferralService _referralService = ReferralService();
+  String? _referralCode;
+  Map<String, dynamic>? _stats;
+  List<Map<String, dynamic>> _referredUsers = [];
+  bool _isLoading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadReferralData();
+  }
+
+  Future<void> _loadReferralData() async {
+    try {
+      setState(() {
+        _isLoading = true;
+        _error = null;
+      });
+
+      // Get referral code
+      final code = await _referralService.getReferralCode('currentUser');
+      if (code == null) {
+        // Generate new code if none exists
+        await _referralService.generateReferralCode('currentUser');
+      }
+
+      // Get referred users
+      final users = await _referralService.getReferredUsers('currentUser');
+
+      if (mounted) {
+        setState(() {
+          _referralCode = code;
+          _referredUsers = users;
+          _isLoading = false;
+        });
+      }
+
+      // Subscribe to stats updates
+      _referralService
+          .getReferralStats('currentUser')
+          .listen(
+            (stats) {
+              if (mounted) {
+                setState(() => _stats = stats);
+              }
+            },
+            onError: (e) {
+              debugPrint('Error getting referral stats: $e');
+            },
+          );
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _error = e.toString();
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _copyReferralCode() async {
+    if (_referralCode == null) return;
+
+    await Clipboard.setData(ClipboardData(text: _referralCode!));
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              Icon(Icons.check_circle, color: AppColors.whiteColor),
+              const SizedBox(width: 8),
+              Text('Referral code copied to clipboard'),
+            ],
+          ),
+          backgroundColor: AppColors.successColor,
+        ),
+      );
+    }
+  }
+
+  Future<void> _shareViaApp(String app) async {
+    if (_referralCode == null) return;
+
+    final message = 'Join Flixbit using my referral code: $_referralCode';
+    // TODO: Implement sharing via specific apps
+    debugPrint('Sharing via $app: $message');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,19 +171,113 @@ class ReferralPage extends StatelessWidget {
     return Column(
       spacing: 12,
       children: [
-         Text(
+        Text(
           l10n.inviteFriends,
           textAlign: TextAlign.center,
           style: AppTextStyles.headingTextStyle3,
         ),
         Text(
-          'Share your referral link with friends and earn rewards when they join and participate.',
+          'Share your referral code with friends and earn ${PointsConfig.getPoints("referral")} points for each friend who joins!',
           textAlign: TextAlign.center,
           style: AppTextStyles.bodyTextStyle.copyWith(
             color: AppColors.lightGreyColor,
           ),
         ),
+        if (_referralCode != null) ...[
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.cardBgColor,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: AppColors.primaryColor.withOpacity(0.3),
+              ),
+            ),
+            child: Column(
+              spacing: 12,
+              children: [
+                Text(
+                  'Your Referral Code',
+                  style: AppTextStyles.bodyTextStyle.copyWith(
+                    color: AppColors.lightGreyColor,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      _referralCode!,
+                      style: AppTextStyles.headingTextStyle3.copyWith(
+                        color: AppColors.primaryColor,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: _copyReferralCode,
+                      icon: Icon(
+                        Icons.copy,
+                        color: AppColors.primaryColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+        if (_stats != null) ...[
+          const SizedBox(height: 24),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildStatCard(
+                'Total Referrals',
+                _stats!['totalReferrals']?.toString() ?? '0',
+                Icons.people_outline,
+              ),
+              _buildStatCard(
+                'Active Friends',
+                _stats!['activeReferrals']?.toString() ?? '0',
+                Icons.person_add,
+              ),
+              _buildStatCard(
+                'Points Earned',
+                _stats!['pointsEarned']?.toString() ?? '0',
+                Icons.star_outline,
+              ),
+            ],
+          ),
+        ],
       ],
+    );
+  }
+
+  Widget _buildStatCard(String title, String value, IconData icon) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.cardBgColor,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        spacing: 8,
+        children: [
+          Icon(icon, color: AppColors.primaryColor),
+          Text(
+            value,
+            style: AppTextStyles.headingTextStyle3.copyWith(
+              color: AppColors.primaryColor,
+            ),
+          ),
+          Text(
+            title,
+            style: AppTextStyles.captionTextStyle.copyWith(
+              color: AppColors.lightGreyColor,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -96,26 +287,44 @@ class ReferralPage extends StatelessWidget {
       spacing: 16,
       children: [
         const Text(
-          'Share your referral link',
+          'Share via',
           style: AppTextStyles.subHeadingTextStyle,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _buildSocialIcon('WhatsApp', AppIcons.icWhatsApp),
-            _buildSocialIcon('Facebook', AppIcons.icFacebook),
-            _buildSocialIcon('Telegram', AppIcons.icTelegram),
-            _buildSocialIcon('Snapchat', AppIcons.icSnapchat),
-            _buildSocialIcon('Instagram', AppIcons.icInstagram),
+            _buildSocialIcon(
+              'WhatsApp',
+              AppIcons.icWhatsApp,
+              onTap: () => _shareViaApp('whatsapp'),
+            ),
+            _buildSocialIcon(
+              'Facebook',
+              AppIcons.icFacebook,
+              onTap: () => _shareViaApp('facebook'),
+            ),
+            _buildSocialIcon(
+              'Telegram',
+              AppIcons.icTelegram,
+              onTap: () => _shareViaApp('telegram'),
+            ),
+            _buildSocialIcon(
+              'Snapchat',
+              AppIcons.icSnapchat,
+              onTap: () => _shareViaApp('snapchat'),
+            ),
+            _buildSocialIcon(
+              'Instagram',
+              AppIcons.icInstagram,
+              onTap: () => _shareViaApp('instagram'),
+            ),
           ],
         ),
         const SizedBox(height: 16),
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () {
-              // Handle copy link action
-            },
+            onPressed: _copyReferralCode,
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primaryColor,
               foregroundColor: AppColors.whiteColor,
@@ -125,75 +334,174 @@ class ReferralPage extends StatelessWidget {
               ),
               elevation: 0,
             ),
-            child: Text(
-              'Copy Link',
-              style: AppTextStyles.buttonTextStyle.copyWith(
-                color: AppColors.whiteColor,
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.copy, size: 20),
+                const SizedBox(width: 8),
+                Text(
+                  'Copy Referral Code',
+                  style: AppTextStyles.buttonTextStyle.copyWith(
+                    color: AppColors.whiteColor,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
+        if (_referralCode != null) ...[
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppColors.primaryColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.info_outline,
+                    color: AppColors.primaryColor, size: 20),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Friends get ${PointsConfig.getPoints("referral_welcome")} points welcome bonus!',
+                    style: AppTextStyles.smallTextStyle.copyWith(
+                      color: AppColors.primaryColor,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ],
     );
   }
 
-  Widget _buildSocialIcon(String name, String icon) {
-    return Column(
-      spacing: 8,
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: AppColors.primaryColor.withValues(alpha: 0.12),
-            shape: BoxShape.circle,
+  Widget _buildSocialIcon(String name, String icon, {VoidCallback? onTap}) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(30),
+      child: Column(
+        spacing: 8,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: AppColors.primaryColor.withOpacity(0.12),
+              shape: BoxShape.circle,
+            ),
+            padding: const EdgeInsets.all(10),
+            child: SvgPicture.asset(
+              icon,
+              colorFilter: ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+              height: 24,
+            ),
           ),
-          padding: EdgeInsets.all(10),
-          child: SvgPicture.asset(icon, colorFilter: ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn,), height: 24,)
-        ),
-        Text(
-          name,
-          style: AppTextStyles.captionTextStyle,
-        ),
-      ],
+          Text(
+            name,
+            style: AppTextStyles.captionTextStyle,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildReferralStatusSection(AppLocalizations l10n) {
+    if (_isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
+        ),
+      );
+    }
+
+    if (_error != null) {
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.errorColor.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.error_outline, color: AppColors.errorColor),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                _error!,
+                style: AppTextStyles.bodyTextStyle.copyWith(
+                  color: AppColors.errorColor,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (_referredUsers.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: AppColors.cardBgColor,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          spacing: 16,
+          children: [
+            Icon(
+              Icons.people_outline,
+              size: 48,
+              color: AppColors.lightGreyColor,
+            ),
+            Text(
+              'No referrals yet',
+              style: AppTextStyles.bodyTextStyle.copyWith(
+                color: AppColors.lightGreyColor,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              'Share your code to start earning points!',
+              style: AppTextStyles.smallTextStyle.copyWith(
+                color: AppColors.lightGreyColor,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,
       children: [
-        const Text(
-          'Referral Status',
-          style: AppTextStyles.subHeadingTextStyle,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Referral Status',
+              style: AppTextStyles.subHeadingTextStyle,
+            ),
+            Text(
+              '${_referredUsers.length} friends joined',
+              style: AppTextStyles.bodyTextStyle.copyWith(
+                color: AppColors.lightGreyColor,
+              ),
+            ),
+          ],
         ),
         Column(
           spacing: 16,
-          children: [
-            _buildReferralFriend(
-              'Ethan Carter',
+          children: _referredUsers.map((user) {
+            return _buildReferralFriend(
+              user['name'] as String,
               'Joined',
-              '+100 pts',
+              '+${PointsConfig.getPoints("referral")} pts',
               Icons.person,
-            ),
-            _buildReferralFriend(
-              'Sophia Clark',
-              'Joined',
-              '+100 pts',
-              Icons.person,
-            ),
-            _buildReferralFriend(
-              'Liam Walker',
-              'Joined',
-              '+100 pts',
-              Icons.person,
-            ),
-            _buildReferralFriend(
-              'Olivia Harris',
-              'Joined',
-              '+100 pts',
-              Icons.person,
-            ),
-          ],
+            );
+          }).toList(),
         ),
       ],
     );
