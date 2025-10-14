@@ -1,9 +1,13 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import '../models/review_model.dart';
 import '../models/seller_model.dart';
 import '../models/offer_model.dart';
+import '../service/review_service.dart';
 
 class ReviewsProvider extends ChangeNotifier {
+  final ReviewService _reviewService = ReviewService();
+
   // State variables
   List<Review> _reviews = [];
   List<Seller> _sellers = [];
@@ -12,6 +16,10 @@ class ReviewsProvider extends ChangeNotifier {
   Map<String, List<Review>> _sellerReviews = {};
   bool _isLoading = false;
   String? _error;
+
+  // Stream subscriptions
+  final Map<String, StreamSubscription<List<Review>>> _reviewSubscriptions = {};
+  final Map<String, StreamSubscription<ReviewSummary?>> _summarySubscriptions = {};
 
   // Getters
   List<Review> get reviews => _reviews;
@@ -101,100 +109,30 @@ class ReviewsProvider extends ChangeNotifier {
       _setLoading(true);
       _clearError();
 
-      // Validate review
-      if (rating < 1 || rating > 5) {
-        _setError('Rating must be between 1 and 5 stars');
-        return false;
-      }
-
-      // Check if user can review
-      if (!canUserReviewSeller(userId, sellerId)) {
-        _setError('You have already reviewed this seller recently');
-        return false;
-      }
-
-      // Verify interaction if required
-      if (verificationMethod != null && !hasUserInteractedWithSeller(userId, sellerId, verificationMethod)) {
-        _setError('You must interact with this seller before leaving a review');
-        return false;
-      }
-
-      // Calculate points earned
-      int pointsEarned = 5; // Base points for rating
-      if (comment != null && comment.isNotEmpty) pointsEarned += 5;
-      if (imageUrls != null && imageUrls.isNotEmpty) pointsEarned += 10;
-
-      // Create review
-      final review = Review(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
+      final review = await _reviewService.submitReview(
         userId: userId,
         sellerId: sellerId,
-        offerId: offerId,
         rating: rating,
         comment: comment,
         imageUrls: imageUrls,
         videoUrl: videoUrl,
         type: type,
-        status: ReviewStatus.pending, // Will be approved by admin
-        createdAt: DateTime.now(),
-        isVerified: verificationMethod != null,
+        offerId: offerId,
         verificationMethod: verificationMethod,
-        pointsEarned: pointsEarned,
       );
 
-      // Add to local state
+      // Update local state
       _reviews.add(review);
-      _updateSellerReviews(sellerId);
-      
-      // TODO: Submit to backend
-      // await _apiService.submitReview(review);
-      
       notifyListeners();
       return true;
-
     } catch (e) {
-      _setError('Failed to submit review: $e');
+      _setError(e.toString());
       return false;
     } finally {
       _setLoading(false);
     }
   }
 
-  // Update seller's review summary
-  void _updateSellerReviews(String sellerId) {
-    final sellerReviewList = _reviews.where((review) => 
-      review.sellerId == sellerId && review.status == ReviewStatus.approved
-    ).toList();
-
-    _sellerReviews[sellerId] = sellerReviewList;
-
-    if (sellerReviewList.isNotEmpty) {
-      // Calculate average rating
-      final totalRating = sellerReviewList.fold(0, (sum, review) => sum + review.rating);
-      final averageRating = totalRating / sellerReviewList.length;
-
-      // Calculate rating distribution
-      final ratingDistribution = <int, int>{};
-      for (int i = 1; i <= 5; i++) {
-        ratingDistribution[i] = sellerReviewList.where((r) => r.rating == i).length;
-      }
-
-      // Determine badges
-      final badges = <String>[];
-      if (averageRating >= 4.5) badges.add('Top Rated');
-      if (sellerReviewList.length >= 50) badges.add('Popular');
-      if (averageRating >= 4.0 && sellerReviewList.length >= 20) badges.add('Highly Recommended');
-
-      _reviewSummaries[sellerId] = ReviewSummary(
-        sellerId: sellerId,
-        averageRating: averageRating,
-        totalReviews: sellerReviewList.length,
-        ratingDistribution: ratingDistribution,
-        badges: badges,
-        lastUpdated: DateTime.now(),
-      );
-    }
-  }
 
   // Load reviews for a seller
   Future<void> loadReviewsForSeller(String sellerId) async {
@@ -202,11 +140,33 @@ class ReviewsProvider extends ChangeNotifier {
       _setLoading(true);
       _clearError();
 
-      // TODO: Load from backend
-      // final reviews = await _apiService.getReviewsForSeller(sellerId);
-      // _sellerReviews[sellerId] = reviews;
+      // Cancel existing subscription if any
+      await _reviewSubscriptions[sellerId]?.cancel();
+      await _summarySubscriptions[sellerId]?.cancel();
 
-      notifyListeners();
+      // Subscribe to reviews stream
+      _reviewSubscriptions[sellerId] = _reviewService
+          .getSellerReviews(sellerId)
+          .listen(
+            (reviews) {
+              _sellerReviews[sellerId] = reviews;
+              notifyListeners();
+            },
+            onError: (e) => _setError('Failed to load reviews: $e'),
+          );
+
+      // Subscribe to summary stream
+      _summarySubscriptions[sellerId] = _reviewService
+          .getReviewSummary(sellerId)
+          .listen(
+            (summary) {
+              if (summary != null) {
+                _reviewSummaries[sellerId] = summary;
+                notifyListeners();
+              }
+            },
+            onError: (e) => _setError('Failed to load review summary: $e'),
+          );
     } catch (e) {
       _setError('Failed to load reviews: $e');
     } finally {
@@ -278,8 +238,29 @@ class ReviewsProvider extends ChangeNotifier {
   }
 
   // Get user's review history
-  List<Review> getUserReviews(String userId) {
-    return _reviews.where((review) => review.userId == userId).toList();
+  Future<void> loadUserReviews(String userId) async {
+    try {
+      _setLoading(true);
+      _clearError();
+
+      // Cancel existing subscription if any
+      await _reviewSubscriptions[userId]?.cancel();
+
+      // Subscribe to user reviews stream
+      _reviewSubscriptions[userId] = _reviewService
+          .getUserReviews(userId)
+          .listen(
+            (reviews) {
+              _reviews = reviews;
+              notifyListeners();
+            },
+            onError: (e) => _setError('Failed to load user reviews: $e'),
+          );
+    } catch (e) {
+      _setError('Failed to load user reviews: $e');
+    } finally {
+      _setLoading(false);
+    }
   }
 
   // Get user's followed sellers
@@ -303,71 +284,16 @@ class ReviewsProvider extends ChangeNotifier {
     _error = null;
   }
 
-  // Initialize with sample data for development
-  void initializeWithSampleData() {
-    // Sample sellers
-    _sellers = [
-      Seller(
-        id: '1',
-        name: 'The Coffee Bean',
-        description: 'Premium coffee and pastries',
-        category: 'Food & Beverage',
-        location: 'Downtown',
-        isVerified: true,
-        isActive: true,
-        createdAt: DateTime.now().subtract(const Duration(days: 30)),
-        followersCount: 150,
-        badges: ['Top Rated', 'Popular'],
-      ),
-      Seller(
-        id: '2',
-        name: 'Tech Store Pro',
-        description: 'Latest gadgets and electronics',
-        category: 'Electronics',
-        location: 'Mall District',
-        isVerified: true,
-        isActive: true,
-        createdAt: DateTime.now().subtract(const Duration(days: 60)),
-        followersCount: 89,
-        badges: ['Highly Recommended'],
-      ),
-    ];
-
-    // Sample reviews
-    _reviews = [
-      Review(
-        id: '1',
-        userId: 'user1',
-        sellerId: '1',
-        rating: 5,
-        comment: 'Amazing coffee and great service!',
-        type: ReviewType.seller,
-        status: ReviewStatus.approved,
-        createdAt: DateTime.now().subtract(const Duration(days: 5)),
-        isVerified: true,
-        verificationMethod: 'qr_scan',
-        pointsEarned: 10,
-      ),
-      Review(
-        id: '2',
-        userId: 'user2',
-        sellerId: '1',
-        rating: 4,
-        comment: 'Good coffee, friendly staff',
-        type: ReviewType.seller,
-        status: ReviewStatus.approved,
-        createdAt: DateTime.now().subtract(const Duration(days: 3)),
-        isVerified: true,
-        verificationMethod: 'offer_redemption',
-        pointsEarned: 10,
-      ),
-    ];
-
-    // Update review summaries
-    _updateSellerReviews('1');
-    _updateSellerReviews('2');
-
-    notifyListeners();
+  @override
+  void dispose() {
+    // Cancel all subscriptions
+    for (var subscription in _reviewSubscriptions.values) {
+      subscription.cancel();
+    }
+    for (var subscription in _summarySubscriptions.values) {
+      subscription.cancel();
+    }
+    super.dispose();
   }
 }
 
