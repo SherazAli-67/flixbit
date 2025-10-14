@@ -112,7 +112,7 @@ class VideoAdsRepositoryImpl {
       // Award points for rating if not rated before
       final doc = await engagementRef.get();
       if (doc.exists) {
-        final data = doc.data()!;
+        final data = doc.data() as Map<String, dynamic>;
         if (data['ratedUp'] == null && data['ratedDown'] == null) {
           await _awardRatingPoints(adId);
         }
@@ -161,13 +161,14 @@ class VideoAdsRepositoryImpl {
         );
       }
 
+      final adData = adDoc.data() as Map<String, dynamic>;
       final ad = VideoAd(
         id: adDoc.id,
-        title: adDoc.data()!['title'],
-        mediaUrl: adDoc.data()!['mediaUrl'],
-        durationSeconds: adDoc.data()!['durationSeconds'],
-        rewardPoints: adDoc.data()!['rewardPoints'] ?? PointsConfig.getPoints('video_ad'),
-        minWatchSeconds: adDoc.data()!['minWatchSeconds'],
+        title: adData['title'] as String,
+        mediaUrl: adData['mediaUrl'] as String,
+        durationSeconds: adData['durationSeconds'] as int,
+        rewardPoints: (adData['rewardPoints'] as int?) ?? PointsConfig.getPoints('video_ad'),
+        minWatchSeconds: adData['minWatchSeconds'] as int,
       );
 
       // Check watch time
@@ -217,7 +218,7 @@ class VideoAdsRepositoryImpl {
         success: true,
         message: 'Reward claimed successfully',
         pointsAwarded: ad.rewardPoints,
-        couponId: adDoc.data()!['rewardCouponId'],
+        couponId: adData['rewardCouponId'] as String?,
       );
     } catch (e) {
       debugPrint('Error claiming reward: $e');
