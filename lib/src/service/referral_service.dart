@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import '../config/points_config.dart';
-import '../models/flixbit_transaction_model.dart';
+import '../models/wallet_models.dart';
 import '../res/firebase_constants.dart';
 import 'flixbit_points_manager.dart';
-import 'wallet_service.dart';
 
 class ReferralService {
   // Singleton pattern
@@ -13,7 +12,6 @@ class ReferralService {
   ReferralService._internal();
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final WalletService _walletService = WalletService();
 
   /// Generate referral code for user
   Future<String> generateReferralCode(String userId) async {

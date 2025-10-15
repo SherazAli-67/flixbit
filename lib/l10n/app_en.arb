@@ -95,7 +95,11 @@
   "pointsToConvert": "Points to Convert",
   "invalidPointsAmount": "Invalid points amount",
   "pointsConverted": "Points converted successfully",
-  "convert": "Convert"
+  "convert": "Convert",
+  "pointsBreakdown": "Points Breakdown",
+  "tournament": "Tournament",
+  "reviews": "Reviews",
+  "qrScans": "QR Scans"
 }
 
 

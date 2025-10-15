@@ -21,16 +21,29 @@ enum TransactionStatus {
 
 /// Enum defining different sources of transactions
 enum TransactionSource {
-  tournament,
+  // Tournament related
+  tournamentPrediction,
+  tournamentQualification,
+  tournamentWin,
+  tournamentEntry,
+  
+  // Engagement
   videoAd,
   referral,
   review,
   qrScan,
-  gift,
-  purchase,
   dailyLogin,
+  
+  // Commerce
+  purchase,
+  gift,
   offer,
-  reward
+  reward,
+  
+  // System
+  refund,
+  conversion,
+  adminAdjustment
 }
 
 /// Model representing a wallet transaction
@@ -134,7 +147,7 @@ class WalletBalance {
       userId: doc.id,
       flixbitPoints: (data['balance'] as num).toDouble(),
       tournamentPoints: (data['tournament_points'] as num).toInt(),
-      lastUpdated: (data['last_updated'] as Timestamp).toDate(),
+      lastUpdated: data['last_updated'] != null ? (data['last_updated'] as Timestamp).toDate() : DateTime.now(),
       currency: data['currency'] ?? 'FLIXBIT',
       status: data['status'] ?? 'active',
       accountType: data['account_type'] ?? 'user',

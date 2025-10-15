@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -102,6 +103,8 @@ class _WalletPageState extends State<WalletPage> {
                       _buildActionButtons(context),
                       const SizedBox(height: 20),
                       _buildBalanceCards(wallet),
+                      const SizedBox(height: 20),
+                      _buildPointsBreakdown(wallet),
                       const SizedBox(height: 20),
                     ],
                   ),
@@ -250,67 +253,172 @@ class _WalletPageState extends State<WalletPage> {
     final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
+      child: Column(
         children: [
-          Expanded(
-            child: _buildBalanceCard(
-              title: l10n.flixbitBalance,
-              amount: wallet.balance?.flixbitPoints ?? 0,
-              currency: 'FLIXBIT',
+          // Main Flixbit Balance Card (Primary)
+          _buildMainBalanceCard(
+            title: l10n.flixbitBalance,
+            amount: wallet.balance?.flixbitPoints ?? 0,
+            currency: 'FLIXBIT',
+          ),
+          const SizedBox(height: 16),
+          // Tournament Earnings Tracker (Analytics Only)
+          _buildTournamentEarningsCard(
+            title: 'Tournament Earnings',
+            amount: wallet.balance?.tournamentPoints ?? 0,
+            subtitle: 'Total Flixbit earned from tournaments',
+          ),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildMainBalanceCard({
+    required String title,
+    required num amount,
+    required String currency,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppColors.primaryColor,
+            AppColors.primaryColor.withValues(alpha: 0.7),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryColor.withValues(alpha: 0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: AppTextStyles.bodyTextStyle.copyWith(
+                  color: AppColors.whiteColor.withValues(alpha: 0.9),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: AppColors.whiteColor.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  currency,
+                  style: AppTextStyles.captionTextStyle.copyWith(
+                    color: AppColors.whiteColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            NumberFormat('#,##0').format(amount),
+            style: AppTextStyles.headingTextStyle3.copyWith(
+              color: AppColors.whiteColor,
+              fontSize: 36,
+              fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: _buildBalanceCard(
-              title: l10n.tournamentPoints,
-              amount: wallet.balance?.tournamentPoints ?? 0,
-              currency: 'POINTS',
-              onTap: () => _showConvertPointsDialog(wallet),
+          const SizedBox(height: 4),
+          Text(
+            'Available Balance',
+            style: AppTextStyles.captionTextStyle.copyWith(
+              color: AppColors.whiteColor.withValues(alpha: 0.8),
             ),
           ),
         ],
       ),
     );
   }
-
-  Widget _buildBalanceCard({
+  
+  Widget _buildTournamentEarningsCard({
     required String title,
     required num amount,
-    required String currency,
-    VoidCallback? onTap,
+    required String subtitle,
   }) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: _showTournamentPointsInfo,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppColors.cardBgColor,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: AppColors.primaryColor.withOpacity(0.1),
+            color: AppColors.greenColor.withValues(alpha: 0.3),
           ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: AppTextStyles.bodyTextStyle.copyWith(
-                color: AppColors.lightGreyColor,
+        child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppColors.greenColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(
+              Icons.emoji_events,
+              color: AppColors.greenColor,
+              size: 28,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: AppTextStyles.bodyTextStyle.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: AppTextStyles.smallTextStyle.copyWith(
+                    color: AppColors.lightGreyColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                NumberFormat('#,##0').format(amount),
+                style: AppTextStyles.tileTitleTextStyle.copyWith(
+                  color: AppColors.greenColor,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              NumberFormat('#,##0').format(amount),
-              style: AppTextStyles.headingTextStyle3,
-            ),
-            Text(
-              currency,
-              style: AppTextStyles.smallTextStyle.copyWith(
-                color: AppColors.lightGreyColor,
+              Text(
+                'Points',
+                style: AppTextStyles.captionTextStyle.copyWith(
+                  color: AppColors.lightGreyColor,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
+        ],
         ),
       ),
     );
@@ -482,40 +590,197 @@ class _WalletPageState extends State<WalletPage> {
     );
   }
 
-  void _showConvertPointsDialog(WalletProvider wallet) {
-    final tournamentPoints = wallet.balance?.tournamentPoints ?? 0;
-    if (tournamentPoints == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.noTournamentPoints),
-        ),
-      );
-      return;
-    }
+  Widget _buildPointsBreakdown(WalletProvider wallet) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            AppLocalizations.of(context)!.pointsBreakdown,
+            style: AppTextStyles.subHeadingTextStyle,
+          ),
+          const SizedBox(height: 12),
+          FutureBuilder<Map<String, num>>(
+            future: wallet.getDailySummary('currentUser'),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: LoadingIndicator());
+              }
 
-    final controller = TextEditingController();
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text(
+                    snapshot.error.toString(),
+                    style: AppTextStyles.errorTextStyle,
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              }
+
+              final summary = snapshot.data ?? {};
+              return Column(
+                children: [
+                  _buildPointsSourceCard(
+                    icon: Icons.videogame_asset,
+                    title: AppLocalizations.of(context)!.tournament,
+                    points: summary['tournament'] ?? 0,
+                    color: AppColors.primaryColor,
+                  ),
+                  const SizedBox(height: 8),
+                  _buildPointsSourceCard(
+                    icon: Icons.ondemand_video,
+                    title: AppLocalizations.of(context)!.videoAds,
+                    points: summary['video_ad'] ?? 0,
+                    color: Colors.purple,
+                  ),
+                  const SizedBox(height: 8),
+                  _buildPointsSourceCard(
+                    icon: Icons.rate_review,
+                    title: AppLocalizations.of(context)!.reviews,
+                    points: summary['review'] ?? 0,
+                    color: Colors.orange,
+                  ),
+                  const SizedBox(height: 8),
+                  _buildPointsSourceCard(
+                    icon: Icons.qr_code_scanner,
+                    title: AppLocalizations.of(context)!.qrScans,
+                    points: summary['qr_scan'] ?? 0,
+                    color: Colors.blue,
+                  ),
+                  const SizedBox(height: 8),
+                  _buildPointsSourceCard(
+                    icon: Icons.people,
+                    title: AppLocalizations.of(context)!.referrals,
+                    points: summary['referral'] ?? 0,
+                    color: Colors.green,
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPointsSourceCard({
+    required IconData icon,
+    required String title,
+    required num points,
+    required Color color,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.cardBgColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: color.withOpacity(0.3),
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, color: color),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: AppTextStyles.bodyTextStyle,
+                ),
+                Text(
+                  '${NumberFormat('#,##0').format(points)} points today',
+                  style: AppTextStyles.smallTextStyle.copyWith(
+                    color: AppColors.lightGreyColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Text(
+              '+${NumberFormat('#,##0').format(points)}',
+              style: AppTextStyles.smallTextStyle.copyWith(
+                color: color,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Note: This dialog is kept for compatibility but tournament points are now
+  // just analytics tracking, not a separate currency
+  void _showTournamentPointsInfo() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.darkBgColor,
-        title: Text(
-          AppLocalizations.of(context)!.convertPoints,
-          style: AppTextStyles.headingTextStyle3,
+        title: Row(
+          children: [
+            Icon(Icons.emoji_events, color: AppColors.greenColor),
+            const SizedBox(width: 12),
+            Text(
+              'Tournament Earnings',
+              style: AppTextStyles.headingTextStyle3,
+            ),
+          ],
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              AppLocalizations.of(context)!.convertPointsDescription,
-              style: AppTextStyles.bodyTextStyle,
+              'Tournament Points are Flixbit Points!',
+              style: AppTextStyles.bodyTextStyle.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'The number shown here represents the total Flixbit points you\'ve earned specifically from tournament activities (predictions, qualifications, wins).',
+              style: AppTextStyles.bodyTextStyle.copyWith(
+                color: AppColors.lightGreyColor,
+              ),
             ),
             const SizedBox(height: 16),
-            TextField(
-              controller: controller,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: AppLocalizations.of(context)!.pointsToConvert,
-                suffixText: 'Points',
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.greenColor.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: AppColors.greenColor.withValues(alpha: 0.3)),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.info_outline, color: AppColors.greenColor, size: 20),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'These points are already included in your main Flixbit balance. No conversion needed!',
+                      style: AppTextStyles.smallTextStyle.copyWith(
+                        color: AppColors.greenColor,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -523,37 +788,10 @@ class _WalletPageState extends State<WalletPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(AppLocalizations.of(context)!.cancel),
-          ),
-          TextButton(
-            onPressed: () {
-              final points = int.tryParse(controller.text);
-              if (points == null || points <= 0 || points > tournamentPoints) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(AppLocalizations.of(context)!.invalidPointsAmount),
-                  ),
-                );
-                return;
-              }
-              
-              wallet.convertTournamentPoints('currentUser', points).then((_) {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(AppLocalizations.of(context)!.pointsConverted),
-                  ),
-                );
-              }).catchError((error) {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(error.toString()),
-                  ),
-                );
-              });
-            },
-            child: Text(AppLocalizations.of(context)!.convert),
+            child: Text(
+              'Got it',
+              style: TextStyle(color: AppColors.primaryColor),
+            ),
           ),
         ],
       ),

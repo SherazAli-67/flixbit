@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import '../config/points_config.dart';
-import '../models/flixbit_transaction_model.dart';
-import '../res/firebase_constants.dart';
+import '../models/wallet_models.dart';
 import 'flixbit_points_manager.dart';
 import 'wallet_service.dart';
 
@@ -13,7 +12,6 @@ class QRScanService {
   QRScanService._internal();
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final WalletService _walletService = WalletService();
 
   /// Record a QR scan and award points
   Future<void> recordScan({
@@ -24,8 +22,8 @@ class QRScanService {
   }) async {
     try {
       // Check daily limit
-      final dailyStats = await _walletService.getDailyTransactionSummary(userId);
-      final scanPoints = (dailyStats['qr_scan_points'] as num?)?.toInt() ?? 0;
+      final dailyStats = await WalletService.getDailySummary(userId);
+      final scanPoints = (dailyStats['qrScan'])?.toInt() ?? 0;
       final dailyLimit = PointsConfig.dailyLimits['qr_scan'] ?? 100;
 
       if (scanPoints >= dailyLimit) {
@@ -187,7 +185,7 @@ class QRScanService {
           .count()
           .get();
 
-      return scans.count;
+      return scans.count ?? 0;
     } catch (e) {
       debugPrint('Error getting daily scan count: $e');
       return 0;

@@ -3,8 +3,6 @@ import '../models/wallet_models.dart';
 import '../service/wallet_service.dart';
 
 class WalletProvider extends ChangeNotifier {
-  final WalletService _walletService = WalletService();
-  
   WalletBalance? _balance;
   List<WalletTransaction> _transactions = [];
   WalletSettings? _settings;
@@ -20,86 +18,104 @@ class WalletProvider extends ChangeNotifier {
 
   // Initialize wallet for current user
   Future<void> initializeWallet(String userId) async {
-    try {
-      _setLoading(true);
-      await _walletService.initializeWallet(userId);
-      await _loadWalletData(userId);
-    } catch (e) {
-      _setError('Failed to initialize wallet: $e');
-    } finally {
-      _setLoading(false);
-    }
-  }
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
 
-  // Load wallet data
-  Future<void> _loadWalletData(String userId) async {
     try {
-      // Load settings
-      _settings = await _walletService.getWalletSettings();
+      // Load wallet balance
+      _balance = await WalletService.getWallet(userId);
       
-      // Subscribe to balance updates
-      _walletService.getWalletBalance(userId).listen(
-        (balance) {
-          _balance = balance;
-          notifyListeners();
-        },
-        onError: (e) => _setError('Failed to load balance: $e'),
+      // Load transaction history
+      _transactions = await WalletService.getTransactionHistory(
+        userId: userId,
+        limit: 100,
       );
-
-      // Load initial transactions
-      await refreshTransactions(userId);
+      
+      // Load settings
+      _settings = await WalletService.getSettings();
     } catch (e) {
-      _setError('Failed to load wallet data: $e');
+      _error = e.toString();
+      debugPrint('Failed to initialize wallet: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
   }
 
   // Refresh transactions
   Future<void> refreshTransactions(String userId) async {
     try {
-      _setLoading(true);
-      final stream = _walletService.getTransactionHistory(userId);
-      await for (final transactions in stream) {
-        _transactions = transactions;
-        notifyListeners();
-        break; // Only get the first update
-      }
+      _balance = await WalletService.getWallet(userId);
+      _transactions = await WalletService.getTransactionHistory(
+        userId: userId,
+        limit: 100,
+      );
+      notifyListeners();
     } catch (e) {
-      _setError('Failed to refresh transactions: $e');
-    } finally {
-      _setLoading(false);
+      _error = e.toString();
+      debugPrint('Failed to refresh transactions: $e');
+      notifyListeners();
     }
   }
 
-  // Create a new transaction
-  Future<WalletTransaction> createTransaction({
+  // Purchase Flixbit points
+  Future<void> purchasePoints({
     required String userId,
-    required TransactionType type,
-    required double amount,
-    required TransactionSource source,
-    String? referenceId,
-    Map<String, dynamic>? sourceDetails,
-    Map<String, dynamic>? metadata,
+    required int points,
+    required double amountUSD,
+    required String paymentMethod,
+    required String paymentId,
   }) async {
     try {
-      _setLoading(true);
-      final transaction = await _walletService.createTransaction(
+      _isLoading = true;
+      notifyListeners();
+      
+      await WalletService.purchasePoints(
         userId: userId,
-        type: type,
-        amount: amount,
-        source: source,
-        referenceId: referenceId,
-        sourceDetails: sourceDetails,
-        metadata: metadata,
+        points: points,
+        amountUSD: amountUSD,
+        paymentMethod: paymentMethod,
+        paymentId: paymentId,
       );
       
-      // Refresh transactions after creating new one
+      // Refresh data after purchase
       await refreshTransactions(userId);
-      return transaction;
     } catch (e) {
-      _setError('Failed to create transaction: $e');
+      _error = e.toString();
+      notifyListeners();
       rethrow;
     } finally {
-      _setLoading(false);
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // Sell Flixbit points
+  Future<void> sellPoints({
+    required String userId,
+    required int points,
+    required String payoutMethod,
+  }) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      
+      await WalletService.sellPoints(
+        userId: userId,
+        points: points,
+        payoutMethod: payoutMethod,
+      );
+      
+      // Refresh data after sale
+      await refreshTransactions(userId);
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
   }
 
@@ -107,14 +123,10 @@ class WalletProvider extends ChangeNotifier {
   List<WalletTransaction> getFilteredTransactions({
     TransactionType? type,
     TransactionSource? source,
-    DateTime? startDate,
-    DateTime? endDate,
   }) {
     return _transactions.where((tx) {
       if (type != null && tx.type != type) return false;
       if (source != null && tx.source != source) return false;
-      if (startDate != null && tx.timestamp.isBefore(startDate)) return false;
-      if (endDate != null && tx.timestamp.isAfter(endDate)) return false;
       return true;
     }).toList();
   }
@@ -122,36 +134,34 @@ class WalletProvider extends ChangeNotifier {
   // Get daily transaction summary
   Future<Map<String, num>> getDailySummary(String userId) async {
     try {
-      return await _walletService.getDailyTransactionSummary(userId);
+      return await WalletService.getDailySummary(userId);
     } catch (e) {
-      _setError('Failed to get daily summary: $e');
+      debugPrint('Failed to get daily summary: $e');
+      _error = e.toString();
+      notifyListeners();
       rethrow;
     }
   }
 
-  // Convert tournament points to Flixbit points
+  // Convert tournament points to Flixbit points (not used in single currency system)
+  // This method is kept for compatibility but tournament points are now just analytics
   Future<void> convertTournamentPoints(String userId, int points) async {
     try {
-      _setLoading(true);
-      await _walletService.convertTournamentPoints(userId, points);
-      await refreshTransactions(userId);
+      _isLoading = true;
+      notifyListeners();
+      
+      // In the new system, tournament points are just tracking
+      // This method would be a no-op or could be removed
+      // For now, show a message that conversion is not needed
+      throw Exception('Tournament points are already Flixbit points. No conversion needed.');
     } catch (e) {
-      _setError('Failed to convert points: $e');
+      _error = e.toString();
+      notifyListeners();
       rethrow;
     } finally {
-      _setLoading(false);
+      _isLoading = false;
+      notifyListeners();
     }
-  }
-
-  // Helper methods
-  void _setLoading(bool loading) {
-    _isLoading = loading;
-    notifyListeners();
-  }
-
-  void _setError(String? errorMessage) {
-    _error = errorMessage;
-    notifyListeners();
   }
 
   void clearError() {

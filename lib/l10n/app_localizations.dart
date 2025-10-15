@@ -547,6 +547,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Privacy Policy'**
   String get privacyPolicy;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @noTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions yet'**
+  String get noTransactions;
+
+  /// No description provided for @tournamentPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Tournament Points'**
+  String get tournamentPoints;
+
+  /// No description provided for @earned.
+  ///
+  /// In en, this message translates to:
+  /// **'Points Earned'**
+  String get earned;
+
+  /// No description provided for @spent.
+  ///
+  /// In en, this message translates to:
+  /// **'Points Spent'**
+  String get spent;
+
+  /// No description provided for @bought.
+  ///
+  /// In en, this message translates to:
+  /// **'Points Bought'**
+  String get bought;
+
+  /// No description provided for @sold.
+  ///
+  /// In en, this message translates to:
+  /// **'Points Sold'**
+  String get sold;
+
+  /// No description provided for @giftReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Gift Received'**
+  String get giftReceived;
+
+  /// No description provided for @rewardEarned.
+  ///
+  /// In en, this message translates to:
+  /// **'Reward Earned'**
+  String get rewardEarned;
+
+  /// No description provided for @refunded.
+  ///
+  /// In en, this message translates to:
+  /// **'Points Refunded'**
+  String get refunded;
+
+  /// No description provided for @filterTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter Transactions'**
+  String get filterTransactions;
+
+  /// No description provided for @transactionType.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Type'**
+  String get transactionType;
+
+  /// No description provided for @source.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get source;
+
+  /// No description provided for @clearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear All'**
+  String get clearAll;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @noTournamentPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'No tournament points available'**
+  String get noTournamentPoints;
+
+  /// No description provided for @convertPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Convert Points'**
+  String get convertPoints;
+
+  /// No description provided for @convertPointsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Convert your tournament points to Flixbit points. Each tournament point is worth 5 Flixbit points.'**
+  String get convertPointsDescription;
+
+  /// No description provided for @pointsToConvert.
+  ///
+  /// In en, this message translates to:
+  /// **'Points to Convert'**
+  String get pointsToConvert;
+
+  /// No description provided for @invalidPointsAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid points amount'**
+  String get invalidPointsAmount;
+
+  /// No description provided for @pointsConverted.
+  ///
+  /// In en, this message translates to:
+  /// **'Points converted successfully'**
+  String get pointsConverted;
+
+  /// No description provided for @convert.
+  ///
+  /// In en, this message translates to:
+  /// **'Convert'**
+  String get convert;
+
+  /// No description provided for @pointsBreakdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Points Breakdown'**
+  String get pointsBreakdown;
+
+  /// No description provided for @tournament.
+  ///
+  /// In en, this message translates to:
+  /// **'Tournament'**
+  String get tournament;
+
+  /// No description provided for @reviews.
+  ///
+  /// In en, this message translates to:
+  /// **'Reviews'**
+  String get reviews;
+
+  /// No description provided for @qrScans.
+  ///
+  /// In en, this message translates to:
+  /// **'QR Scans'**
+  String get qrScans;
 }
 
 class _AppLocalizationsDelegate

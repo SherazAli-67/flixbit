@@ -2,14 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import '../config/points_config.dart';
 import '../models/video_ad.dart';
-import '../models/flixbit_transaction_model.dart';
+import '../models/wallet_models.dart';
 import '../res/firebase_constants.dart';
 import 'flixbit_points_manager.dart';
 import 'wallet_service.dart';
 
 class VideoAdsRepositoryImpl {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final WalletService _walletService = WalletService();
 
   Future<List<VideoAd>> fetchAds({String? category, String? region}) async {
     try {
@@ -182,8 +181,8 @@ class VideoAdsRepositoryImpl {
       }
 
       // Check daily limit
-      final Map<String, num> dailyStats = await _walletService.getDailyTransactionSummary(userId);
-      final videoPoints = (dailyStats['video_ad_points'] ?? 0).toInt();
+      final Map<String, num> dailyStats = await WalletService.getDailySummary(userId);
+      final videoPoints = (dailyStats['videoAd'] ?? 0).toInt();
       final dailyLimit = PointsConfig.dailyLimits['video_ad'] ?? 50;
 
       if (videoPoints >= dailyLimit) {

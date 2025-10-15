@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../config/points_config.dart';
-import '../models/flixbit_transaction_model.dart';
+import '../models/wallet_models.dart';
 import '../res/firebase_constants.dart';
 
 class FlixbitPointsManager {
@@ -47,27 +47,41 @@ class FlixbitPointsManager {
         'totalPointsEarned': FieldValue.increment(pointsEarned),
       });
 
-      // Create transaction record
-      final transaction = FlixbitTransaction(
-        id: _firestore
-            .collection(FirebaseConstants.flixbitTransactionsCollection)
-            .doc()
-            .id,
+      // Create transaction record using WalletTransaction model
+      final transactionId = _firestore
+          .collection('wallet_transactions')
+          .doc()
+          .id;
+      
+      final transaction = WalletTransaction(
+        id: transactionId,
         userId: userId,
-        type: TransactionType.earned,
-        amount: pointsEarned,
-        balanceBefore: currentBalance,
-        balanceAfter: newBalance,
+        type: TransactionType.earn,
+        amount: pointsEarned.toDouble(),
+        balanceBefore: currentBalance.toDouble(),
+        balanceAfter: newBalance.toDouble(),
         source: source,
-        description: description,
-        metadata: metadata,
+        referenceId: metadata?['tournamentId'] ?? metadata?['matchId'],
+        sourceDetails: metadata,
+        status: TransactionStatus.completed,
         timestamp: DateTime.now(),
+        metadata: {'description': description},
       );
 
       await _firestore
-          .collection(FirebaseConstants.flixbitTransactionsCollection)
+          .collection('wallet_transactions')
           .doc(transaction.id)
-          .set(transaction.toJson());
+          .set(transaction.toFirestore());
+      
+      // Update tournament points tracking if from tournament source
+      if (_isTournamentSource(source)) {
+        await _firestore
+            .collection(FirebaseConstants.usersCollection)
+            .doc(userId)
+            .update({
+          'tournamentPointsEarned': FieldValue.increment(pointsEarned),
+        });
+      }
 
       // Send notification
       await _sendPointsNotification(
@@ -114,27 +128,31 @@ class FlixbitPointsManager {
         'flixbitBalance': newBalance,
       });
 
-      // Create transaction record
-      final transaction = FlixbitTransaction(
-        id: _firestore
-            .collection(FirebaseConstants.flixbitTransactionsCollection)
-            .doc()
-            .id,
+      // Create transaction record using WalletTransaction model
+      final transactionId = _firestore
+          .collection('wallet_transactions')
+          .doc()
+          .id;
+      
+      final transaction = WalletTransaction(
+        id: transactionId,
         userId: userId,
-        type: TransactionType.spent,
-        amount: amount,
-        balanceBefore: currentBalance,
-        balanceAfter: newBalance,
+        type: TransactionType.spend,
+        amount: amount.toDouble(),
+        balanceBefore: currentBalance.toDouble(),
+        balanceAfter: newBalance.toDouble(),
         source: source,
-        description: description,
-        metadata: metadata,
+        referenceId: metadata?['tournamentId'] ?? metadata?['offerId'],
+        sourceDetails: metadata,
+        status: TransactionStatus.completed,
         timestamp: DateTime.now(),
+        metadata: {'description': description},
       );
 
       await _firestore
-          .collection(FirebaseConstants.flixbitTransactionsCollection)
+          .collection('wallet_transactions')
           .doc(transaction.id)
-          .set(transaction.toJson());
+          .set(transaction.toFirestore());
 
       return true;
     } catch (e) {
@@ -173,20 +191,20 @@ class FlixbitPointsManager {
   }
 
   /// Get user's transaction history
-  static Future<List<FlixbitTransaction>> getTransactionHistory({
+  static Future<List<WalletTransaction>> getTransactionHistory({
     required String userId,
     int limit = 50,
   }) async {
     try {
       final snapshot = await _firestore
-          .collection(FirebaseConstants.flixbitTransactionsCollection)
-          .where('userId', isEqualTo: userId)
+          .collection('wallet_transactions')
+          .where('user_id', isEqualTo: userId)
           .orderBy('timestamp', descending: true)
           .limit(limit)
           .get();
 
       return snapshot.docs
-          .map((doc) => FlixbitTransaction.fromJson(doc.data()))
+          .map((doc) => WalletTransaction.fromFirestore(doc))
           .toList();
     } catch (e) {
       throw Exception('Failed to get transaction history: $e');
@@ -224,7 +242,7 @@ class FlixbitPointsManager {
     await deductPoints(
       userId: userId,
       amount: cost,
-      source: TransactionSource.purchaseQualification,
+      source: TransactionSource.tournamentEntry,
       description: 'Purchased $pointsNeeded qualification points',
       metadata: {
         'tournamentId': tournamentId,
@@ -255,30 +273,43 @@ class FlixbitPointsManager {
         'flixbitBalance': newBalance,
       });
 
-      // Create refund transaction
-      final transaction = FlixbitTransaction(
-        id: _firestore
-            .collection(FirebaseConstants.flixbitTransactionsCollection)
-            .doc()
-            .id,
+      // Create refund transaction using WalletTransaction model
+      final transactionId = _firestore
+          .collection('wallet_transactions')
+          .doc()
+          .id;
+      
+      final transaction = WalletTransaction(
+        id: transactionId,
         userId: userId,
-        type: TransactionType.refunded,
-        amount: amount,
-        balanceBefore: currentBalance,
-        balanceAfter: newBalance,
-        source: TransactionSource.tournamentEntry,
-        description: 'Tournament entry fee refund',
-        metadata: {'tournamentId': tournamentId},
+        type: TransactionType.refund,
+        amount: amount.toDouble(),
+        balanceBefore: currentBalance.toDouble(),
+        balanceAfter: newBalance.toDouble(),
+        source: TransactionSource.refund,
+        referenceId: tournamentId,
+        sourceDetails: {'tournamentId': tournamentId},
+        status: TransactionStatus.completed,
         timestamp: DateTime.now(),
+        metadata: {'description': 'Tournament entry fee refund'},
       );
 
       await _firestore
-          .collection(FirebaseConstants.flixbitTransactionsCollection)
+          .collection('wallet_transactions')
           .doc(transaction.id)
-          .set(transaction.toJson());
+          .set(transaction.toFirestore());
     } catch (e) {
       throw Exception('Failed to refund entry fee: $e');
     }
+  }
+
+  /// Check if transaction source is tournament-related
+  static bool _isTournamentSource(TransactionSource source) {
+    return [
+      TransactionSource.tournamentPrediction,
+      TransactionSource.tournamentQualification,
+      TransactionSource.tournamentWin,
+    ].contains(source);
   }
 
   /// Send notification about points transaction

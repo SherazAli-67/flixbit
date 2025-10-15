@@ -95,7 +95,11 @@
   "pointsToConvert": "النقاط للتحويل",
   "invalidPointsAmount": "قيمة النقاط غير صالحة",
   "pointsConverted": "تم تحويل النقاط بنجاح",
-  "convert": "تحويل"
+  "convert": "تحويل",
+  "pointsBreakdown": "تفصيل النقاط",
+  "tournament": "البطولة",
+  "reviews": "المراجعات",
+  "qrScans": "مسح QR"
 }
 
 

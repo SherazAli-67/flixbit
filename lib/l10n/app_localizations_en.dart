@@ -232,4 +232,83 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyPolicy => 'Privacy Policy';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get noTransactions => 'No transactions yet';
+
+  @override
+  String get tournamentPoints => 'Tournament Points';
+
+  @override
+  String get earned => 'Points Earned';
+
+  @override
+  String get spent => 'Points Spent';
+
+  @override
+  String get bought => 'Points Bought';
+
+  @override
+  String get sold => 'Points Sold';
+
+  @override
+  String get giftReceived => 'Gift Received';
+
+  @override
+  String get rewardEarned => 'Reward Earned';
+
+  @override
+  String get refunded => 'Points Refunded';
+
+  @override
+  String get filterTransactions => 'Filter Transactions';
+
+  @override
+  String get transactionType => 'Transaction Type';
+
+  @override
+  String get source => 'Source';
+
+  @override
+  String get clearAll => 'Clear All';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get noTournamentPoints => 'No tournament points available';
+
+  @override
+  String get convertPoints => 'Convert Points';
+
+  @override
+  String get convertPointsDescription =>
+      'Convert your tournament points to Flixbit points. Each tournament point is worth 5 Flixbit points.';
+
+  @override
+  String get pointsToConvert => 'Points to Convert';
+
+  @override
+  String get invalidPointsAmount => 'Invalid points amount';
+
+  @override
+  String get pointsConverted => 'Points converted successfully';
+
+  @override
+  String get convert => 'Convert';
+
+  @override
+  String get pointsBreakdown => 'Points Breakdown';
+
+  @override
+  String get tournament => 'Tournament';
+
+  @override
+  String get reviews => 'Reviews';
+
+  @override
+  String get qrScans => 'QR Scans';
 }

@@ -231,5 +231,84 @@ class AppLocalizationsAr extends AppLocalizations {
   String get contactUs => 'Contact Us';
 
   @override
-  String get privacyPolicy => 'Privacy Policy';
+  String get privacyPolicy => 'سياسة الخصوصية';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get noTransactions => 'لا توجد معاملات حتى الآن';
+
+  @override
+  String get tournamentPoints => 'نقاط البطولة';
+
+  @override
+  String get earned => 'النقاط المكتسبة';
+
+  @override
+  String get spent => 'النقاط المنفقة';
+
+  @override
+  String get bought => 'النقاط المشتراة';
+
+  @override
+  String get sold => 'النقاط المباعة';
+
+  @override
+  String get giftReceived => 'هدية مستلمة';
+
+  @override
+  String get rewardEarned => 'مكافأة مكتسبة';
+
+  @override
+  String get refunded => 'نقاط مستردة';
+
+  @override
+  String get filterTransactions => 'تصفية المعاملات';
+
+  @override
+  String get transactionType => 'نوع المعاملة';
+
+  @override
+  String get source => 'المصدر';
+
+  @override
+  String get clearAll => 'مسح الكل';
+
+  @override
+  String get close => 'إغلاق';
+
+  @override
+  String get noTournamentPoints => 'لا توجد نقاط بطولة متاحة';
+
+  @override
+  String get convertPoints => 'تحويل النقاط';
+
+  @override
+  String get convertPointsDescription =>
+      'حول نقاط البطولة الخاصة بك إلى نقاط فليكس بيت. كل نقطة بطولة تساوي 5 نقاط فليكس بيت.';
+
+  @override
+  String get pointsToConvert => 'النقاط للتحويل';
+
+  @override
+  String get invalidPointsAmount => 'قيمة النقاط غير صالحة';
+
+  @override
+  String get pointsConverted => 'تم تحويل النقاط بنجاح';
+
+  @override
+  String get convert => 'تحويل';
+
+  @override
+  String get pointsBreakdown => 'تفصيل النقاط';
+
+  @override
+  String get tournament => 'البطولة';
+
+  @override
+  String get reviews => 'المراجعات';
+
+  @override
+  String get qrScans => 'مسح QR';
 }

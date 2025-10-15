@@ -1,399 +1,347 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
-import '../config/points_config.dart';
 import '../models/wallet_models.dart';
-import 'points_logger.dart';
 
+/// Service for managing wallet operations including buy, sell, and balance management
 class WalletService {
-  // Singleton pattern
-  static final WalletService _instance = WalletService._internal();
-  factory WalletService() => _instance;
-  WalletService._internal();
+  static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final PointsLogger _pointsLogger = PointsLogger();
-
-  // Collection references
-  CollectionReference get _balances => _firestore.collection('wallet_balances');
-  CollectionReference get _transactions => _firestore.collection('wallet_transactions');
-  DocumentReference get _settings => _firestore.collection('wallet_settings').doc('global_settings');
-  
-  // Cache for current multipliers
-  Map<String, double> _activeMultipliers = {};
-
-  // Cache for wallet settings
-  WalletSettings? _cachedSettings;
-
-  /// Initialize wallet for a new user
-  Future<void> initializeWallet(String userId) async {
+  /// Get user's wallet
+  static Future<WalletBalance> getWallet(String userId) async {
     try {
-      final defaultLimits = {
-        'daily_transaction_limit': 10000,
-        'max_balance': 1000000,
-        'min_balance': 0,
-      };
+      final doc = await _firestore
+          .collection('wallets')
+          .doc(userId)
+          .get();
 
-      await _balances.doc(userId).set({
-        'balance': 0.0,
-        'tournament_points': 0,
-        'last_updated': FieldValue.serverTimestamp(),
-        'currency': 'FLIXBIT',
-        'status': 'active',
-        'account_type': 'user',
-        'limits': defaultLimits,
-      });
-
-      debugPrint('Wallet initialized for user: $userId');
-    } catch (e) {
-      throw Exception('Failed to initialize wallet: $e');
-    }
-  }
-
-  /// Get user's wallet balance
-  Stream<WalletBalance> getWalletBalance(String userId) {
-    return _balances.doc(userId).snapshots().map((doc) {
       if (!doc.exists) {
-        throw Exception('Wallet not found');
+        // Create default wallet
+        return await _createWallet(userId);
       }
+
       return WalletBalance.fromFirestore(doc);
-    });
-  }
-
-  /// Get wallet settings
-  Future<WalletSettings> getWalletSettings() async {
-    try {
-      if (_cachedSettings != null) {
-        return _cachedSettings!;
-      }
-
-      final doc = await _settings.get();
-      if (!doc.exists) {
-        // Initialize with default settings if not exists
-        final defaults = WalletSettings.defaults();
-        await _settings.set(defaults.toFirestore());
-        _cachedSettings = defaults;
-        return defaults;
-      }
-
-      _cachedSettings = WalletSettings.fromFirestore(doc);
-      return _cachedSettings!;
     } catch (e) {
-      throw Exception('Failed to get wallet settings: $e');
+      throw Exception('Failed to get wallet: $e');
     }
   }
 
-  /// Add transaction and update balance
-  Future<WalletTransaction> createTransaction({
+  /// Create new wallet for user
+  static Future<WalletBalance> _createWallet(String userId) async {
+    final settings = WalletSettings.defaults();
+    
+    final wallet = WalletBalance(
+      userId: userId,
+      flixbitPoints: 0,
+      tournamentPoints: 0, // Analytics tracking field
+      lastUpdated: DateTime.now(),
+      limits: {
+        'min_purchase': settings.transactionLimits['min_purchase']!,
+        'max_purchase': settings.transactionLimits['max_purchase']!,
+        'daily_earning_cap': settings.transactionLimits['daily_earning_cap']!,
+      },
+    );
+
+    await _firestore
+        .collection('wallets')
+        .doc(userId)
+        .set(wallet.toFirestore());
+
+    return wallet;
+  }
+
+  /// Purchase Flixbit points
+  static Future<WalletTransaction> purchasePoints({
     required String userId,
-    required TransactionType type,
-    required double amount,
-    required TransactionSource source,
-    String? referenceId,
-    Map<String, dynamic>? sourceDetails,
-    Map<String, dynamic>? metadata,
+    required int points,
+    required double amountUSD,
+    required String paymentMethod,
+    required String paymentId,
   }) async {
     try {
-      // Start a Firestore transaction
-      return await _firestore.runTransaction<WalletTransaction>((transaction) async {
-        // Get current balance
-        final balanceDoc = await transaction.get(_balances.doc(userId));
-        if (!balanceDoc.exists) {
-          throw Exception('Wallet not found');
-        }
+      final wallet = await getWallet(userId);
+      final settings = WalletSettings.defaults();
 
-        final data = balanceDoc.data() as Map<String, dynamic>;
-        final currentBalance = (data['balance'] as num).toDouble();
-        double newBalance;
+      // Check limits
+      if (points < settings.transactionLimits['min_purchase']! ||
+          points > settings.transactionLimits['max_purchase']!) {
+        throw Exception(
+            'Purchase amount must be between ${settings.transactionLimits['min_purchase']} and ${settings.transactionLimits['max_purchase']} points');
+      }
 
-        // Calculate new balance based on transaction type
-        switch (type) {
-          case TransactionType.earn:
-          case TransactionType.buy:
-          case TransactionType.gift:
-          case TransactionType.reward:
-          case TransactionType.refund:
-            newBalance = currentBalance + amount;
-            break;
-          case TransactionType.spend:
-          case TransactionType.sell:
-            if (currentBalance < amount) {
-              throw Exception('Insufficient balance');
-            }
-            newBalance = currentBalance - amount;
-            break;
-        }
+      final newBalance = wallet.flixbitPoints + points;
 
-        // Create transaction document
-        final transactionDoc = _transactions.doc();
-        final timestamp = FieldValue.serverTimestamp();
-        
-        final transactionData = {
-          'user_id': userId,
-          'transaction_type': type.toString().split('.').last,
-          'amount': amount,
-          'balance_before': currentBalance,
-          'balance_after': newBalance,
-          'source': {
-            'type': source.toString().split('.').last,
-            'reference_id': referenceId,
-            'details': sourceDetails,
-          },
-          'status': TransactionStatus.completed.toString().split('.').last,
-          'timestamp': timestamp,
-          'metadata': metadata,
-        };
-
-        // Update balance
-        transaction.update(_balances.doc(userId), {
-          'balance': newBalance,
-          'last_updated': timestamp,
-        });
-
-        // Create transaction record
-        transaction.set(transactionDoc, transactionData);
-
-        return WalletTransaction(
-          id: transactionDoc.id,
-          userId: userId,
-          type: type,
-          amount: amount,
-          balanceBefore: currentBalance,
-          balanceAfter: newBalance,
-          source: source,
-          referenceId: referenceId,
-          sourceDetails: sourceDetails,
-          status: TransactionStatus.completed,
-          timestamp: DateTime.now(), // Will be replaced by server timestamp
-          metadata: metadata,
-        );
+      // Update balance in wallets collection
+      await _firestore.collection('wallets').doc(userId).update({
+        'balance': newBalance,
+        'last_updated': FieldValue.serverTimestamp(),
       });
+
+      // Also update user document for quick access
+      await _firestore.collection('users').doc(userId).update({
+        'flixbitBalance': newBalance.toInt(),
+      });
+
+      // Create transaction
+      final transactionId = _firestore.collection('wallet_transactions').doc().id;
+      
+      final transaction = WalletTransaction(
+        id: transactionId,
+        userId: userId,
+        type: TransactionType.buy,
+        amount: points.toDouble(),
+        balanceBefore: wallet.flixbitPoints,
+        balanceAfter: newBalance,
+        source: TransactionSource.purchase,
+        referenceId: paymentId,
+        sourceDetails: {
+          'payment_method': paymentMethod,
+          'amount_usd': amountUSD,
+        },
+        status: TransactionStatus.completed,
+        timestamp: DateTime.now(),
+      );
+
+      await _firestore
+          .collection('wallet_transactions')
+          .doc(transaction.id)
+          .set(transaction.toFirestore());
+
+      // Send notification
+      await _sendNotification(
+        userId: userId,
+        title: '✅ Purchase Successful!',
+        body: 'You purchased $points Flixbit points for \$$amountUSD',
+        type: 'purchase',
+      );
+
+      return transaction;
     } catch (e) {
-      throw Exception('Failed to create transaction: $e');
+      throw Exception('Failed to purchase points: $e');
     }
   }
 
-  /// Get transaction history for a user
-  Stream<List<WalletTransaction>> getTransactionHistory(String userId, {
+  /// Sell Flixbit points (convert to cash)
+  static Future<WalletTransaction> sellPoints({
+    required String userId,
+    required int points,
+    required String payoutMethod,
+  }) async {
+    try {
+      final wallet = await getWallet(userId);
+      final settings = WalletSettings.defaults();
+
+      // Check minimum withdrawal
+      if (points < settings.transactionLimits['min_withdrawal']!) {
+        throw Exception(
+            'Minimum withdrawal is ${settings.transactionLimits['min_withdrawal']} points');
+      }
+
+      // Calculate USD amount and fees
+      final usdAmount = points * settings.conversionRates['flixbit_to_usd']!;
+      final fee = settings.platformFees['withdrawal_fee_flat']!.toInt();
+      final totalDeduction = points + fee;
+
+      if (wallet.flixbitPoints < totalDeduction) {
+        throw Exception(
+            'Insufficient balance. Required: $totalDeduction points (including $fee points withdrawal fee)');
+      }
+
+      final newBalance = wallet.flixbitPoints - totalDeduction;
+
+      // Update balance
+      await _firestore.collection('wallets').doc(userId).update({
+        'balance': newBalance,
+        'last_updated': FieldValue.serverTimestamp(),
+      });
+
+      // Update user document
+      await _firestore.collection('users').doc(userId).update({
+        'flixbitBalance': newBalance.toInt(),
+      });
+
+      // Create transaction
+      final transactionId = _firestore.collection('wallet_transactions').doc().id;
+      
+      final transaction = WalletTransaction(
+        id: transactionId,
+        userId: userId,
+        type: TransactionType.sell,
+        amount: totalDeduction.toDouble(),
+        balanceBefore: wallet.flixbitPoints,
+        balanceAfter: newBalance,
+        source: TransactionSource.purchase,
+        referenceId: 'sell_${DateTime.now().millisecondsSinceEpoch}',
+        sourceDetails: {
+          'payout_method': payoutMethod,
+          'usd_amount': usdAmount,
+          'points_sold': points,
+          'fee': fee,
+        },
+        status: TransactionStatus.pending,
+        timestamp: DateTime.now(),
+      );
+
+      await _firestore
+          .collection('wallet_transactions')
+          .doc(transaction.id)
+          .set(transaction.toFirestore());
+
+      // Send notification
+      await _sendNotification(
+        userId: userId,
+        title: '💸 Withdrawal Requested',
+        body: 'Your withdrawal of $points points (\$$usdAmount) is being processed',
+        type: 'withdrawal',
+      );
+
+      return transaction;
+    } catch (e) {
+      throw Exception('Failed to sell points: $e');
+    }
+  }
+
+  /// Get transaction history with optional filters
+  static Future<List<WalletTransaction>> getTransactionHistory({
+    required String userId,
     int limit = 50,
     TransactionType? type,
     TransactionSource? source,
-  }) {
-    Query query = _transactions
-        .where('user_id', isEqualTo: userId)
-        .orderBy('timestamp', descending: true)
-        .limit(limit);
+  }) async {
+    try {
+      Query query = _firestore
+          .collection('wallet_transactions')
+          .where('user_id', isEqualTo: userId)
+          .orderBy('timestamp', descending: true)
+          .limit(limit);
 
-    if (type != null) {
-      query = query.where('transaction_type', 
-          isEqualTo: type.toString().split('.').last);
-    }
+      final snapshot = await query.get();
 
-    if (source != null) {
-      query = query.where('source.type', 
-          isEqualTo: source.toString().split('.').last);
-    }
-
-    return query.snapshots().map((snapshot) {
       return snapshot.docs
           .map((doc) => WalletTransaction.fromFirestore(doc))
+          .where((tx) {
+            if (type != null && tx.type != type) return false;
+            if (source != null && tx.source != source) return false;
+            return true;
+          })
           .toList();
-    });
-  }
-
-  /// Add tournament points
-  Future<void> addTournamentPoints(String userId, int points) async {
-    try {
-      await _balances.doc(userId).update({
-        'tournament_points': FieldValue.increment(points),
-        'last_updated': FieldValue.serverTimestamp(),
-      });
     } catch (e) {
-      throw Exception('Failed to add tournament points: $e');
+      throw Exception('Failed to get transaction history: $e');
     }
   }
 
-  /// Convert tournament points to Flixbit points
-  Future<void> convertTournamentPoints(String userId, int pointsToConvert) async {
+  /// Get daily summary of points earned by source
+  static Future<Map<String, num>> getDailySummary(String userId) async {
     try {
-      final settings = await getWalletSettings();
-      final conversionRate = settings.conversionRates['tournament_to_flixbit'] ?? 5;
-      
-      await _firestore.runTransaction((transaction) async {
-        final balanceDoc = await transaction.get(_balances.doc(userId));
-        if (!balanceDoc.exists) {
-          throw Exception('Wallet not found');
+      final today = DateTime.now();
+      final todayStart = DateTime(today.year, today.month, today.day);
+
+      final snapshot = await _firestore
+          .collection('wallet_transactions')
+          .where('user_id', isEqualTo: userId)
+          .where('timestamp', isGreaterThanOrEqualTo: Timestamp.fromDate(todayStart))
+          .get();
+
+      final summary = <String, num>{};
+
+      for (var doc in snapshot.docs) {
+        final tx = WalletTransaction.fromFirestore(doc);
+        
+        // Only count earned points
+        if (tx.type == TransactionType.earn) {
+          final sourceKey = tx.source.toString().split('.').last;
+          summary[sourceKey] = (summary[sourceKey] ?? 0) + tx.amount;
         }
+      }
 
-        final data = balanceDoc.data() as Map<String, dynamic>;
-        final currentTournamentPoints = (data['tournament_points'] as num).toInt();
-        if (currentTournamentPoints < pointsToConvert) {
-          throw Exception('Insufficient tournament points');
-        }
-
-        final flixbitPointsToAdd = pointsToConvert * conversionRate;
-
-        transaction.update(_balances.doc(userId), {
-          'tournament_points': FieldValue.increment(-pointsToConvert),
-          'balance': FieldValue.increment(flixbitPointsToAdd),
-          'last_updated': FieldValue.serverTimestamp(),
-        });
-      });
+      return summary;
     } catch (e) {
-      throw Exception('Failed to convert tournament points: $e');
+      throw Exception('Failed to get daily summary: $e');
     }
   }
 
-  /// Check if user has sufficient balance
-  Future<bool> hasSufficientBalance(String userId, double amount) async {
+  /// Get total balance from user document (quick access)
+  static Future<double> getBalance(String userId) async {
     try {
-      final doc = await _balances.doc(userId).get();
+      final userDoc = await _firestore
+          .collection('users')
+          .doc(userId)
+          .get();
+
+      final balance = userDoc.data()?['flixbitBalance'] as int? ?? 0;
+      return balance.toDouble();
+    } catch (e) {
+      throw Exception('Failed to get balance: $e');
+    }
+  }
+
+  /// Get wallet settings (admin controlled)
+  static Future<WalletSettings> getSettings() async {
+    try {
+      final doc = await _firestore
+          .collection('wallet_settings')
+          .doc('global')
+          .get();
+
       if (!doc.exists) {
-        return false;
-      }
-      final data = doc.data() as Map<String, dynamic>;
-      final balance = (data['balance'] as num).toDouble();
-      return balance >= amount;
-    } catch (e) {
-      throw Exception('Failed to check balance: $e');
-    }
-  }
-
-  /// Award points for an activity
-  Future<void> awardPoints({
-    required String userId,
-    required String activity,
-    Map<String, dynamic>? metadata,
-    String? eventMultiplier,
-  }) async {
-    try {
-      // Check daily limit
-      if (await _pointsLogger.hasReachedDailyLimit(userId, activity)) {
-        throw Exception('Daily limit reached for $activity');
+        // Return default settings
+        return WalletSettings.defaults();
       }
 
-      // Get base points
-      int points = PointsConfig.getPoints(activity);
-
-      // Apply multiplier if any
-      if (eventMultiplier != null) {
-        points = (PointsConfig.applyEventMultiplier(eventMultiplier, points)).toInt();
-      }
-
-      // Log points
-      await _pointsLogger.logPoints(
-        userId: userId,
-        activity: activity,
-        points: points,
-        metadata: metadata,
-      );
-
-      // Create wallet transaction
-      await createTransaction(
-        userId: userId,
-        type: TransactionType.earn,
-        amount: points.toDouble(),
-        source: TransactionSource.reward,
-        sourceDetails: {
-          'activity': activity,
-          'multiplier': eventMultiplier,
-        },
-        metadata: metadata,
-      );
-
-      debugPrint('Awarded $points points for $activity');
+      return WalletSettings.fromFirestore(doc);
     } catch (e) {
-      debugPrint('Error awarding points: $e');
-      rethrow;
+      // Return defaults on error
+      return WalletSettings.defaults();
     }
   }
 
-  /// Update achievement progress
-  Future<void> updateAchievement({
-    required String userId,
-    required String achievement,
-    required int progress,
-  }) async {
+  /// Update wallet settings (admin only)
+  static Future<void> updateSettings(WalletSettings settings) async {
     try {
-      await _pointsLogger.updateAchievementProgress(
-        userId,
-        achievement,
-        progress,
-      );
+      await _firestore
+          .collection('wallet_settings')
+          .doc('global')
+          .set(settings.toFirestore());
     } catch (e) {
-      debugPrint('Error updating achievement: $e');
-      rethrow;
+      throw Exception('Failed to update settings: $e');
     }
-  }
-
-  /// Get points history with achievements
-  Future<Map<String, dynamic>> getPointsOverview(String userId) async {
-    try {
-      final dailyStats = await _pointsLogger.getDailyStats(userId);
-      final achievements = await _pointsLogger.getAchievements(userId);
-      
-      return {
-        'daily_stats': dailyStats,
-        'achievements': achievements,
-      };
-    } catch (e) {
-      debugPrint('Error getting points overview: $e');
-      rethrow;
-    }
-  }
-
-  /// Set active event multiplier
-  void setEventMultiplier(String event, double multiplier) {
-    _activeMultipliers[event] = multiplier;
-  }
-
-  /// Clear event multiplier
-  void clearEventMultiplier(String event) {
-    _activeMultipliers.remove(event);
   }
 
   /// Get active multipliers
   Map<String, double> getActiveMultipliers() {
-    return Map.unmodifiable(_activeMultipliers);
+    // Check for weekend bonus
+    final now = DateTime.now();
+    final multipliers = <String, double>{};
+
+    if (now.weekday == DateTime.saturday || now.weekday == DateTime.sunday) {
+      multipliers['weekend_bonus'] = 2.0;
+    }
+
+    // Check for happy hour (example: 6 PM - 9 PM)
+    if (now.hour >= 18 && now.hour < 21) {
+      multipliers['happy_hour'] = 1.5;
+    }
+
+    return multipliers;
   }
 
-  /// Get daily transaction summary
-  Future<Map<String, num>> getDailyTransactionSummary(String userId) async {
+  /// Send notification helper
+  static Future<void> _sendNotification({
+    required String userId,
+    required String title,
+    required String body,
+    required String type,
+  }) async {
     try {
-      final today = DateTime.now();
-      final startOfDay = DateTime(today.year, today.month, today.day);
-      
-      final querySnapshot = await _transactions
-          .where('user_id', isEqualTo: userId)
-          .where('timestamp', isGreaterThan: Timestamp.fromDate(startOfDay.subtract(const Duration(seconds: 1))))
-          .get();
-
-      double totalEarned = 0;
-      double totalSpent = 0;
-
-      for (var doc in querySnapshot.docs) {
-        final transaction = WalletTransaction.fromFirestore(doc);
-        switch (transaction.type) {
-          case TransactionType.earn:
-          case TransactionType.buy:
-          case TransactionType.gift:
-          case TransactionType.reward:
-          case TransactionType.refund:
-            totalEarned += transaction.amount;
-            break;
-          case TransactionType.spend:
-          case TransactionType.sell:
-            totalSpent += transaction.amount;
-            break;
-        }
-      }
-
-      return {
-        'total_earned': totalEarned,
-        'total_spent': totalSpent,
-        'transaction_count': querySnapshot.size,
-      };
+      await _firestore.collection('notifications').add({
+        'userId': userId,
+        'title': title,
+        'body': body,
+        'type': type,
+        'isRead': false,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
     } catch (e) {
-      throw Exception('Failed to get daily summary: $e');
+      // Don't throw error if notification fails
+      print('Failed to send notification: $e');
     }
   }
 }

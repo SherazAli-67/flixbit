@@ -8,6 +8,7 @@ class UserTournamentStats {
   final bool isQualified;
   final DateTime? qualifiedAt;
   final int purchasedPoints;
+  final int? rank;
 
   UserTournamentStats({
     required this.userId,
@@ -19,6 +20,7 @@ class UserTournamentStats {
     required this.isQualified,
     this.qualifiedAt,
     required this.purchasedPoints,
+    this.rank,
   });
 
   factory UserTournamentStats.fromJson(Map<String, dynamic> json) {
@@ -30,10 +32,11 @@ class UserTournamentStats {
       accuracyPercentage: (json['accuracyPercentage'] as num).toDouble(),
       totalPointsEarned: json['totalPointsEarned'] as int,
       isQualified: json['isQualified'] as bool,
-      qualifiedAt: json['qualifiedAt'] != null 
-          ? DateTime.parse(json['qualifiedAt'] as String)
-          : null,
+      // qualifiedAt: json['qualifiedAt'] != null ? json['qualifiedAt'] is Timestamp ?
+      //     ? DateTime.parse(json['qualifiedAt'] as String)
+      //     : null,
       purchasedPoints: json['purchasedPoints'] as int,
+      rank: json['rank'] as int?,
     );
   }
 
@@ -48,6 +51,7 @@ class UserTournamentStats {
       'isQualified': isQualified,
       'qualifiedAt': qualifiedAt?.toIso8601String(),
       'purchasedPoints': purchasedPoints,
+      'rank': rank,
     };
   }
 
@@ -61,6 +65,7 @@ class UserTournamentStats {
     bool? isQualified,
     DateTime? qualifiedAt,
     int? purchasedPoints,
+    int? rank,
   }) {
     return UserTournamentStats(
       userId: userId ?? this.userId,
@@ -72,6 +77,7 @@ class UserTournamentStats {
       isQualified: isQualified ?? this.isQualified,
       qualifiedAt: qualifiedAt ?? this.qualifiedAt,
       purchasedPoints: purchasedPoints ?? this.purchasedPoints,
+      rank: rank ?? this.rank,
     );
   }
 }

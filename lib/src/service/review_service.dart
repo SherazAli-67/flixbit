@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import '../config/points_config.dart';
 import '../models/review_model.dart';
-import '../models/flixbit_transaction_model.dart';
+import '../models/wallet_models.dart';
 import '../res/firebase_constants.dart';
 import 'flixbit_points_manager.dart';
 import 'wallet_service.dart';
@@ -14,7 +14,6 @@ class ReviewService {
   ReviewService._internal();
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final WalletService _walletService = WalletService();
 
   /// Submit a new review
   Future<Review> submitReview({
@@ -120,8 +119,8 @@ class ReviewService {
       }
 
       // Check daily limit
-      final dailyStats = await _walletService.getDailyTransactionSummary(userId);
-      final reviewPoints = (dailyStats['review_points'] as num?)?.toInt() ?? 0;
+      final dailyStats = await WalletService.getDailySummary(userId);
+      final reviewPoints = (dailyStats['review'])?.toInt() ?? 0;
       final dailyLimit = PointsConfig.dailyLimits['review'] ?? 45;
 
       return reviewPoints < dailyLimit;
@@ -210,8 +209,8 @@ class ReviewService {
     }
 
     // Check daily limit
-    final dailyStats = await _walletService.getDailyTransactionSummary(userId);
-    final currentPoints = (dailyStats['review_points'] as num?)?.toInt() ?? 0;
+    final dailyStats = await WalletService.getDailySummary(userId);
+    final currentPoints = (dailyStats['review'])?.toInt() ?? 0;
     final dailyLimit = PointsConfig.dailyLimits['review'] ?? 45;
     final remainingLimit = dailyLimit - currentPoints;
 

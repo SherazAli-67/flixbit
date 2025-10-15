@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import '../config/points_config.dart';
 import '../models/prediction_model.dart';
 import '../models/match_model.dart';
 import '../models/tournament_model.dart';
 import '../models/user_tournament_stats.dart';
-import '../models/flixbit_transaction_model.dart';
+import '../models/wallet_models.dart';
 import '../res/firebase_constants.dart';
 import 'flixbit_points_manager.dart';
 import 'wallet_service.dart';
@@ -100,6 +101,7 @@ class PredictionService {
           'evaluatedAt': FieldValue.serverTimestamp(),
         });
 
+        debugPrint("Updating user stats: $pointsEarned");
         // Update user tournament stats
         await _updateUserStats(
           userId: prediction.userId,
