@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flixbit/src/service/wallet_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -30,7 +31,7 @@ class _WalletPageState extends State<WalletPage> {
     super.initState();
     // Initialize wallet data
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<WalletProvider>().initializeWallet('currentUser'); // Replace with actual user ID
+      context.read<WalletProvider>().initializeWallet(); // Replace with actual user ID
     });
   }
 
@@ -79,7 +80,7 @@ class _WalletPageState extends State<WalletPage> {
                   ElevatedButton(
                     onPressed: () {
                       wallet.clearError();
-                      wallet.initializeWallet('currentUser'); // Replace with actual user ID
+                      wallet.initializeWallet(); // Replace with actual user ID
                     },
                     child: Text(l10n.retry),
                   ),
@@ -96,16 +97,12 @@ class _WalletPageState extends State<WalletPage> {
                 // User Profile Section
                 SliverToBoxAdapter(
                   child: Column(
+                    spacing: 20,
                     children: [
-                      const SizedBox(height: 20),
                       _buildProfileSection(wallet),
-                      const SizedBox(height: 20),
                       _buildActionButtons(context),
-                      const SizedBox(height: 20),
                       _buildBalanceCards(wallet),
-                      const SizedBox(height: 20),
                       _buildPointsBreakdown(wallet),
-                      const SizedBox(height: 20),
                     ],
                   ),
                 ),
@@ -251,16 +248,27 @@ class _WalletPageState extends State<WalletPage> {
 
   Widget _buildBalanceCards(WalletProvider wallet) {
     final l10n = AppLocalizations.of(context)!;
+    String userID = FirebaseAuth.instance.currentUser!.uid;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
           // Main Flixbit Balance Card (Primary)
-          _buildMainBalanceCard(
-            title: l10n.flixbitBalance,
-            amount: wallet.balance?.flixbitPoints ?? 0,
-            currency: 'FLIXBIT',
-          ),
+         FutureBuilder(future: WalletService.getBalance(userID), builder: (_, snapshot){
+           if(snapshot.hasData){
+             return  _buildMainBalanceCard(
+               title: l10n.flixbitBalance,
+               amount: snapshot.requireData,
+               currency: 'FLIXBIT',
+             );
+           }
+
+           return _buildMainBalanceCard(
+             title: l10n.flixbitBalance,
+             amount: wallet.balance?.flixbitPoints ?? 0,
+             currency: 'FLIXBIT',
+           );
+         }),
           const SizedBox(height: 16),
           // Tournament Earnings Tracker (Analytics Only)
           _buildTournamentEarningsCard(

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flixbit/src/res/app_icons.dart';
 import 'package:flixbit/src/routes/router_enum.dart';
 import 'package:flutter/material.dart';
@@ -79,6 +80,9 @@ class _SellerProfileSettingsPageState extends State<SellerProfileSettingsPage> {
                     _buildSectionItemWidget(title: 'Contact Us', onTap: (){}),
                     _buildSectionItemWidget(title: 'Privacy Policy', onTap: (){}),
                   ]),
+
+              _buildSectionItemWidget(title: 'Logout', onTap: _onLogoutTap, showDivider: false),
+
             ],
           ),
         ),
@@ -86,10 +90,16 @@ class _SellerProfileSettingsPageState extends State<SellerProfileSettingsPage> {
     );
   }
 
+  Future<void> _onLogoutTap()async{
+    await FirebaseAuth.instance.signOut();
+    context.go(RouterEnum.loginView.routeName);
+  }
+
+
   void _onLinkedAccountsTap(){
     context.push(RouterEnum.linkedAccountsView.routeName);
   }
-  Widget _buildSectionItemWidget({required String title, required VoidCallback onTap, String? trailingText}) {
+  Widget _buildSectionItemWidget({required String title, required VoidCallback onTap, String? trailingText, bool showDivider = true}) {
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -110,11 +120,12 @@ class _SellerProfileSettingsPageState extends State<SellerProfileSettingsPage> {
               ],
             ),
           ),
-          Container(
-            height: 1,
-            width: double.infinity,
-            color: AppColors.cardBgColor,
-          )
+         if(showDivider)
+           Container(
+             height: 1,
+             width: double.infinity,
+             color: AppColors.cardBgColor,
+           )
         ],
       ),
     );

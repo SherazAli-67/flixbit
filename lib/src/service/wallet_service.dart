@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flixbit/src/res/firebase_constants.dart';
+import 'package:flutter/cupertino.dart';
 import '../models/wallet_models.dart';
 
 /// Service for managing wallet operations including buy, sell, and balance management
@@ -13,11 +15,11 @@ class WalletService {
           .doc(userId)
           .get();
 
+
       if (!doc.exists) {
         // Create default wallet
         return await _createWallet(userId);
       }
-
       return WalletBalance.fromFirestore(doc);
     } catch (e) {
       throw Exception('Failed to get wallet: $e');
@@ -262,11 +264,12 @@ class WalletService {
   static Future<double> getBalance(String userId) async {
     try {
       final userDoc = await _firestore
-          .collection('users')
+          .collection(FirebaseConstants.usersCollection)
           .doc(userId)
           .get();
 
       final balance = userDoc.data()?['flixbitBalance'] as int? ?? 0;
+      debugPrint("Balance found: $balance");
       return balance.toDouble();
     } catch (e) {
       throw Exception('Failed to get balance: $e');

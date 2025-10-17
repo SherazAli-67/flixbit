@@ -9,7 +9,6 @@ import 'prediction_service.dart';
 class EnhancedTournamentService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // ==================== TOURNAMENT CRUD ====================
 
   /// Create a new tournament
   static Future<String> createTournament(Tournament tournament) async {
@@ -107,7 +106,7 @@ class EnhancedTournamentService {
         query = query.where('createdBy', isEqualTo: sellerId);
       }
 
-      query = query.orderBy('startDate', descending: false).limit(limit);
+      query = query.orderBy('startDate', descending: true).limit(limit);
 
       final snapshot = await query.get();
       return snapshot.docs
@@ -383,7 +382,7 @@ class EnhancedTournamentService {
           .doc(tournamentId)
           .update({'totalMatches': matchesSnapshot.docs.length});
     } catch (e) {
-      print('Failed to update match count: $e');
+      debugPrint('Failed to update match count: $e');
     }
   }
 

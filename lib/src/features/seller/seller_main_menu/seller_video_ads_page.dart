@@ -219,32 +219,6 @@ class SellerVideoAdsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, bool isSelected) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      decoration: BoxDecoration(
-        color: isSelected ? AppColors.primaryBlue : Colors.transparent,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            color: AppColors.whiteColor,
-            size: 24,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: isSelected 
-                ? AppTextStyles.whiteRegular12 
-                : AppTextStyles.lightGrayRegular12,
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 /*

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flixbit/src/res/app_icons.dart';
 import 'package:flixbit/src/routes/router_enum.dart';
 import 'package:flutter/material.dart';
@@ -87,6 +88,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     _buildSectionItemWidget(title: AppLocalizations.of(context)!.contactUs, onTap: (){}),
                     _buildSectionItemWidget(title: AppLocalizations.of(context)!.privacyPolicy, onTap: (){}),
                   ]),
+              _buildSectionItemWidget(title: l10n.logout, onTap: _onLogoutTap),
+
+
             ],
           ),
         ),
@@ -94,9 +98,16 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  Future<void> _onLogoutTap()async{
+    await FirebaseAuth.instance.signOut();
+    context.go(RouterEnum.loginView.routeName);
+  }
+
   void _onLinkedAccountsTap(){
     context.push(RouterEnum.linkedAccountsView.routeName);
   }
+
+
   Widget _buildSectionItemWidget({required String title, required VoidCallback onTap, String? trailingText}) {
     return GestureDetector(
       onTap: onTap,

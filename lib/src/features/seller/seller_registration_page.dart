@@ -1,14 +1,10 @@
 import 'dart:io';
-import 'dart:math';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flixbit/src/models/seller_model.dart';
 import 'package:flixbit/src/providers/profile_provider.dart';
 import 'package:flixbit/src/res/app_colors.dart';
 import 'package:flixbit/src/res/app_icons.dart';
 import 'package:flixbit/src/res/apptextstyles.dart';
-import 'package:flixbit/src/res/firebase_constants.dart';
 import 'package:flixbit/src/service/seller_service.dart';
 import 'package:flixbit/src/widgets/apptextfield_widget.dart';
 import 'package:flixbit/src/widgets/primary_btn.dart';

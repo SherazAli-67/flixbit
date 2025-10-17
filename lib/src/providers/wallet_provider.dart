@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import '../models/wallet_models.dart';
 import '../service/wallet_service.dart';
@@ -17,7 +18,8 @@ class WalletProvider extends ChangeNotifier {
   String? get error => _error;
 
   // Initialize wallet for current user
-  Future<void> initializeWallet(String userId) async {
+  Future<void> initializeWallet() async {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
     _isLoading = true;
     _error = null;
     notifyListeners();

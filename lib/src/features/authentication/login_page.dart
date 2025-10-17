@@ -57,8 +57,9 @@ class _LoginPageState extends State<LoginPage> {
                   Consumer<AuthenticationProvider>(
                     builder: (context, authProvider, child) {
                       return PrimaryBtn(
-                        btnText: authProvider.isLoading ? l10n.loading : l10n.login,
+                        btnText:  l10n.login,
                         icon: '',
+                        isLoading: authProvider.isLoading,
                         onTap: authProvider.isLoading ? () {} : () => _onLoginTap(),
                       );
                     },

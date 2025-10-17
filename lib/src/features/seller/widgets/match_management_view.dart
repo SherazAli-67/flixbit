@@ -119,9 +119,7 @@ class _MatchManagementViewState extends State<MatchManagementView> {
                       itemBuilder: (context, index) {
                         return _MatchCard(
                           match: _matches[index],
-                          onEdit: () => _showAddEditMatchDialog(
-                            match: _matches[index],
-                          ),
+                          onEdit: () => _showAddEditMatchDialog(match: _matches[index],),
                           onDelete: () => _deleteMatch(_matches[index]),
                         );
                       },
