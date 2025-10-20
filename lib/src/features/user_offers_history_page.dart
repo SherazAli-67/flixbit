@@ -6,7 +6,6 @@ import '../providers/offers_provider.dart';
 import '../service/offer_service.dart';
 import '../res/app_colors.dart';
 import '../res/apptextstyles.dart';
-import '../../l10n/app_localizations.dart';
 
 class UserOffersHistoryPage extends StatefulWidget {
   const UserOffersHistoryPage({super.key});
@@ -51,8 +50,6 @@ class _UserOffersHistoryPageState extends State<UserOffersHistoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return Scaffold(
       backgroundColor: AppColors.darkBgColor,
       appBar: AppBar(

@@ -1,4 +1,9 @@
+import 'package:flixbit/src/widgets/apptextfield_filled_widget.dart';
+import 'package:flixbit/src/widgets/apptextfield_widget.dart';
+import 'package:flixbit/src/widgets/date_picker_widget.dart';
+import 'package:flixbit/src/widgets/primary_btn.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,7 +11,6 @@ import '../../models/offer_model.dart';
 import '../../providers/seller_offers_provider.dart';
 import '../../res/app_colors.dart';
 import '../../res/apptextstyles.dart';
-import '../../../l10n/app_localizations.dart';
 
 class CreateEditOfferPage extends StatefulWidget {
   final String? offerId; // null for create, offerId for edit
@@ -40,13 +44,13 @@ class _CreateEditOfferPageState extends State<CreateEditOfferPage> {
   DateTime _validFrom = DateTime.now();
   DateTime _validUntil = DateTime.now().add(const Duration(days: 30));
   bool _requiresReview = false;
-  List<String> _termsAndConditions = [];
+  final List<String> _termsAndConditions = [];
   String? _imageUrl;
   String? _videoUrl;
   GeoPoint? _targetLocation;
   
   // State
-  bool _loading = false;
+  bool _isLoading = false;
   bool _isEditMode = false;
   
   final List<String> _categories = [
@@ -67,17 +71,11 @@ class _CreateEditOfferPageState extends State<CreateEditOfferPage> {
     super.initState();
     _isEditMode = widget.offerId != null;
     if (_isEditMode) {
-      _loadOfferData();
+      setState(() => _isLoading = false);
     }
     _rewardPointsController.text = '10'; // Default reward points
   }
 
-  Future<void> _loadOfferData() async {
-    // TODO: Load offer data for editing
-    setState(() {
-      _loading = false;
-    });
-  }
 
   @override
   void dispose() {
@@ -95,8 +93,6 @@ class _CreateEditOfferPageState extends State<CreateEditOfferPage> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return Scaffold(
       backgroundColor: AppColors.darkBgColor,
       appBar: AppBar(
@@ -104,12 +100,9 @@ class _CreateEditOfferPageState extends State<CreateEditOfferPage> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.whiteColor),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.pop(),
         ),
-        title: Text(
-          _isEditMode ? 'Edit Offer' : 'Create New Offer',
-          style: AppTextStyles.subHeadingTextStyle,
-        ),
+        title: Text( _isEditMode ? 'Edit Offer' : 'Create New Offer',style: AppTextStyles.subHeadingTextStyle,),
         centerTitle: true,
       ),
       body: Form(
@@ -118,88 +111,118 @@ class _CreateEditOfferPageState extends State<CreateEditOfferPage> {
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 24,
             children: [
               // Info Banner
               _buildInfoBanner(),
-              
-              const SizedBox(height: 24),
-              
-              // Basic Information
-              _buildSectionTitle('Basic Information'),
-              const SizedBox(height: 16),
-              _buildTextField(
-                controller: _titleController,
-                label: 'Offer Title*',
-                hint: 'e.g., 20% off on all items',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Title is required';
-                  }
-                  return null;
-                },
+
+              _buildSectionWidget(children: [
+                Text('Basic Information', style: AppTextStyles.subHeadingTextStyle,),
+                AppTextField(textController: _titleController, hintText: 'e.g., 20% off on all items', titleText: 'Offer Title*', ),
+                AppTextFieldFilledWidget(
+                  controller: _descriptionController,
+                  label: 'Description*',
+                  hint: 'Describe your offer in detail',
+                  maxLines: 4,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Description is required';
+                    }
+                    return null;
+                  },
+                ),
+                _buildCategoryDropdown(),
+              ]),
+
+
+              _buildSectionWidget(
+                children: [
+                  // Offer Type & Discount
+                  Text('Offer Type & Discount', style: AppTextStyles.subHeadingTextStyle,),
+                  _buildOfferTypeSelector(),
+                  if (_selectedType == OfferType.discount) ...[
+                    Row(
+                      children: [
+                        Expanded(
+                          child: AppTextFieldFilledWidget(
+                            controller: _discountPercentageController,
+                            label: 'Discount Percentage',
+                            hint: 'e.g., 20',
+                            keyboardType: TextInputType.number,
+                            validator: (value) {
+                              if (value != null && value.isNotEmpty) {
+                                final percent = double.tryParse(value);
+                                if (percent == null || percent < 0 || percent > 100) {
+                                  return 'Enter 0-100';
+                                }
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: AppTextFieldFilledWidget(
+                            controller: _discountAmountController,
+                            label: 'OR Fixed Amount',
+                            hint: 'e.g., 50',
+                            keyboardType: TextInputType.number,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Enter either percentage OR fixed amount, not both',
+                      style: AppTextStyles.captionTextStyle.copyWith(
+                        color: AppColors.unSelectedGreyColor,
+                      ),
+                    ),
+                  ],
+                  AppTextFieldFilledWidget(controller: _discountCodeController, label: 'Coupon Code (Optional)',hint: 'e.g., SUMMER20',),
+                ],
               ),
-              
-              const SizedBox(height: 16),
-              _buildTextField(
-                controller: _descriptionController,
-                label: 'Description*',
-                hint: 'Describe your offer in detail',
-                maxLines: 4,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Description is required';
-                  }
-                  return null;
-                },
+
+              _buildSectionWidget(
+                children: [
+                  // Validity Period
+                  Text('Validity Period',style: AppTextStyles.subHeadingTextStyle,),
+                  DatePickerWidget(validFrom: _validFrom,
+                      onValidFromDatePicked: (DateTime validPickedDate) {
+                        setState(() {
+                          _validFrom = validPickedDate;
+                          if (_validFrom.isAfter(_validUntil)) {
+                            _validUntil = _validFrom.add(const Duration(days: 30));
+                          }
+                        });
+                      },
+                      validUntil: _validUntil,
+                      onValidUntilDatePicked: (DateTime validUntilPickedDate)=> setState(()=> _validUntil = validUntilPickedDate))
+                ],
               ),
-              
-              const SizedBox(height: 16),
-              _buildCategoryDropdown(),
-              
-              const SizedBox(height: 24),
-              
-              // Offer Type & Discount
-              _buildSectionTitle('Offer Type & Discount'),
-              const SizedBox(height: 16),
-              _buildOfferTypeSelector(),
-              
-              const SizedBox(height: 16),
-              _buildDiscountFields(),
-              
-              const SizedBox(height: 24),
-              
-              // Validity Period
-              _buildSectionTitle('Validity Period'),
-              const SizedBox(height: 16),
-              _buildDatePickers(),
-              
-              const SizedBox(height: 24),
-              
-              // Redemption Settings
-              _buildSectionTitle('Redemption Settings'),
-              const SizedBox(height: 16),
-              _buildRedemptionSettings(),
-              
-              const SizedBox(height: 24),
-              
-              // Location Targeting (Optional)
-              _buildSectionTitle('Location Targeting (Optional)'),
-              const SizedBox(height: 16),
-              _buildLocationSettings(),
-              
-              const SizedBox(height: 24),
-              
-              // Terms & Conditions
-              _buildSectionTitle('Terms & Conditions'),
-              const SizedBox(height: 16),
-              _buildTermsSection(),
-              
-              const SizedBox(height: 32),
-              
-              // Submit Buttons
+
+              _buildSectionWidget(
+                children: [
+                  // Validity Period
+                  Text('Redemption Settings',style: AppTextStyles.subHeadingTextStyle,),
+                  _buildRedemptionSettings(),
+                ],
+              ),
+
+
+              _buildSectionWidget(children: [
+                // Location Targeting (Optional)
+                Text('Location Targeting (Optional)',style: AppTextStyles.subHeadingTextStyle,),
+                _buildLocationSettings(),
+              ],),
+
+              _buildSectionWidget(children: [
+                // Location Targeting (Optional)
+                Text('Terms & Conditions',style: AppTextStyles.subHeadingTextStyle,),
+                _buildTermsSection(),
+              ],),
               _buildActionButtons(),
-              
-              const SizedBox(height: 32),
+
             ],
           ),
         ),
@@ -207,30 +230,36 @@ class _CreateEditOfferPageState extends State<CreateEditOfferPage> {
     );
   }
 
+  Widget _buildSectionWidget({required List<Widget> children}) {
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 16,
+        children: children
+    );
+  }
+
   Widget _buildInfoBanner() {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primaryColor.withOpacity(0.1),
+        color: AppColors.primaryColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: AppColors.primaryColor.withOpacity(0.3),
+          color: AppColors.primaryColor.withValues(alpha: 0.3),
         ),
       ),
       child: Row(
+        spacing: 12,
         children: [
           Icon(
             Icons.info_outline,
             color: AppColors.primaryColor,
             size: 24,
           ),
-          const SizedBox(width: 12),
           Expanded(
             child: Text(
               'Your offer will be pending until approved by admin. This usually takes 24-48 hours.',
-              style: AppTextStyles.bodyTextStyle.copyWith(
-                color: AppColors.primaryColor,
-              ),
+              style: AppTextStyles.bodyTextStyle.copyWith(color: AppColors.primaryColor,),
             ),
           ),
         ],
@@ -238,69 +267,10 @@ class _CreateEditOfferPageState extends State<CreateEditOfferPage> {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: AppTextStyles.subHeadingTextStyle,
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required String hint,
-    int maxLines = 1,
-    TextInputType? keyboardType,
-    String? Function(String?)? validator,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: AppTextStyles.bodyTextStyle.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 8),
-        TextFormField(
-          controller: controller,
-          maxLines: maxLines,
-          keyboardType: keyboardType,
-          style: AppTextStyles.bodyTextStyle,
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: AppTextStyles.bodyTextStyle.copyWith(
-              color: AppColors.unSelectedGreyColor,
-            ),
-            filled: true,
-            fillColor: AppColors.cardBgColor,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide.none,
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide.none,
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.primaryColor),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Colors.red),
-            ),
-          ),
-          validator: validator,
-        ),
-      ],
-    );
-  }
-
   Widget _buildCategoryDropdown() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 8,
       children: [
         Text(
           'Category*',
@@ -308,7 +278,6 @@ class _CreateEditOfferPageState extends State<CreateEditOfferPage> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(height: 8),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
@@ -348,6 +317,7 @@ class _CreateEditOfferPageState extends State<CreateEditOfferPage> {
   Widget _buildOfferTypeSelector() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 12,
       children: [
         Text(
           'Select Offer Type*',
@@ -355,7 +325,6 @@ class _CreateEditOfferPageState extends State<CreateEditOfferPage> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(height: 12),
         Wrap(
           spacing: 8,
           runSpacing: 8,
@@ -364,11 +333,7 @@ class _CreateEditOfferPageState extends State<CreateEditOfferPage> {
             return ChoiceChip(
               label: Text(_getOfferTypeName(type)),
               selected: isSelected,
-              onSelected: (selected) {
-                setState(() {
-                  _selectedType = type;
-                });
-              },
+              onSelected: (selected)=> setState(() =>_selectedType = type),
               backgroundColor: AppColors.cardBgColor,
               selectedColor: AppColors.primaryColor,
               labelStyle: TextStyle(
@@ -399,182 +364,24 @@ class _CreateEditOfferPageState extends State<CreateEditOfferPage> {
     }
   }
 
-  Widget _buildDiscountFields() {
-    return Column(
-      children: [
-        if (_selectedType == OfferType.discount) ...[
-          Row(
-            children: [
-              Expanded(
-                child: _buildTextField(
-                  controller: _discountPercentageController,
-                  label: 'Discount Percentage',
-                  hint: 'e.g., 20',
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value != null && value.isNotEmpty) {
-                      final percent = double.tryParse(value);
-                      if (percent == null || percent < 0 || percent > 100) {
-                        return 'Enter 0-100';
-                      }
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: _buildTextField(
-                  controller: _discountAmountController,
-                  label: 'OR Fixed Amount',
-                  hint: 'e.g., 50',
-                  keyboardType: TextInputType.number,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Enter either percentage OR fixed amount, not both',
-            style: AppTextStyles.captionTextStyle.copyWith(
-              color: AppColors.unSelectedGreyColor,
-            ),
-          ),
-        ],
-        const SizedBox(height: 16),
-        _buildTextField(
-          controller: _discountCodeController,
-          label: 'Coupon Code (Optional)',
-          hint: 'e.g., SUMMER20',
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDatePickers() {
-    return Column(
-      children: [
-        _buildDatePickerField(
-          label: 'Valid From',
-          date: _validFrom,
-          onTap: () async {
-            final picked = await showDatePicker(
-              context: context,
-              initialDate: _validFrom,
-              firstDate: DateTime.now(),
-              lastDate: DateTime.now().add(const Duration(days: 365)),
-              builder: (context, child) {
-                return Theme(
-                  data: ThemeData.dark().copyWith(
-                    colorScheme: const ColorScheme.dark(
-                      primary: AppColors.primaryColor,
-                      surface: AppColors.cardBgColor,
-                    ),
-                  ),
-                  child: child!,
-                );
-              },
-            );
-            if (picked != null) {
-              setState(() {
-                _validFrom = picked;
-                if (_validFrom.isAfter(_validUntil)) {
-                  _validUntil = _validFrom.add(const Duration(days: 30));
-                }
-              });
-            }
-          },
-        ),
-        const SizedBox(height: 16),
-        _buildDatePickerField(
-          label: 'Valid Until',
-          date: _validUntil,
-          onTap: () async {
-            final picked = await showDatePicker(
-              context: context,
-              initialDate: _validUntil,
-              firstDate: _validFrom,
-              lastDate: DateTime.now().add(const Duration(days: 365)),
-              builder: (context, child) {
-                return Theme(
-                  data: ThemeData.dark().copyWith(
-                    colorScheme: const ColorScheme.dark(
-                      primary: AppColors.primaryColor,
-                      surface: AppColors.cardBgColor,
-                    ),
-                  ),
-                  child: child!,
-                );
-              },
-            );
-            if (picked != null) {
-              setState(() {
-                _validUntil = picked;
-              });
-            }
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDatePickerField({
-    required String label,
-    required DateTime date,
-    required VoidCallback onTap,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: AppTextStyles.bodyTextStyle.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 8),
-        InkWell(
-          onTap: onTap,
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppColors.cardBgColor,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.calendar_today, color: AppColors.primaryColor, size: 20),
-                const SizedBox(width: 12),
-                Text(
-                  '${date.day}/${date.month}/${date.year}',
-                  style: AppTextStyles.bodyTextStyle,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 
   Widget _buildRedemptionSettings() {
     return Column(
+      spacing: 16,
       children: [
-        _buildTextField(
+        AppTextFieldFilledWidget(
           controller: _maxRedemptionsController,
           label: 'Max Redemptions (Optional)',
           hint: 'Leave empty for unlimited',
           keyboardType: TextInputType.number,
         ),
-        const SizedBox(height: 16),
-        _buildTextField(
+        AppTextFieldFilledWidget(
           controller: _minPurchaseController,
           label: 'Minimum Purchase Amount (Optional)',
           hint: 'e.g., 100',
           keyboardType: TextInputType.number,
         ),
-        const SizedBox(height: 16),
-        _buildTextField(
+        AppTextFieldFilledWidget(
           controller: _rewardPointsController,
           label: 'Reward Points',
           hint: 'Points users earn on redemption',
@@ -590,16 +397,11 @@ class _CreateEditOfferPageState extends State<CreateEditOfferPage> {
             return null;
           },
         ),
-        const SizedBox(height: 16),
         Row(
           children: [
             Checkbox(
               value: _requiresReview,
-              onChanged: (value) {
-                setState(() {
-                  _requiresReview = value ?? false;
-                });
-              },
+              onChanged: (value)=> setState(()=>  _requiresReview = value ?? false),
               activeColor: AppColors.primaryColor,
             ),
             Expanded(
@@ -624,40 +426,46 @@ class _CreateEditOfferPageState extends State<CreateEditOfferPage> {
             borderRadius: BorderRadius.circular(8),
           ),
           child: Row(
+            spacing: 12,
             children: [
               Icon(Icons.location_on, color: AppColors.primaryColor),
-              const SizedBox(width: 12),
               Expanded(
-                child: Text(
-                  _targetLocation != null
-                      ? 'Location set (${_targetLocation!.latitude.toStringAsFixed(4)}, ${_targetLocation!.longitude.toStringAsFixed(4)})'
-                      : 'No location set (available everywhere)',
-                  style: AppTextStyles.bodyTextStyle,
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  // TODO: Implement location picker
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Location picker coming soon'),
-                      backgroundColor: AppColors.primaryColor,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        _targetLocation != null
+                            ? 'Location set (${_targetLocation!.latitude.toStringAsFixed(4)}, ${_targetLocation!.longitude.toStringAsFixed(4)})'
+                            : 'No location set (available everywhere)',
+                        style: AppTextStyles.bodyTextStyle,
+                      ),
                     ),
-                  );
-                },
-                child: Text(
-                  _targetLocation != null ? 'Change' : 'Set',
-                  style: AppTextStyles.bodyTextStyle.copyWith(
-                    color: AppColors.primaryColor,
-                  ),
+                    TextButton(
+                      onPressed: () {
+                        // TODO: Implement location picker
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Location picker coming soon'),
+                            backgroundColor: AppColors.primaryColor,
+                          ),
+                        );
+                      },
+                      child: Text(
+                        _targetLocation != null ? 'Change' : 'Set',
+                        style: AppTextStyles.bodyTextStyle.copyWith(
+                          color: AppColors.primaryColor,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
+              )
             ],
           ),
         ),
         if (_targetLocation != null) ...[
           const SizedBox(height: 16),
-          _buildTextField(
+          AppTextFieldFilledWidget(
             controller: _radiusController,
             label: 'Target Radius (km)',
             hint: 'e.g., 5',
@@ -671,6 +479,7 @@ class _CreateEditOfferPageState extends State<CreateEditOfferPage> {
   Widget _buildTermsSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 8,
       children: [
         if (_termsAndConditions.isNotEmpty)
           ...List.generate(_termsAndConditions.length, (index) {
@@ -688,17 +497,12 @@ class _CreateEditOfferPageState extends State<CreateEditOfferPage> {
                   ),
                   IconButton(
                     icon: const Icon(Icons.delete, color: Colors.red, size: 20),
-                    onPressed: () {
-                      setState(() {
-                        _termsAndConditions.removeAt(index);
-                      });
-                    },
+                    onPressed: () => setState(() =>  _termsAndConditions.removeAt(index)),
                   ),
                 ],
               ),
             );
           }),
-        const SizedBox(height: 8),
         OutlinedButton.icon(
           onPressed: _addTerm,
           icon: const Icon(Icons.add, color: AppColors.primaryColor),
@@ -737,21 +541,17 @@ class _CreateEditOfferPageState extends State<CreateEditOfferPage> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => context.pop(),
             child: Text('Cancel', style: AppTextStyles.bodyTextStyle),
           ),
           ElevatedButton(
             onPressed: () {
               if (controller.text.trim().isNotEmpty) {
-                setState(() {
-                  _termsAndConditions.add(controller.text.trim());
-                });
-                Navigator.pop(context);
+                setState(()=> _termsAndConditions.add(controller.text.trim()));
+                context.pop();
               }
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primaryColor,
-            ),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryColor,),
             child: const Text('Add'),
           ),
         ],
@@ -761,45 +561,10 @@ class _CreateEditOfferPageState extends State<CreateEditOfferPage> {
 
   Widget _buildActionButtons() {
     return Row(
+      spacing: 16,
       children: [
-        Expanded(
-          child: OutlinedButton(
-            onPressed: _loading ? null : () => Navigator.pop(context),
-            style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: AppColors.unSelectedGreyColor),
-              padding: const EdgeInsets.symmetric(vertical: 16),
-            ),
-            child: Text(
-              'Cancel',
-              style: AppTextStyles.buttonTextStyle.copyWith(
-                color: AppColors.unSelectedGreyColor,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: ElevatedButton(
-            onPressed: _loading ? null : _submitOffer,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primaryColor,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-            ),
-            child: _loading
-                ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      color: AppColors.whiteColor,
-                      strokeWidth: 2,
-                    ),
-                  )
-                : Text(
-                    _isEditMode ? 'Update Offer' : 'Submit for Approval',
-                    style: AppTextStyles.buttonTextStyle,
-                  ),
-          ),
-        ),
+        Expanded(child: PrimaryBtn(btnText: 'Cancel', onTap: ()=> context.pop(), isLoading: _isLoading, bgColor: Colors.transparent, borderColor: AppColors.unSelectedGreyColor,)),
+        Expanded(child: PrimaryBtn(btnText: 'Submit for Approval', onTap: _submitOffer, isLoading: _isLoading,)),
       ],
     );
   }
@@ -845,9 +610,7 @@ class _CreateEditOfferPageState extends State<CreateEditOfferPage> {
       }
     }
 
-    setState(() {
-      _loading = true;
-    });
+    setState(()=> _isLoading = true);
 
     try {
       final userId = FirebaseAuth.instance.currentUser?.uid;
@@ -893,7 +656,7 @@ class _CreateEditOfferPageState extends State<CreateEditOfferPage> {
 
       if (offer != null) {
         if (mounted) {
-          Navigator.pop(context);
+          context.pop();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Offer submitted for approval'),
@@ -916,10 +679,9 @@ class _CreateEditOfferPageState extends State<CreateEditOfferPage> {
     } finally {
       if (mounted) {
         setState(() {
-          _loading = false;
+          _isLoading = false;
         });
       }
     }
   }
 }
-

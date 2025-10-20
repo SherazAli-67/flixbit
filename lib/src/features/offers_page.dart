@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:go_router/go_router.dart';
 import '../models/offer_model.dart';
 import '../providers/offers_provider.dart';
+import '../routes/router_enum.dart';
 import '../res/app_colors.dart';
 import '../res/apptextstyles.dart';
 import '../../l10n/app_localizations.dart';
@@ -70,7 +72,6 @@ class _OffersPageState extends State<OffersPage> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
     return Scaffold(
       backgroundColor: AppColors.darkBgColor,
       body: SafeArea(
@@ -134,7 +135,7 @@ class _OffersPageState extends State<OffersPage> with SingleTickerProviderStateM
       child: TabBar(
         controller: _tabController,
         indicatorColor: AppColors.primaryColor,
-        indicatorWeight: 3,
+        indicatorSize: TabBarIndicatorSize.tab,
         labelColor: AppColors.primaryColor,
         unselectedLabelColor: AppColors.unSelectedGreyColor,
         labelStyle: AppTextStyles.bodyTextStyle.copyWith(
@@ -318,8 +319,7 @@ class _OffersPageState extends State<OffersPage> with SingleTickerProviderStateM
   Widget _buildOfferCard(Offer offer) {
     return GestureDetector(
       onTap: () {
-        // TODO: Navigate to offer details
-        // Navigator.pushNamed(context, '/offer_detail', arguments: offer.id);
+        context.push('${RouterEnum.offerDetailView.routeName}?offerId=${offer.id}');
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),

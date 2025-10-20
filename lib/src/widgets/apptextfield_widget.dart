@@ -7,7 +7,7 @@ class AppTextField extends StatefulWidget {
   const AppTextField({
     super.key,
     required TextEditingController textController,
-    required String prefixIcon,
+    String? prefixIcon,
     required String hintText,
     required String titleText,
     this.isPassword = false,
@@ -21,7 +21,7 @@ class AppTextField extends StatefulWidget {
     int maxLines = 1,
   })
       : _textController = textController,
-        _prefixIcon = prefixIcon,
+        _prefixIcon = prefixIcon ?? '',
         _hintText = hintText,
         _titleText = titleText,
         _textInputType = textInputType,

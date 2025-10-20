@@ -24,11 +24,14 @@ import 'package:flixbit/src/features/main_menu_page.dart';
 import 'package:flixbit/src/features/seller/seller_main_menu_page.dart';
 import 'package:flixbit/src/features/main_menu/dashboard_flow/dashboard_page.dart';
 import 'package:flixbit/src/features/offers_page.dart';
+import 'package:flixbit/src/features/offer_detail_page.dart';
+import 'package:flixbit/src/features/user_offers_history_page.dart';
 import 'package:flixbit/src/features/main_menu/wallet_page/wallet_page.dart';
 import 'package:flixbit/src/features/main_menu/profile_page.dart';
 import 'package:flixbit/src/features/welcome_page.dart';
 import 'package:flixbit/src/features/seller/seller_main_menu/seller_dashboard_page.dart';
 import 'package:flixbit/src/features/seller/seller_main_menu/seller_offers_page.dart';
+import 'package:flixbit/src/features/seller/create_edit_offer_page.dart';
 import 'package:flixbit/src/features/seller/seller_main_menu/enhanced_seller_tournaments_page.dart';
 // import 'package:flixbit/src/features/seller/seller_main_menu/seller_profile_page.dart' as seller_main;
 import 'package:provider/provider.dart';
@@ -72,6 +75,28 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: RouterEnum.offersView.routeName,
       builder: (BuildContext context, GoRouterState state) => const OffersPage(),
+    ),
+    GoRoute(
+      path: RouterEnum.offerDetailView.routeName,
+      builder: (BuildContext context, GoRouterState state) {
+        final offerId = state.uri.queryParameters['offerId'] ?? '';
+        return OfferDetailPage(offerId: offerId);
+      },
+    ),
+    GoRoute(
+      path: RouterEnum.userOffersHistoryView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const UserOffersHistoryPage(),
+    ),
+    GoRoute(
+      path: RouterEnum.createOfferView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const CreateEditOfferPage(),
+    ),
+    GoRoute(
+      path: RouterEnum.editOfferView.routeName,
+      builder: (BuildContext context, GoRouterState state) {
+        final offerId = state.uri.queryParameters['offerId'];
+        return CreateEditOfferPage(offerId: offerId);
+      },
     ),
     GoRoute(
       path: RouterEnum.videoAdsView.routeName,

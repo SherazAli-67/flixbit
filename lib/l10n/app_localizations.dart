@@ -703,6 +703,630 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'QR Scans'**
   String get qrScans;
+
+  /// No description provided for @allOffers.
+  ///
+  /// In en, this message translates to:
+  /// **'All Offers'**
+  String get allOffers;
+
+  /// No description provided for @nearbyOffers.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby Offers'**
+  String get nearbyOffers;
+
+  /// No description provided for @followedSellers.
+  ///
+  /// In en, this message translates to:
+  /// **'Followed Sellers'**
+  String get followedSellers;
+
+  /// No description provided for @searchOffers.
+  ///
+  /// In en, this message translates to:
+  /// **'Search Offers'**
+  String get searchOffers;
+
+  /// No description provided for @noOffersAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No offers available'**
+  String get noOffersAvailable;
+
+  /// No description provided for @offerDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer Details'**
+  String get offerDetails;
+
+  /// No description provided for @redeemOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'Redeem Offer'**
+  String get redeemOffer;
+
+  /// No description provided for @redeemNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Redeem Now'**
+  String get redeemNow;
+
+  /// No description provided for @showQRCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Show this QR code to the seller'**
+  String get showQRCode;
+
+  /// No description provided for @couponCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon Code'**
+  String get couponCode;
+
+  /// No description provided for @copyCouponCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy Coupon Code'**
+  String get copyCouponCode;
+
+  /// No description provided for @couponCodeCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon code copied!'**
+  String get couponCodeCopied;
+
+  /// No description provided for @termsAndConditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms & Conditions'**
+  String get termsAndConditions;
+
+  /// No description provided for @followSeller.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow Seller'**
+  String get followSeller;
+
+  /// No description provided for @followingSeller.
+  ///
+  /// In en, this message translates to:
+  /// **'Following Seller'**
+  String get followingSeller;
+
+  /// No description provided for @unfollowSeller.
+  ///
+  /// In en, this message translates to:
+  /// **'Unfollow Seller'**
+  String get unfollowSeller;
+
+  /// No description provided for @alreadyRedeemed.
+  ///
+  /// In en, this message translates to:
+  /// **'Already Redeemed'**
+  String get alreadyRedeemed;
+
+  /// No description provided for @offerRedeemed.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer Redeemed!'**
+  String get offerRedeemed;
+
+  /// No description provided for @youEarnedPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'You earned {points} Flixbit points'**
+  String youEarnedPoints(Object points);
+
+  /// No description provided for @offerExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer Expired'**
+  String get offerExpired;
+
+  /// No description provided for @offerNotStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer Not Started'**
+  String get offerNotStarted;
+
+  /// No description provided for @offerFullyRedeemed.
+  ///
+  /// In en, this message translates to:
+  /// **'Fully Redeemed'**
+  String get offerFullyRedeemed;
+
+  /// No description provided for @offerUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer Unavailable'**
+  String get offerUnavailable;
+
+  /// No description provided for @validUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid until {date}'**
+  String validUntil(Object date);
+
+  /// No description provided for @expiresIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires in {days} days'**
+  String expiresIn(Object days);
+
+  /// No description provided for @redemptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Redemptions'**
+  String get redemptions;
+
+  /// No description provided for @viewCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Views'**
+  String get viewCount;
+
+  /// No description provided for @conversionRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversion Rate'**
+  String get conversionRate;
+
+  /// No description provided for @myRedemptions.
+  ///
+  /// In en, this message translates to:
+  /// **'My Redemptions'**
+  String get myRedemptions;
+
+  /// No description provided for @redemptionHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Redemption History'**
+  String get redemptionHistory;
+
+  /// No description provided for @markAsUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as Used'**
+  String get markAsUsed;
+
+  /// No description provided for @viewDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'View Details'**
+  String get viewDetails;
+
+  /// No description provided for @usedOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'Used'**
+  String get usedOffer;
+
+  /// No description provided for @unusedOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to Use'**
+  String get unusedOffer;
+
+  /// No description provided for @noRedemptionsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No Redemptions Yet'**
+  String get noRedemptionsYet;
+
+  /// No description provided for @startRedeemingOffers.
+  ///
+  /// In en, this message translates to:
+  /// **'Start redeeming offers to see them here'**
+  String get startRedeemingOffers;
+
+  /// No description provided for @createOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Offer'**
+  String get createOffer;
+
+  /// No description provided for @createNewOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Offer'**
+  String get createNewOffer;
+
+  /// No description provided for @editOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Offer'**
+  String get editOffer;
+
+  /// No description provided for @offerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer Title'**
+  String get offerTitle;
+
+  /// No description provided for @offerDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer Description'**
+  String get offerDescription;
+
+  /// No description provided for @offerType.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer Type'**
+  String get offerType;
+
+  /// No description provided for @discount.
+  ///
+  /// In en, this message translates to:
+  /// **'Discount'**
+  String get discount;
+
+  /// No description provided for @freeItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Free Item'**
+  String get freeItem;
+
+  /// No description provided for @buyOneGetOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy One Get One'**
+  String get buyOneGetOne;
+
+  /// No description provided for @cashback.
+  ///
+  /// In en, this message translates to:
+  /// **'Cashback'**
+  String get cashback;
+
+  /// No description provided for @pointsReward.
+  ///
+  /// In en, this message translates to:
+  /// **'Points Reward'**
+  String get pointsReward;
+
+  /// No description provided for @voucher.
+  ///
+  /// In en, this message translates to:
+  /// **'Voucher'**
+  String get voucher;
+
+  /// No description provided for @category.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get category;
+
+  /// No description provided for @selectCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a category'**
+  String get selectCategory;
+
+  /// No description provided for @food.
+  ///
+  /// In en, this message translates to:
+  /// **'Food'**
+  String get food;
+
+  /// No description provided for @fashion.
+  ///
+  /// In en, this message translates to:
+  /// **'Fashion'**
+  String get fashion;
+
+  /// No description provided for @electronics.
+  ///
+  /// In en, this message translates to:
+  /// **'Electronics'**
+  String get electronics;
+
+  /// No description provided for @health.
+  ///
+  /// In en, this message translates to:
+  /// **'Health'**
+  String get health;
+
+  /// No description provided for @sports.
+  ///
+  /// In en, this message translates to:
+  /// **'Sports'**
+  String get sports;
+
+  /// No description provided for @entertainment.
+  ///
+  /// In en, this message translates to:
+  /// **'Entertainment'**
+  String get entertainment;
+
+  /// No description provided for @beauty.
+  ///
+  /// In en, this message translates to:
+  /// **'Beauty'**
+  String get beauty;
+
+  /// No description provided for @travel.
+  ///
+  /// In en, this message translates to:
+  /// **'Travel'**
+  String get travel;
+
+  /// No description provided for @education.
+  ///
+  /// In en, this message translates to:
+  /// **'Education'**
+  String get education;
+
+  /// No description provided for @services.
+  ///
+  /// In en, this message translates to:
+  /// **'Services'**
+  String get services;
+
+  /// No description provided for @discountPercentage.
+  ///
+  /// In en, this message translates to:
+  /// **'Discount Percentage'**
+  String get discountPercentage;
+
+  /// No description provided for @discountAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Discount Amount'**
+  String get discountAmount;
+
+  /// No description provided for @validFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid From'**
+  String get validFrom;
+
+  /// No description provided for @validUntilDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid Until'**
+  String get validUntilDate;
+
+  /// No description provided for @maxRedemptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Redemptions'**
+  String get maxRedemptions;
+
+  /// No description provided for @minPurchaseAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum Purchase Amount'**
+  String get minPurchaseAmount;
+
+  /// No description provided for @rewardPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Reward Points'**
+  String get rewardPoints;
+
+  /// No description provided for @targetLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Target Location'**
+  String get targetLocation;
+
+  /// No description provided for @targetRadius.
+  ///
+  /// In en, this message translates to:
+  /// **'Target Radius (km)'**
+  String get targetRadius;
+
+  /// No description provided for @submitForApproval.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit for Approval'**
+  String get submitForApproval;
+
+  /// No description provided for @offerSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer submitted for approval'**
+  String get offerSubmitted;
+
+  /// No description provided for @pendingApproval.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Approval'**
+  String get pendingApproval;
+
+  /// No description provided for @pendingAdminApproval.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Admin Approval'**
+  String get pendingAdminApproval;
+
+  /// No description provided for @offerPendingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your offer will be pending until approved by admin. This usually takes 24-48 hours.'**
+  String get offerPendingMessage;
+
+  /// No description provided for @addTerm.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Term'**
+  String get addTerm;
+
+  /// No description provided for @deleteTerm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Term'**
+  String get deleteTerm;
+
+  /// No description provided for @enterTermOrCondition.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter term or condition'**
+  String get enterTermOrCondition;
+
+  /// No description provided for @activeOffers.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get activeOffers;
+
+  /// No description provided for @pendingOffers.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get pendingOffers;
+
+  /// No description provided for @expiredOffers.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get expiredOffers;
+
+  /// No description provided for @draftOffers.
+  ///
+  /// In en, this message translates to:
+  /// **'Drafts'**
+  String get draftOffers;
+
+  /// No description provided for @noActiveOffers.
+  ///
+  /// In en, this message translates to:
+  /// **'No active offers'**
+  String get noActiveOffers;
+
+  /// No description provided for @noPendingOffers.
+  ///
+  /// In en, this message translates to:
+  /// **'No pending offers'**
+  String get noPendingOffers;
+
+  /// No description provided for @noExpiredOffers.
+  ///
+  /// In en, this message translates to:
+  /// **'No expired offers'**
+  String get noExpiredOffers;
+
+  /// No description provided for @pauseOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause Offer'**
+  String get pauseOffer;
+
+  /// No description provided for @activateOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate Offer'**
+  String get activateOffer;
+
+  /// No description provided for @viewAnalytics.
+  ///
+  /// In en, this message translates to:
+  /// **'View Analytics'**
+  String get viewAnalytics;
+
+  /// No description provided for @cloneOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'Clone Offer'**
+  String get cloneOffer;
+
+  /// No description provided for @deleteOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Offer'**
+  String get deleteOffer;
+
+  /// No description provided for @offerPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer paused'**
+  String get offerPaused;
+
+  /// No description provided for @offerActivated.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer activated'**
+  String get offerActivated;
+
+  /// No description provided for @offerCloned.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer cloned successfully'**
+  String get offerCloned;
+
+  /// No description provided for @offerDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer deleted'**
+  String get offerDeleted;
+
+  /// No description provided for @deleteOfferConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this offer? This action cannot be undone.'**
+  String get deleteOfferConfirm;
+
+  /// No description provided for @cloneOfferConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a copy of this offer?'**
+  String get cloneOfferConfirm;
+
+  /// No description provided for @totalViews.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Views'**
+  String get totalViews;
+
+  /// No description provided for @totalRedemptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Redemptions'**
+  String get totalRedemptions;
+
+  /// No description provided for @offerAnalytics.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer Analytics'**
+  String get offerAnalytics;
+
+  /// No description provided for @analyticsPageComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Analytics page coming soon'**
+  String get analyticsPageComingSoon;
+
+  /// No description provided for @locationPickerComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Location picker coming soon'**
+  String get locationPickerComingSoon;
+
+  /// No description provided for @noLocationSet.
+  ///
+  /// In en, this message translates to:
+  /// **'No location set (available everywhere)'**
+  String get noLocationSet;
+
+  /// No description provided for @locationSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Location set'**
+  String get locationSet;
+
+  /// No description provided for @setLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Set'**
+  String get setLocation;
+
+  /// No description provided for @changeLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get changeLocation;
 }
 
 class _AppLocalizationsDelegate

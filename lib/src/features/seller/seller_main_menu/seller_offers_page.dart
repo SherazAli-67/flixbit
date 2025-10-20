@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:go_router/go_router.dart';
 import '../../../models/offer_model.dart';
 import '../../../providers/seller_offers_provider.dart';
+import '../../../routes/router_enum.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/apptextstyles.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../create_edit_offer_page.dart';
 
 class SellerOffersPage extends StatefulWidget {
   const SellerOffersPage({super.key});
@@ -647,12 +648,7 @@ class _SellerOffersPageState extends State<SellerOffersPage>
         height: 50,
         child: ElevatedButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const CreateEditOfferPage(),
-              ),
-            );
+            context.push(RouterEnum.createOfferView.routeName);
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.vibrantBlueColor,

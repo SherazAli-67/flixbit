@@ -9,7 +9,6 @@ import '../service/offer_service.dart';
 import '../service/seller_follower_service.dart';
 import '../res/app_colors.dart';
 import '../res/apptextstyles.dart';
-import '../../l10n/app_localizations.dart';
 
 class OfferDetailPage extends StatefulWidget {
   final String offerId;

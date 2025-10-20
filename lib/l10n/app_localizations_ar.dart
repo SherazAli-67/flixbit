@@ -311,4 +311,324 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get qrScans => 'مسح QR';
+
+  @override
+  String get allOffers => 'كل العروض';
+
+  @override
+  String get nearbyOffers => 'العروض القريبة';
+
+  @override
+  String get followedSellers => 'البائعين المتابعين';
+
+  @override
+  String get searchOffers => 'البحث في العروض';
+
+  @override
+  String get noOffersAvailable => 'لا توجد عروض متاحة';
+
+  @override
+  String get offerDetails => 'تفاصيل العرض';
+
+  @override
+  String get redeemOffer => 'استبدال العرض';
+
+  @override
+  String get redeemNow => 'استبدل الآن';
+
+  @override
+  String get showQRCode => 'اعرض رمز QR هذا للبائع';
+
+  @override
+  String get couponCode => 'كود الكوبون';
+
+  @override
+  String get copyCouponCode => 'نسخ كود الكوبون';
+
+  @override
+  String get couponCodeCopied => 'تم نسخ كود الكوبون!';
+
+  @override
+  String get termsAndConditions => 'الشروط والأحكام';
+
+  @override
+  String get followSeller => 'متابعة البائع';
+
+  @override
+  String get followingSeller => 'تتابع البائع';
+
+  @override
+  String get unfollowSeller => 'إلغاء المتابعة';
+
+  @override
+  String get alreadyRedeemed => 'تم الاستبدال بالفعل';
+
+  @override
+  String get offerRedeemed => 'تم استبدال العرض!';
+
+  @override
+  String youEarnedPoints(Object points) {
+    return 'لقد ربحت $points نقطة فليكس بيت';
+  }
+
+  @override
+  String get offerExpired => 'انتهت صلاحية العرض';
+
+  @override
+  String get offerNotStarted => 'لم يبدأ العرض بعد';
+
+  @override
+  String get offerFullyRedeemed => 'تم الاستبدال بالكامل';
+
+  @override
+  String get offerUnavailable => 'العرض غير متاح';
+
+  @override
+  String validUntil(Object date) {
+    return 'صالح حتى $date';
+  }
+
+  @override
+  String expiresIn(Object days) {
+    return 'ينتهي خلال $days أيام';
+  }
+
+  @override
+  String get redemptions => 'الاستبدالات';
+
+  @override
+  String get viewCount => 'المشاهدات';
+
+  @override
+  String get conversionRate => 'معدل التحويل';
+
+  @override
+  String get myRedemptions => 'استبدالاتي';
+
+  @override
+  String get redemptionHistory => 'سجل الاستبدال';
+
+  @override
+  String get markAsUsed => 'وضع علامة كمستخدم';
+
+  @override
+  String get viewDetails => 'عرض التفاصيل';
+
+  @override
+  String get usedOffer => 'مستخدم';
+
+  @override
+  String get unusedOffer => 'جاهز للاستخدام';
+
+  @override
+  String get noRedemptionsYet => 'لا توجد استبدالات بعد';
+
+  @override
+  String get startRedeemingOffers => 'ابدأ باستبدال العروض لرؤيتها هنا';
+
+  @override
+  String get createOffer => 'إنشاء عرض';
+
+  @override
+  String get createNewOffer => 'إنشاء عرض جديد';
+
+  @override
+  String get editOffer => 'تعديل العرض';
+
+  @override
+  String get offerTitle => 'عنوان العرض';
+
+  @override
+  String get offerDescription => 'وصف العرض';
+
+  @override
+  String get offerType => 'نوع العرض';
+
+  @override
+  String get discount => 'خصم';
+
+  @override
+  String get freeItem => 'عنصر مجاني';
+
+  @override
+  String get buyOneGetOne => 'اشتر واحد واحصل على آخر';
+
+  @override
+  String get cashback => 'استرداد نقدي';
+
+  @override
+  String get pointsReward => 'مكافأة نقاط';
+
+  @override
+  String get voucher => 'قسيمة';
+
+  @override
+  String get category => 'الفئة';
+
+  @override
+  String get selectCategory => 'اختر فئة';
+
+  @override
+  String get food => 'طعام';
+
+  @override
+  String get fashion => 'أزياء';
+
+  @override
+  String get electronics => 'إلكترونيات';
+
+  @override
+  String get health => 'صحة';
+
+  @override
+  String get sports => 'رياضة';
+
+  @override
+  String get entertainment => 'ترفيه';
+
+  @override
+  String get beauty => 'جمال';
+
+  @override
+  String get travel => 'سفر';
+
+  @override
+  String get education => 'تعليم';
+
+  @override
+  String get services => 'خدمات';
+
+  @override
+  String get discountPercentage => 'نسبة الخصم';
+
+  @override
+  String get discountAmount => 'قيمة الخصم';
+
+  @override
+  String get validFrom => 'صالح من';
+
+  @override
+  String get validUntilDate => 'صالح حتى';
+
+  @override
+  String get maxRedemptions => 'الحد الأقصى للاستبدالات';
+
+  @override
+  String get minPurchaseAmount => 'الحد الأدنى للشراء';
+
+  @override
+  String get rewardPoints => 'نقاط المكافأة';
+
+  @override
+  String get targetLocation => 'الموقع المستهدف';
+
+  @override
+  String get targetRadius => 'نصف القطر المستهدف (كم)';
+
+  @override
+  String get submitForApproval => 'إرسال للموافقة';
+
+  @override
+  String get offerSubmitted => 'تم إرسال العرض للموافقة';
+
+  @override
+  String get pendingApproval => 'قيد الموافقة';
+
+  @override
+  String get pendingAdminApproval => 'قيد موافقة المسؤول';
+
+  @override
+  String get offerPendingMessage =>
+      'سيكون عرضك قيد الانتظار حتى تتم الموافقة عليه من قبل المسؤول. يستغرق هذا عادة 24-48 ساعة.';
+
+  @override
+  String get addTerm => 'إضافة شرط';
+
+  @override
+  String get deleteTerm => 'حذف الشرط';
+
+  @override
+  String get enterTermOrCondition => 'أدخل الشرط أو الحكم';
+
+  @override
+  String get activeOffers => 'نشط';
+
+  @override
+  String get pendingOffers => 'قيد الانتظار';
+
+  @override
+  String get expiredOffers => 'منتهية الصلاحية';
+
+  @override
+  String get draftOffers => 'مسودات';
+
+  @override
+  String get noActiveOffers => 'لا توجد عروض نشطة';
+
+  @override
+  String get noPendingOffers => 'لا توجد عروض قيد الانتظار';
+
+  @override
+  String get noExpiredOffers => 'لا توجد عروض منتهية الصلاحية';
+
+  @override
+  String get pauseOffer => 'إيقاف العرض';
+
+  @override
+  String get activateOffer => 'تنشيط العرض';
+
+  @override
+  String get viewAnalytics => 'عرض التحليلات';
+
+  @override
+  String get cloneOffer => 'نسخ العرض';
+
+  @override
+  String get deleteOffer => 'حذف العرض';
+
+  @override
+  String get offerPaused => 'تم إيقاف العرض';
+
+  @override
+  String get offerActivated => 'تم تنشيط العرض';
+
+  @override
+  String get offerCloned => 'تم نسخ العرض بنجاح';
+
+  @override
+  String get offerDeleted => 'تم حذف العرض';
+
+  @override
+  String get deleteOfferConfirm =>
+      'هل أنت متأكد من حذف هذا العرض؟ لا يمكن التراجع عن هذا الإجراء.';
+
+  @override
+  String get cloneOfferConfirm => 'هل تريد إنشاء نسخة من هذا العرض؟';
+
+  @override
+  String get totalViews => 'إجمالي المشاهدات';
+
+  @override
+  String get totalRedemptions => 'إجمالي الاستبدالات';
+
+  @override
+  String get offerAnalytics => 'تحليلات العرض';
+
+  @override
+  String get analyticsPageComingSoon => 'صفحة التحليلات قريباً';
+
+  @override
+  String get locationPickerComingSoon => 'اختيار الموقع قريباً';
+
+  @override
+  String get noLocationSet => 'لم يتم تحديد موقع (متاح في كل مكان)';
+
+  @override
+  String get locationSet => 'تم تحديد الموقع';
+
+  @override
+  String get setLocation => 'تحديد';
+
+  @override
+  String get changeLocation => 'تغيير';
 }

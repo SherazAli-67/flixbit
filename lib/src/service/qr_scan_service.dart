@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import '../config/points_config.dart';
 import '../models/wallet_models.dart';
 import 'flixbit_points_manager.dart';
+import 'seller_follower_service.dart';
 import 'wallet_service.dart';
 
 class QRScanService {
@@ -12,6 +13,7 @@ class QRScanService {
   QRScanService._internal();
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final SellerFollowerService _followerService = SellerFollowerService();
 
   /// Record a QR scan and award points
   Future<void> recordScan({
@@ -66,6 +68,22 @@ class QRScanService {
               : null,
         },
       );
+
+      // Auto-follow seller on QR scan
+      final isFollowing = await _followerService.isFollowing(userId, sellerId);
+      if (!isFollowing) {
+        await _followerService.followSeller(
+          userId: userId,
+          sellerId: sellerId,
+          source: 'qr_scan',
+          metadata: {
+            'scanId': scanRef.id,
+            'location': location?.latitude != null 
+                ? {'lat': location?.latitude, 'lng': location?.longitude} 
+                : null,
+          },
+        );
+      }
 
       // Update seller stats
       await _updateSellerStats(sellerId);

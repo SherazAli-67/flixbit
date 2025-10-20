@@ -1,13 +1,17 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flixbit/l10n/app_localizations.dart';
 import 'package:flixbit/src/routes/router_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:provider/provider.dart';
 import '../../config/points_config.dart';
 import '../../res/app_colors.dart';
 import '../../res/apptextstyles.dart';
 import '../../service/qr_scan_service.dart';
+import '../../service/offer_service.dart';
+import '../../providers/offers_provider.dart';
 
 class ScannerPage extends StatefulWidget{
   const ScannerPage({super.key});
@@ -19,6 +23,7 @@ class ScannerPage extends StatefulWidget{
 class _ScannerPageState extends State<ScannerPage> with WidgetsBindingObserver {
   late MobileScannerController cameraController;
   final QRScanService _scanService = QRScanService();
+  final OfferService _offerService = OfferService();
   bool _isControllerInitialized = false;
   bool _hasScanned = false;
   bool _isProcessing = false;
@@ -114,46 +119,27 @@ class _ScannerPageState extends State<ScannerPage> with WidgetsBindingObserver {
         throw Exception('Invalid QR code data');
       }
 
-      // Parse QR code data (format: "flixbit:seller:{sellerId}")
+      final userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId == null) {
+        throw Exception('Please sign in to scan QR codes');
+      }
+
+      // Parse QR code data
       final parts = qrData.split(':');
-      if (parts.length != 3 || parts[0] != 'flixbit' || parts[1] != 'seller') {
+      
+      if (parts.isEmpty || parts[0] != 'flixbit') {
         throw Exception('Invalid QR code format');
       }
 
-      final sellerId = parts[2];
-      
-      // TODO: Implement location service
-      // final location = await LocationService.getCurrentLocation();
-
-      // Record scan and award points
-      await _scanService.recordScan(
-        userId: 'currentUser', // TODO: Get from auth service
-        sellerId: sellerId,
-        qrCode: qrData,
-      );
-
-      // Show success message
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                Icon(Icons.check_circle, color: AppColors.whiteColor),
-                const SizedBox(width: 8),
-                Text('Points awarded for QR scan!'),
-              ],
-            ),
-            backgroundColor: AppColors.successColor,
-          ),
-        );
-      }
-
-      // Navigate to seller profile
-      if (mounted) {
-        await context.push(RouterEnum.sellerProfileView.routeName, extra: {
-          'sellerId': sellerId,
-          'verificationMethod': 'qr_scan'
-        });
+      // Determine QR type and handle accordingly
+      if (parts.length >= 3 && parts[1] == 'seller') {
+        // Seller QR Code: flixbit:seller:{sellerId}
+        await _handleSellerQR(userId, parts[2], qrData);
+      } else if (parts.length >= 4 && parts[1] == 'offer') {
+        // Offer QR Code: flixbit:offer:{offerId}:{sellerId}:{timestamp}
+        await _handleOfferQR(userId, parts[2], parts[3], qrData);
+      } else {
+        throw Exception('Unknown QR code type');
       }
     } catch (e) {
       setState(() => _error = e.toString());
@@ -180,6 +166,147 @@ class _ScannerPageState extends State<ScannerPage> with WidgetsBindingObserver {
         _initializeController();
       }
     }
+  }
+
+  /// Handle Seller QR Code scan
+  Future<void> _handleSellerQR(String userId, String sellerId, String qrData) async {
+    try {
+      // Record scan and award points
+      await _scanService.recordScan(
+        userId: userId,
+        sellerId: sellerId,
+        qrCode: qrData,
+      );
+
+      // Show success message
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                Icon(Icons.check_circle, color: AppColors.whiteColor),
+                const SizedBox(width: 8),
+                Text('Points awarded for QR scan!'),
+              ],
+            ),
+            backgroundColor: AppColors.successColor,
+          ),
+        );
+      }
+
+      // Navigate to seller profile
+      if (mounted) {
+        context.push(
+          '${RouterEnum.sellerProfileView.routeName}?sellerId=$sellerId&verificationMethod=qr_scan',
+        );
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// Handle Offer QR Code scan
+  Future<void> _handleOfferQR(String userId, String offerId, String sellerId, String qrData) async {
+    try {
+      final provider = Provider.of<OffersProvider>(context, listen: false);
+
+      // Validate offer exists and QR matches
+      final isValid = await _offerService.validateQRRedemption(userId, offerId, qrData);
+      
+      if (!isValid) {
+        throw Exception('Invalid or expired offer QR code');
+      }
+
+      // Redeem offer via QR method
+      final redemption = await provider.redeemOffer(
+        userId: userId,
+        offerId: offerId,
+        method: 'qr',
+        qrCodeData: qrData,
+      );
+
+      if (redemption == null) {
+        throw Exception(provider.error ?? 'Failed to redeem offer');
+      }
+
+      // Show success dialog
+      if (mounted) {
+        await _showOfferRedemptionSuccess(offerId, redemption.pointsEarned);
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// Show offer redemption success dialog
+  Future<void> _showOfferRedemptionSuccess(String offerId, int pointsEarned) async {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.cardBgColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.check_circle,
+              color: Colors.green,
+              size: 80,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Offer Redeemed!',
+              style: AppTextStyles.headingTextStyle3.copyWith(
+                color: Colors.green,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'You earned $pointsEarned Flixbit points',
+              style: AppTextStyles.bodyTextStyle.copyWith(
+                color: AppColors.primaryColor,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'This offer has been added to your redemptions',
+              style: AppTextStyles.bodyTextStyle.copyWith(
+                color: AppColors.unSelectedGreyColor,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Close dialog
+            },
+            child: Text(
+              'View Details',
+              style: AppTextStyles.buttonTextStyle.copyWith(
+                color: AppColors.primaryColor,
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              // Navigate to offer details
+              context.push('${RouterEnum.offerDetailView.routeName}?offerId=$offerId');
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primaryColor,
+            ),
+            child: const Text('View Offer'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override

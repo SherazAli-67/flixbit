@@ -130,6 +130,8 @@ class OffersProvider extends ChangeNotifier {
               notifyListeners();
             },
             onError: (e) {
+
+              debugPrint("Failed to load offers: $e");
               _setError('Failed to load followed sellers offers: $e');
               _setLoading(false);
             },

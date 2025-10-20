@@ -6,6 +6,8 @@ import 'package:flixbit/src/providers/profile_provider.dart';
 import 'package:flixbit/src/providers/tab_change_provider.dart';
 import 'package:flixbit/src/providers/reviews_provider.dart';
 import 'package:flixbit/src/providers/wallet_provider.dart';
+import 'package:flixbit/src/providers/offers_provider.dart';
+import 'package:flixbit/src/providers/seller_offers_provider.dart';
 import 'package:flixbit/src/res/app_colors.dart';
 import 'package:flixbit/src/res/app_constants.dart';
 import 'package:flixbit/src/routes/app_router.dart';
@@ -30,6 +32,8 @@ void main() async {
         ChangeNotifierProvider(create: (_)=> LinkedAccountsProvider(initialIsSellerAccount: initialIsSeller)),
         ChangeNotifierProvider(create: (_)=> ProfileProvider()),
         ChangeNotifierProvider(create: (_)=> WalletProvider()),
+        ChangeNotifierProvider(create: (_)=> OffersProvider()),
+        ChangeNotifierProvider(create: (_)=> SellerOffersProvider()),
       ],
       child: const MyApp()));
 }

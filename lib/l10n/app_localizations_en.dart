@@ -311,4 +311,324 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get qrScans => 'QR Scans';
+
+  @override
+  String get allOffers => 'All Offers';
+
+  @override
+  String get nearbyOffers => 'Nearby Offers';
+
+  @override
+  String get followedSellers => 'Followed Sellers';
+
+  @override
+  String get searchOffers => 'Search Offers';
+
+  @override
+  String get noOffersAvailable => 'No offers available';
+
+  @override
+  String get offerDetails => 'Offer Details';
+
+  @override
+  String get redeemOffer => 'Redeem Offer';
+
+  @override
+  String get redeemNow => 'Redeem Now';
+
+  @override
+  String get showQRCode => 'Show this QR code to the seller';
+
+  @override
+  String get couponCode => 'Coupon Code';
+
+  @override
+  String get copyCouponCode => 'Copy Coupon Code';
+
+  @override
+  String get couponCodeCopied => 'Coupon code copied!';
+
+  @override
+  String get termsAndConditions => 'Terms & Conditions';
+
+  @override
+  String get followSeller => 'Follow Seller';
+
+  @override
+  String get followingSeller => 'Following Seller';
+
+  @override
+  String get unfollowSeller => 'Unfollow Seller';
+
+  @override
+  String get alreadyRedeemed => 'Already Redeemed';
+
+  @override
+  String get offerRedeemed => 'Offer Redeemed!';
+
+  @override
+  String youEarnedPoints(Object points) {
+    return 'You earned $points Flixbit points';
+  }
+
+  @override
+  String get offerExpired => 'Offer Expired';
+
+  @override
+  String get offerNotStarted => 'Offer Not Started';
+
+  @override
+  String get offerFullyRedeemed => 'Fully Redeemed';
+
+  @override
+  String get offerUnavailable => 'Offer Unavailable';
+
+  @override
+  String validUntil(Object date) {
+    return 'Valid until $date';
+  }
+
+  @override
+  String expiresIn(Object days) {
+    return 'Expires in $days days';
+  }
+
+  @override
+  String get redemptions => 'Redemptions';
+
+  @override
+  String get viewCount => 'Views';
+
+  @override
+  String get conversionRate => 'Conversion Rate';
+
+  @override
+  String get myRedemptions => 'My Redemptions';
+
+  @override
+  String get redemptionHistory => 'Redemption History';
+
+  @override
+  String get markAsUsed => 'Mark as Used';
+
+  @override
+  String get viewDetails => 'View Details';
+
+  @override
+  String get usedOffer => 'Used';
+
+  @override
+  String get unusedOffer => 'Ready to Use';
+
+  @override
+  String get noRedemptionsYet => 'No Redemptions Yet';
+
+  @override
+  String get startRedeemingOffers => 'Start redeeming offers to see them here';
+
+  @override
+  String get createOffer => 'Create Offer';
+
+  @override
+  String get createNewOffer => 'Create New Offer';
+
+  @override
+  String get editOffer => 'Edit Offer';
+
+  @override
+  String get offerTitle => 'Offer Title';
+
+  @override
+  String get offerDescription => 'Offer Description';
+
+  @override
+  String get offerType => 'Offer Type';
+
+  @override
+  String get discount => 'Discount';
+
+  @override
+  String get freeItem => 'Free Item';
+
+  @override
+  String get buyOneGetOne => 'Buy One Get One';
+
+  @override
+  String get cashback => 'Cashback';
+
+  @override
+  String get pointsReward => 'Points Reward';
+
+  @override
+  String get voucher => 'Voucher';
+
+  @override
+  String get category => 'Category';
+
+  @override
+  String get selectCategory => 'Select a category';
+
+  @override
+  String get food => 'Food';
+
+  @override
+  String get fashion => 'Fashion';
+
+  @override
+  String get electronics => 'Electronics';
+
+  @override
+  String get health => 'Health';
+
+  @override
+  String get sports => 'Sports';
+
+  @override
+  String get entertainment => 'Entertainment';
+
+  @override
+  String get beauty => 'Beauty';
+
+  @override
+  String get travel => 'Travel';
+
+  @override
+  String get education => 'Education';
+
+  @override
+  String get services => 'Services';
+
+  @override
+  String get discountPercentage => 'Discount Percentage';
+
+  @override
+  String get discountAmount => 'Discount Amount';
+
+  @override
+  String get validFrom => 'Valid From';
+
+  @override
+  String get validUntilDate => 'Valid Until';
+
+  @override
+  String get maxRedemptions => 'Max Redemptions';
+
+  @override
+  String get minPurchaseAmount => 'Minimum Purchase Amount';
+
+  @override
+  String get rewardPoints => 'Reward Points';
+
+  @override
+  String get targetLocation => 'Target Location';
+
+  @override
+  String get targetRadius => 'Target Radius (km)';
+
+  @override
+  String get submitForApproval => 'Submit for Approval';
+
+  @override
+  String get offerSubmitted => 'Offer submitted for approval';
+
+  @override
+  String get pendingApproval => 'Pending Approval';
+
+  @override
+  String get pendingAdminApproval => 'Pending Admin Approval';
+
+  @override
+  String get offerPendingMessage =>
+      'Your offer will be pending until approved by admin. This usually takes 24-48 hours.';
+
+  @override
+  String get addTerm => 'Add Term';
+
+  @override
+  String get deleteTerm => 'Delete Term';
+
+  @override
+  String get enterTermOrCondition => 'Enter term or condition';
+
+  @override
+  String get activeOffers => 'Active';
+
+  @override
+  String get pendingOffers => 'Pending';
+
+  @override
+  String get expiredOffers => 'Expired';
+
+  @override
+  String get draftOffers => 'Drafts';
+
+  @override
+  String get noActiveOffers => 'No active offers';
+
+  @override
+  String get noPendingOffers => 'No pending offers';
+
+  @override
+  String get noExpiredOffers => 'No expired offers';
+
+  @override
+  String get pauseOffer => 'Pause Offer';
+
+  @override
+  String get activateOffer => 'Activate Offer';
+
+  @override
+  String get viewAnalytics => 'View Analytics';
+
+  @override
+  String get cloneOffer => 'Clone Offer';
+
+  @override
+  String get deleteOffer => 'Delete Offer';
+
+  @override
+  String get offerPaused => 'Offer paused';
+
+  @override
+  String get offerActivated => 'Offer activated';
+
+  @override
+  String get offerCloned => 'Offer cloned successfully';
+
+  @override
+  String get offerDeleted => 'Offer deleted';
+
+  @override
+  String get deleteOfferConfirm =>
+      'Are you sure you want to delete this offer? This action cannot be undone.';
+
+  @override
+  String get cloneOfferConfirm => 'Create a copy of this offer?';
+
+  @override
+  String get totalViews => 'Total Views';
+
+  @override
+  String get totalRedemptions => 'Total Redemptions';
+
+  @override
+  String get offerAnalytics => 'Offer Analytics';
+
+  @override
+  String get analyticsPageComingSoon => 'Analytics page coming soon';
+
+  @override
+  String get locationPickerComingSoon => 'Location picker coming soon';
+
+  @override
+  String get noLocationSet => 'No location set (available everywhere)';
+
+  @override
+  String get locationSet => 'Location set';
+
+  @override
+  String get setLocation => 'Set';
+
+  @override
+  String get changeLocation => 'Change';
 }
