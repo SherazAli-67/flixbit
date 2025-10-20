@@ -98,6 +98,9 @@ class DashboardPage extends StatelessWidget {
             durationSeconds: 30,
             rewardPoints: 5,
             minWatchSeconds: 10,
+            uploadedBy: 'demo_seller',
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
           );
           context.push(
             RouterEnum.videoDetailsView.routeName,

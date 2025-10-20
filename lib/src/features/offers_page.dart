@@ -179,9 +179,7 @@ class _OffersPageState extends State<OffersPage> with SingleTickerProviderStateM
               label: Text(category),
               selected: isSelected,
               onSelected: (selected) {
-                setState(() {
-                  _selectedCategory = category == 'All' ? null : category;
-                });
+                setState(()=> _selectedCategory = category == 'All' ? null : category);
                 _loadOffersForTab(_selectedTabIndex);
               },
               backgroundColor: AppColors.cardBgColor,

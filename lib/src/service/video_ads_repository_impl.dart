@@ -24,26 +24,7 @@ class VideoAdsRepositoryImpl {
 
       final snapshot = await query.get();
       return snapshot.docs
-          .map((doc) {
-            final data = doc.data();
-            return VideoAd(
-              id: doc.id,
-              title: data['title'],
-              mediaUrl: data['mediaUrl'],
-              thumbnailUrl: data['thumbnailUrl'],
-              durationSeconds: data['durationSeconds'],
-              category: data['category'],
-              region: data['region'],
-              startAt: (data['startAt'] as Timestamp?)?.toDate(),
-              endAt: (data['endAt'] as Timestamp?)?.toDate(),
-              rewardPoints: data['rewardPoints'] ?? PointsConfig.getPoints('video_ad'),
-              rewardCouponId: data['rewardCouponId'],
-              minWatchSeconds: data['minWatchSeconds'],
-              contestEnabled: data['contestEnabled'] ?? false,
-              voteWindowStart: (data['voteWindowStart'] as Timestamp?)?.toDate(),
-              voteWindowEnd: (data['voteWindowEnd'] as Timestamp?)?.toDate(),
-            );
-          })
+          .map((doc) => VideoAd.fromFirestore(doc.data(), doc.id))
           .where((ad) => ad.isActiveNow)
           .toList();
     } catch (e) {
@@ -161,14 +142,7 @@ class VideoAdsRepositoryImpl {
       }
 
       final adData = adDoc.data() as Map<String, dynamic>;
-      final ad = VideoAd(
-        id: adDoc.id,
-        title: adData['title'] as String,
-        mediaUrl: adData['mediaUrl'] as String,
-        durationSeconds: adData['durationSeconds'] as int,
-        rewardPoints: (adData['rewardPoints'] as int?) ?? PointsConfig.getPoints('video_ad'),
-        minWatchSeconds: adData['minWatchSeconds'] as int,
-      );
+      final ad = VideoAd.fromFirestore(adData, adDoc.id);
 
       // Check watch time
       final watchedSeconds = data['watchedSeconds'] as int? ?? 0;

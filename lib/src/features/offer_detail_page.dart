@@ -192,7 +192,7 @@ class _OfferDetailPageState extends State<OfferDetailPage> {
         icon: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppColors.darkBgColor.withOpacity(0.7),
+            color: AppColors.darkBgColor.withValues(alpha: 0.7),
             shape: BoxShape.circle,
           ),
           child: const Icon(Icons.arrow_back, color: AppColors.whiteColor),
@@ -204,14 +204,12 @@ class _OfferDetailPageState extends State<OfferDetailPage> {
           icon: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.darkBgColor.withOpacity(0.7),
+              color: AppColors.darkBgColor.withValues(alpha: 0.7),
               shape: BoxShape.circle,
             ),
             child: const Icon(Icons.share, color: AppColors.whiteColor),
           ),
-          onPressed: () {
-            // TODO: Implement share functionality
-          },
+          onPressed: () {},
         ),
       ],
       flexibleSpace: FlexibleSpaceBar(
@@ -240,7 +238,7 @@ class _OfferDetailPageState extends State<OfferDetailPage> {
       child: Center(
         child: Icon(
           Icons.local_offer,
-          color: AppColors.whiteColor.withOpacity(0.5),
+          color: AppColors.whiteColor.withValues(alpha: 0.5),
           size: 100,
         ),
       ),
@@ -421,14 +419,12 @@ class _OfferDetailPageState extends State<OfferDetailPage> {
 
   Widget _buildRedemptionSection() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 16,
       children: [
         Text(
           'Redeem This Offer',
           style: AppTextStyles.subHeadingTextStyle,
         ),
-        const SizedBox(height: 16),
-        
         // QR Code Section
         Container(
           padding: const EdgeInsets.all(24),

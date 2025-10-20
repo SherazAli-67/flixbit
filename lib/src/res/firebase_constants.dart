@@ -19,6 +19,12 @@ class FirebaseConstants{
   static const videoAdEngagementsCollection = 'video_ad_engagements';
   static const videoAdVotesCollection = 'video_ad_votes';
   
+  // Video Contest Collections
+  static const videoContestsCollection = 'video_contests';
+  static const contestWinnersCollection = 'contest_winners';
+  static const videoAnalyticsCollection = 'video_analytics';
+  static const videoUploadsCollection = 'video_uploads';
+  
   // Offers Collections
   static const offersCollection = 'offers';
   static const offerRedemptionsCollection = 'offer_redemptions';

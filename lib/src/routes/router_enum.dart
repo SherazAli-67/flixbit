@@ -20,6 +20,9 @@ enum RouterEnum {
 
   uploadVideoAdView('/upload_video_ad_view'),
   videoDetailsView('/video_details_view'),
+  contestListView('/contest_list_view'),
+  contestDetailView('/contest_detail_view'),
+  contestResultsView('/contest_results_view'),
   wheelOfFortuneView('/wheel_of_fortune_view'),
   gamePredictionView('/game_predication_view'),
   tournamentMatchesView('/tournament_matches_view'),

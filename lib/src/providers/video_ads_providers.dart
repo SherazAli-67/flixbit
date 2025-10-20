@@ -4,6 +4,7 @@ import '../models/video_ad.dart';
 import '../service/video_ads_repository.dart';
 
 VideoAdsRepository createSeededFakeRepository() {
+  final now = DateTime.now();
   return VideoAdsRepositoryFake([
     VideoAd(
       id: 'ad-1',
@@ -13,14 +14,18 @@ VideoAdsRepository createSeededFakeRepository() {
       durationSeconds: 5,
       category: 'food',
       region: 'dubai',
-      startAt: DateTime.now().subtract(const Duration(days: 1)),
-      endAt: DateTime.now().add(const Duration(days: 30)),
+      startAt: now.subtract(const Duration(days: 1)),
+      endAt: now.add(const Duration(days: 30)),
       rewardPoints: 5,
       rewardCouponId: null,
       minWatchSeconds: 4,
       contestEnabled: true,
-      voteWindowStart: DateTime.now().subtract(const Duration(days: 1)),
-      voteWindowEnd: DateTime.now().add(const Duration(days: 6)),
+      voteWindowStart: now.subtract(const Duration(days: 1)),
+      voteWindowEnd: now.add(const Duration(days: 6)),
+      uploadedBy: 'demo_seller_1',
+      approvalStatus: ApprovalStatus.approved,
+      createdAt: now.subtract(const Duration(days: 2)),
+      updatedAt: now.subtract(const Duration(days: 1)),
     ),
     VideoAd(
       id: 'ad-2',
@@ -30,12 +35,16 @@ VideoAdsRepository createSeededFakeRepository() {
       durationSeconds: 10,
       category: 'fitness',
       region: 'karachi',
-      startAt: DateTime.now().subtract(const Duration(days: 2)),
-      endAt: DateTime.now().add(const Duration(days: 90)),
+      startAt: now.subtract(const Duration(days: 2)),
+      endAt: now.add(const Duration(days: 90)),
       rewardPoints: 10,
       rewardCouponId: 'coupon-20off-fitness',
       minWatchSeconds: 8,
       contestEnabled: false,
+      uploadedBy: 'demo_seller_2',
+      approvalStatus: ApprovalStatus.approved,
+      createdAt: now.subtract(const Duration(days: 3)),
+      updatedAt: now.subtract(const Duration(days: 2)),
     ),
   ]);
 }

@@ -42,6 +42,9 @@ import '../features/game_prediction/make_prediction_page.dart';
 import '../features/reviews/seller_profile_page.dart';
 import '../features/reviews/write_review_page.dart';
 import '../features/video_ads/video_ad_detail_page.dart';
+import '../features/video_contests/contest_list_page.dart';
+import '../features/video_contests/contest_detail_page.dart';
+import '../features/video_contests/contest_results_page.dart';
 import '../models/match_model.dart';
 import '../models/tournament_model.dart';
 import '../models/review_model.dart';
@@ -113,6 +116,29 @@ final GoRouter appRouter = GoRouter(
         return VideoAdDetailPage(
           ad: extra['ad'] as VideoAd,
           sellerId: extra['sellerId'] as String?,
+        );
+      },
+    ),
+    GoRoute(
+      path: RouterEnum.contestListView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const ContestListPage(),
+    ),
+    GoRoute(
+      path: RouterEnum.contestDetailView.routeName,
+      builder: (BuildContext context, GoRouterState state) {
+        final extra = state.extra as Map<String, dynamic>;
+        return ContestDetailPage(
+          contestId: extra['contestId'] as String,
+        );
+      },
+    ),
+    GoRoute(
+      path: RouterEnum.contestResultsView.routeName,
+      builder: (BuildContext context, GoRouterState state) {
+        final extra = state.extra as Map<String, dynamic>;
+        return ContestResultsPage(
+          contestId: extra['contestId'] as String,
+          contestTitle: extra['contestTitle'] as String,
         );
       },
     ),
