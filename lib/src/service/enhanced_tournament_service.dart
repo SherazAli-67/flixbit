@@ -121,10 +121,7 @@ class EnhancedTournamentService {
   // ==================== MATCH CRUD ====================
 
   /// Add a match to a tournament
-  static Future<String> addMatch({
-    required String tournamentId,
-    required Match match,
-  }) async {
+  static Future<String> addMatch({required String tournamentId, required Match match,}) async {
     try {
       final matchId = match.id.isEmpty
           ? _firestore
@@ -148,9 +145,7 @@ class EnhancedTournamentService {
           .doc(matchId)
           .set(matchWithId.toJson());
 
-      // Update tournament total matches count
-      await _updateTournamentMatchCount(tournamentId);
-
+      // Update tournament total matches count - handled by cloud function
       return matchId;
     } catch (e) {
       throw Exception('Failed to add match: $e');
@@ -158,10 +153,7 @@ class EnhancedTournamentService {
   }
 
   /// Update a match
-  static Future<void> updateMatch({
-    required String tournamentId,
-    required Match match,
-  }) async {
+  static Future<void> updateMatch({required String tournamentId,required Match match,}) async {
     try {
       await _firestore
           .collection(FirebaseConstants.tournamentsCollection)
@@ -175,10 +167,7 @@ class EnhancedTournamentService {
   }
 
   /// Delete a match
-  static Future<void> deleteMatch({
-    required String tournamentId,
-    required String matchId,
-  }) async {
+  static Future<void> deleteMatch({required String tournamentId, required String matchId,}) async {
     try {
       await _firestore
           .collection(FirebaseConstants.tournamentsCollection)
@@ -187,8 +176,7 @@ class EnhancedTournamentService {
           .doc(matchId)
           .delete();
 
-      // Update tournament total matches count
-      await _updateTournamentMatchCount(tournamentId);
+      // Update tournament total matches count - handled by cloud function
     } catch (e) {
       throw Exception('Failed to delete match: $e');
     }
@@ -213,10 +201,7 @@ class EnhancedTournamentService {
   }
 
   /// Get a specific match
-  static Future<Match?> getMatch({
-    required String tournamentId,
-    required String matchId,
-  }) async {
+  static Future<Match?> getMatch({required String tournamentId, required String matchId,}) async {
     try {
       final doc = await _firestore
           .collection(FirebaseConstants.tournamentsCollection)
@@ -235,12 +220,7 @@ class EnhancedTournamentService {
   // ==================== SCORE UPDATE & FINALIZE ====================
 
   /// Update match score and finalize
-  static Future<void> finalizeMatch({
-    required String tournamentId,
-    required String matchId,
-    required int homeScore,
-    required int awayScore,
-  }) async {
+  static Future<void> finalizeMatch({required String tournamentId, required String matchId, required int homeScore, required int awayScore,}) async {
     try {
       // Get the match
       final match = await getMatch(tournamentId: tournamentId, matchId: matchId);
@@ -368,23 +348,6 @@ class EnhancedTournamentService {
 
   // ==================== HELPER METHODS ====================
 
-  /// Update tournament match count
-  static Future<void> _updateTournamentMatchCount(String tournamentId) async {
-    try {
-      final matchesSnapshot = await _firestore
-          .collection(FirebaseConstants.tournamentsCollection)
-          .doc(tournamentId)
-          .collection(FirebaseConstants.matchesSubcollection)
-          .get();
-
-      await _firestore
-          .collection(FirebaseConstants.tournamentsCollection)
-          .doc(tournamentId)
-          .update({'totalMatches': matchesSnapshot.docs.length});
-    } catch (e) {
-      debugPrint('Failed to update match count: $e');
-    }
-  }
 
   /// Update tournament status based on dates
   static Future<void> updateTournamentStatus(String tournamentId) async {

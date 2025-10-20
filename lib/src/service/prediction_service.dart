@@ -72,11 +72,7 @@ class PredictionService {
   }
 
   /// Evaluate all predictions for a completed match
-  static Future<void> evaluateMatchPredictions({
-    required String matchId,
-    required Tournament tournament,
-    required Match match,
-  }) async {
+  static Future<void> evaluateMatchPredictions({required String matchId, required Tournament tournament, required Match match,}) async {
     try {
       // Get all predictions for this match
       final predictionsSnapshot = await _firestore
@@ -307,7 +303,7 @@ class PredictionService {
         rank++;
       }
     } catch (e) {
-      print('Failed to update leaderboard: $e');
+      debugPrint('Failed to update leaderboard: $e');
       rethrow;
     }
   }

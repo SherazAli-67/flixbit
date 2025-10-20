@@ -1,0 +1,220 @@
+🎟️ Offers System in Flixbit App — Complete Explanation
+
+⸻
+
+🎯 Purpose
+
+The Offers System is the marketing backbone of Flixbit.
+It allows:
+	•	Sellers to promote their products or services to nearby users.
+	•	Users to discover, redeem, and share offers within the app.
+	•	Admin/Sub-Admin to manage, approve, and analyze promotional campaigns.
+
+Offers work in combination with QR codes, Flixbit rewards, and push notifications to target customers based on location, interests, and demographics.
+
+⸻
+
+⚙️ How Offers Work (Step-by-Step)
+
+⸻
+
+1. Offer Creation (Seller Side)
+
+When a seller registers and logs into their dashboard or mobile interface, they can create new offers.
+
+Each offer includes:
+	•	Offer title (e.g., “20% off Lunch Combo”).
+	•	Description (details of the deal).
+	•	Offer type:
+	•	Discount offer (percentage or fixed value).
+	•	Coupon / Voucher (digital code or redeemable QR).
+	•	Special Deal / Bundle (e.g., buy 2 get 1 free).
+	•	Offer category (Food, Fashion, Electronics, etc.).
+	•	Offer image or video (optional).
+	•	Validity dates (start & end).
+	•	Maximum redemptions per user or total stock.
+	•	Target location or audience (by city or radius).
+
+📌 Once created, the offer is submitted to the Admin/Sub-Admin for approval before being visible to users.
+
+⸻
+
+2. Offer Approval (Admin/Sub-Admin)
+
+To maintain authenticity and prevent misuse, all offers are reviewed and approved by Admin/Sub-Admin.
+
+They verify:
+	•	Offer accuracy and legitimacy.
+	•	Pricing and validity period.
+	•	Seller’s active status and QR verification.
+
+After approval, the offer appears live on the user app.
+
+⸻
+
+3. Offer Visibility (User Side)
+
+Users can view offers through multiple sections:
+Location                       -       Description
+🏠 Home Screen Dashboard       -       Latest offers in user’s area or from followed sellers.
+🎟️ Offers Section / Tab        -       Dedicated tab listing all active offers, with sorting by “Nearest,” “Latest,” “Top Rated,” etc.
+🔍 Search or Filter            -       Search offers by category, keywords, or city.
+🔔 Push Notifications          -       Auto or manual notifications promote specific offers based on demographics.
+🏪 Seller Profile Page         -       Shows all active offers from that seller.
+
+
+4. Offer Redemption
+
+Users can redeem offers in two ways:
+
+🟢 A. QR Code Redemption
+	•	Each offer generates a unique QR code.
+	•	When a user visits the store, they scan the seller’s QR.
+	•	The app validates redemption and marks it as “Used.”
+	•	The seller can track which user redeemed the offer.
+
+🟢 B. In-App Coupon Redemption
+	•	The offer includes a digital coupon code.
+	•	User clicks “Redeem” in the app.
+	•	The code or voucher is displayed for use online or at checkout.
+
+Once redeemed, the offer is:
+	•	Added to user’s redemption history.
+	•	Deducted from available redemptions (for inventory tracking).
+
+⸻
+
+5. Offer Rewards Integration
+
+Each offer can optionally reward users with Flixbit points.
+
+Example:
+	•	“Redeem this offer and earn 10 Flixbit points.”
+	•	“Watch a short video and get a 15% off coupon.”
+
+This feature encourages users to engage with the marketing content while benefiting from rewards.
+
+⸻
+
+6. Push Notification Targeting
+
+The Offers System works closely with push notifications:
+	•	Admin/Sub-Admin or Sellers can send auto or manual notifications promoting new offers.
+	•	Notifications are customized based on:
+	•	User’s location (city or radius).
+	•	Interests (e.g., food, fashion, sports).
+	•	Active times (specific hours or recurring frequency).
+
+Example:
+
+“Hey Ali! A new 25% discount at Pizza House near you — valid today only 🍕.”
+
+This creates a personalized marketing experience similar to Facebook’s local targeting model.
+
+⸻
+
+7. Offer Tracking & Analytics
+
+For every offer, the backend tracks:
+	•	Number of views and redemptions.
+	•	Locations where it performed best.
+	•	Users who redeemed or interacted.
+	•	Ratings and reviews for the seller or offer.
+
+Sellers and Sub-Admins can view this in their dashboards.
+
+Admins can see platform-wide insights:
+	•	Top-performing sellers.
+	•	Total offers redeemed.
+	•	Conversion rate from notifications to redemptions.
+
+⸻
+
+8. Seller Follower Connection
+
+When a user redeems or scans an offer, they automatically become a follower of that seller.
+	•	This lets the seller send them future notifications.
+	•	Builds a loyal customer list for remarketing.
+
+Example:
+
+A user redeems a 10% discount from a gym → now automatically follows that gym’s future offers.
+
+⸻
+
+9. Offers + QR + Wallet Flow Example
+
+Example Scenario:
+	1.	Seller “PizzaHub” creates an offer → “Buy 1 Get 1 Free Pizza.”
+	2.	Admin approves it.
+	3.	Users nearby get a push notification.
+	4.	User visits PizzaHub → scans QR code → redeem offer.
+	5.	User earns 10 Flixbit points for redemption.
+	6.	Seller gains a new follower.
+	7.	Admin dashboard logs all redemptions and engagement data.
+
+⸻
+10. Admin/Sub-Admin Controls
+Role         -     Responsibilities
+
+Admin        -     Approve offers, set price for push notifications, and monitor offer performance.
+Sub-Admin    -     Manage regional offers, track engagement, and moderate promotional videos tied to offers.
+Seller       -     Create offers, monitor analytics, and promote through notifications.
+
+🧠 Integration with Other Modules
+Module                -    Connection
+Wallet (Flixbit)      -    Users earn or spend Flixbit to redeem offers.
+QR System             -    QR scan validates redemption and tracks followers.
+Push Notifications    -    Auto or manual targeting for offer promotions.
+Review System         -    After redemption, users can review the seller.
+Video Ads             -    Offers can include promo videos (watch + redeem).
+
+✅ In Summary
+For Users                              -  For Sellers                                       -  For Admin/Sub-Admin
+Discover & redeem nearby deals.        -  Create & promote offers via QR & notifications.   -  Approve, track, and analyze offers system-wide.
+Earn Flixbit points for redemptions.   -  Build followers and brand reputation.             -   Control economic balance & ad performance.
+
+🏁 In short:
+
+The Offers feature in Flixbit transforms traditional discounts into smart, reward-driven marketing campaigns, powered by:
+	•	Flixbit wallet (rewards),
+	•	QR system (tracking), and
+	•	Push notifications (targeted reach),
+giving users value and sellers visibility — all under Admin/Sub-Admin supervision.
+
+
+Here's document format of it
+
+Flixbit App – Offers System Detailed Overview
+The Offers System in the Flixbit app acts as a bridge between users, sellers, and administrators. It serves as the marketing backbone of the app, allowing sellers to promote offers, users to redeem them, and admins to control, approve, and analyze them. Offers are closely integrated with QR codes, push notifications, and the Flixbit wallet system.
+🎯 Purpose
+The Offers System enables sellers to create targeted promotions, users to discover and redeem deals, and admins/sub-admins to manage the marketing flow through approval, tracking, and analytics.
+⚙️ How Offers Work (Step-by-Step)
+1. Offer Creation (Seller Side)
+Sellers can create new offers from their dashboard, including title, description, type (discount, coupon, or special deal), category, media, validity dates, redemption limits, and target audience. All offers must be approved before going live.
+2. Offer Approval (Admin/Sub-Admin)
+Admin/Sub-Admin reviews and approves offers to ensure authenticity, accurate pricing, and policy compliance before they appear to users.
+3. Offer Visibility (User Side)
+Users can access offers from multiple locations: Home Screen, Offers Tab, Search/Filter, Push Notifications, and Seller Profiles.
+4. Offer Redemption
+Offers can be redeemed either via QR Code (in-store scanning) or digital coupons (in-app redemption). Each redemption is tracked and recorded in the user’s history and seller’s analytics.
+5. Offer Rewards Integration
+Offers can reward users with Flixbit points when they redeem deals or engage with ads, increasing participation.
+6. Push Notification Targeting
+Offers are promoted through targeted push notifications based on user location, interest, and behavior — similar to Facebook’s local targeting model.
+7. Offer Tracking & Analytics
+The backend tracks offer views, redemptions, engagement locations, and user interactions. Sellers and Admins can access insights to analyze offer performance and effectiveness.
+8. Seller Follower Connection
+When users redeem or scan a seller’s QR, they automatically become that seller’s follower, allowing future targeted offers.
+9. Offers + QR + Wallet Flow Example
+Example: Seller creates 'Buy 1 Get 1 Free Pizza' → Admin approves → Users nearby receive a notification → User redeems via QR scan → Earns Flixbit points → Seller gains a follower → Admin tracks engagement.
+10. Admin/Sub-Admin Controls
+Admins approve and monitor offers; Sub-Admins manage regional offers, push notifications, and analytics; Sellers create and manage their own promotional campaigns.
+🧠 Integration with Other Modules
+The Offers System connects with other core Flixbit modules such as:
+• Wallet (Flixbit) – Users earn or spend points on offers. • QR System – QR scanning validates redemptions and tracks followers. • Push Notifications – Used to promote offers dynamically. • Review System – Users can rate sellers after redeeming offers. • Video Ads – Offers can include promotional videos for engagement.
+✅ Summary
+The Flixbit Offers System creates a smart, automated, and reward-driven marketing ecosystem.
+For Users: • Discover and redeem offers • Earn Flixbit points • Follow sellers for updates
+For Sellers: • Create and promote offers • Build loyal customer base • Analyze engagement and ROI
+For Admin/Sub-Admin: • Approve and control offers • Track transactions and notifications • Manage monetization
