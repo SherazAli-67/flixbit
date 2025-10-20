@@ -38,6 +38,7 @@ enum TransactionSource {
   purchase,
   gift,
   offer,
+  offerRedemption,
   reward,
   
   // System

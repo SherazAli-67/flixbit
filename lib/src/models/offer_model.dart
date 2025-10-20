@@ -1,9 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Offer {
   final String id;
   final String sellerId;
   final String title;
   final String description;
   final String? imageUrl;
+  final String? videoUrl;
   final OfferType type;
   final double? discountPercentage;
   final double? discountAmount;
@@ -19,6 +22,21 @@ class Offer {
   final double? minPurchaseAmount;
   final bool requiresReview;
   final int reviewPointsReward;
+  
+  // Approval & Admin fields
+  final ApprovalStatus status;
+  final String? approvedBy;
+  final DateTime? approvedAt;
+  final String? rejectionReason;
+  final String? adminNotes;
+  
+  // Location targeting
+  final GeoPoint? targetLocation;
+  final double? targetRadiusKm;
+  
+  // QR & Analytics
+  final String qrCodeData;
+  final int viewCount;
 
   Offer({
     required this.id,
@@ -26,6 +44,7 @@ class Offer {
     required this.title,
     required this.description,
     this.imageUrl,
+    this.videoUrl,
     required this.type,
     this.discountPercentage,
     this.discountAmount,
@@ -41,6 +60,15 @@ class Offer {
     this.minPurchaseAmount,
     this.requiresReview = false,
     this.reviewPointsReward = 0,
+    this.status = ApprovalStatus.pending,
+    this.approvedBy,
+    this.approvedAt,
+    this.rejectionReason,
+    this.adminNotes,
+    this.targetLocation,
+    this.targetRadiusKm,
+    required this.qrCodeData,
+    this.viewCount = 0,
   });
 
   factory Offer.fromJson(Map<String, dynamic> json) {
@@ -50,6 +78,7 @@ class Offer {
       title: json['title'] ?? '',
       description: json['description'] ?? '',
       imageUrl: json['imageUrl'],
+      videoUrl: json['videoUrl'],
       type: OfferType.values.firstWhere(
         (e) => e.name == json['type'],
         orElse: () => OfferType.discount,
@@ -68,6 +97,18 @@ class Offer {
       minPurchaseAmount: json['minPurchaseAmount']?.toDouble(),
       requiresReview: json['requiresReview'] ?? false,
       reviewPointsReward: json['reviewPointsReward'] ?? 0,
+      status: ApprovalStatus.values.firstWhere(
+        (e) => e.name == json['status'],
+        orElse: () => ApprovalStatus.pending,
+      ),
+      approvedBy: json['approvedBy'],
+      approvedAt: json['approvedAt'] != null ? DateTime.parse(json['approvedAt']) : null,
+      rejectionReason: json['rejectionReason'],
+      adminNotes: json['adminNotes'],
+      targetLocation: json['targetLocation'] != null ? json['targetLocation'] as GeoPoint : null,
+      targetRadiusKm: json['targetRadiusKm']?.toDouble(),
+      qrCodeData: json['qrCodeData'] ?? '',
+      viewCount: json['viewCount'] ?? 0,
     );
   }
 
@@ -78,6 +119,7 @@ class Offer {
       'title': title,
       'description': description,
       'imageUrl': imageUrl,
+      'videoUrl': videoUrl,
       'type': type.name,
       'discountPercentage': discountPercentage,
       'discountAmount': discountAmount,
@@ -93,6 +135,15 @@ class Offer {
       'minPurchaseAmount': minPurchaseAmount,
       'requiresReview': requiresReview,
       'reviewPointsReward': reviewPointsReward,
+      'status': status.name,
+      'approvedBy': approvedBy,
+      'approvedAt': approvedAt?.toIso8601String(),
+      'rejectionReason': rejectionReason,
+      'adminNotes': adminNotes,
+      'targetLocation': targetLocation,
+      'targetRadiusKm': targetRadiusKm,
+      'qrCodeData': qrCodeData,
+      'viewCount': viewCount,
     };
   }
 
@@ -102,6 +153,7 @@ class Offer {
     String? title,
     String? description,
     String? imageUrl,
+    String? videoUrl,
     OfferType? type,
     double? discountPercentage,
     double? discountAmount,
@@ -117,6 +169,15 @@ class Offer {
     double? minPurchaseAmount,
     bool? requiresReview,
     int? reviewPointsReward,
+    ApprovalStatus? status,
+    String? approvedBy,
+    DateTime? approvedAt,
+    String? rejectionReason,
+    String? adminNotes,
+    GeoPoint? targetLocation,
+    double? targetRadiusKm,
+    String? qrCodeData,
+    int? viewCount,
   }) {
     return Offer(
       id: id ?? this.id,
@@ -124,6 +185,7 @@ class Offer {
       title: title ?? this.title,
       description: description ?? this.description,
       imageUrl: imageUrl ?? this.imageUrl,
+      videoUrl: videoUrl ?? this.videoUrl,
       type: type ?? this.type,
       discountPercentage: discountPercentage ?? this.discountPercentage,
       discountAmount: discountAmount ?? this.discountAmount,
@@ -139,6 +201,15 @@ class Offer {
       minPurchaseAmount: minPurchaseAmount ?? this.minPurchaseAmount,
       requiresReview: requiresReview ?? this.requiresReview,
       reviewPointsReward: reviewPointsReward ?? this.reviewPointsReward,
+      status: status ?? this.status,
+      approvedBy: approvedBy ?? this.approvedBy,
+      approvedAt: approvedAt ?? this.approvedAt,
+      rejectionReason: rejectionReason ?? this.rejectionReason,
+      adminNotes: adminNotes ?? this.adminNotes,
+      targetLocation: targetLocation ?? this.targetLocation,
+      targetRadiusKm: targetRadiusKm ?? this.targetRadiusKm,
+      qrCodeData: qrCodeData ?? this.qrCodeData,
+      viewCount: viewCount ?? this.viewCount,
     );
   }
 
@@ -147,7 +218,10 @@ class Offer {
   bool get isExpired => DateTime.now().isAfter(validUntil);
   bool get isNotStarted => DateTime.now().isBefore(validFrom);
   bool get isFullyRedeemed => maxRedemptions != null && currentRedemptions >= maxRedemptions!;
-  bool get canBeRedeemed => isValid && isActive && !isFullyRedeemed;
+  bool get canBeRedeemed => isValid && isActive && !isFullyRedeemed && status == ApprovalStatus.approved;
+  bool get isApproved => status == ApprovalStatus.approved;
+  bool get isPending => status == ApprovalStatus.pending;
+  bool get isRejected => status == ApprovalStatus.rejected;
   
   String get displayDiscount {
     if (discountPercentage != null) {
@@ -177,6 +251,13 @@ enum OfferType {
   cashback,
   points,
   voucher,
+}
+
+enum ApprovalStatus {
+  pending,
+  approved,
+  rejected,
+  expired,
 }
 
 class OfferRedemption {

@@ -15,6 +15,7 @@ class PointsConfig {
     'review': 15,                  // Points for verified review
     'qr_scan': 10,                 // Points per QR scan
     'daily_login': 5,              // Daily login bonus
+    'offer_redemption': 10,        // Points per offer redemption
     
     // Special events (configurable)
     'special_event': 50,           // Special event bonus
@@ -23,9 +24,10 @@ class PointsConfig {
 
   /// Daily limits for point earning activities
   static const dailyLimits = {
-    'video_ad': 50,    // Max 10 videos per day (5 points each)
-    'qr_scan': 100,    // Max 10 scans per day (10 points each)
-    'review': 45,      // Max 3 reviews per day (15 points each)
+    'video_ad': 50,           // Max 10 videos per day (5 points each)
+    'qr_scan': 100,           // Max 10 scans per day (10 points each)
+    'review': 45,             // Max 3 reviews per day (15 points each)
+    'offer_redemption': 100,  // Max 10 offers per day (10 points each)
   };
 
   /// Cooldown periods (in minutes) for activities

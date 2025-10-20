@@ -4,6 +4,7 @@ import '../models/review_model.dart';
 import '../models/seller_model.dart';
 import '../models/offer_model.dart';
 import '../service/review_service.dart';
+import '../service/seller_follower_service.dart';
 
 class ReviewsProvider extends ChangeNotifier {
   final ReviewService _reviewService = ReviewService();
@@ -222,16 +223,14 @@ class ReviewsProvider extends ChangeNotifier {
   // Follow/Unfollow seller
   Future<void> toggleFollowSeller(String userId, String sellerId) async {
     try {
-      // TODO: Implement follow/unfollow logic
-      // await _apiService.toggleFollowSeller(userId, sellerId);
+      // Import SellerFollowerService at the top of this file
+      final followerService = SellerFollowerService();
       
-      // Update local state
-      final sellerIndex = _sellers.indexWhere((s) => s.id == sellerId);
-      if (sellerIndex != -1) {
-        // Update followers count
-        // This would need to be tracked separately
-        notifyListeners();
-      }
+      // Toggle follow status
+      await followerService.toggleFollow(userId, sellerId, 'manual');
+      
+      // Update local state will happen automatically through listeners
+      notifyListeners();
     } catch (e) {
       _setError('Failed to update follow status: $e');
     }
@@ -264,9 +263,14 @@ class ReviewsProvider extends ChangeNotifier {
   }
 
   // Get user's followed sellers
-  List<Seller> getUserFollowedSellers(String userId) {
-    // TODO: Implement user's followed sellers logic
-    return [];
+  Future<List<Seller>> getUserFollowedSellers(String userId) async {
+    try {
+      final followerService = SellerFollowerService();
+      return await followerService.getFollowedSellers(userId).first;
+    } catch (e) {
+      debugPrint('Failed to get followed sellers: $e');
+      return [];
+    }
   }
 
   // Helper methods
