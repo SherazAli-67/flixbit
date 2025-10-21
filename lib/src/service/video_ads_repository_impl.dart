@@ -6,9 +6,11 @@ import '../models/wallet_models.dart';
 import '../res/firebase_constants.dart';
 import 'flixbit_points_manager.dart';
 import 'wallet_service.dart';
+import 'video_analytics_service.dart';
 
 class VideoAdsRepositoryImpl {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final VideoAnalyticsService _analyticsService = VideoAnalyticsService();
 
   Future<List<VideoAd>> fetchAds({String? category, String? region}) async {
     try {
@@ -88,6 +90,13 @@ class VideoAdsRepositoryImpl {
         'ratedDown': !thumbsUp,
         'ratedAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
+
+      // Track engagement in analytics
+      await _analyticsService.trackEngagement(
+        videoId: adId,
+        userId: userId,
+        actionType: thumbsUp ? 'like' : 'dislike',
+      );
 
       // Award points for rating if not rated before
       final doc = await engagementRef.get();

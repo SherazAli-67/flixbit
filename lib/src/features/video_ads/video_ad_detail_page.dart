@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flixbit/src/models/video_ad.dart';
 import 'package:flixbit/src/features/reviews/write_review_page.dart';
 import 'package:flixbit/src/models/review_model.dart';
 import 'package:flixbit/src/res/app_colors.dart';
 import 'package:flixbit/src/res/apptextstyles.dart';
+import 'package:flixbit/src/service/video_analytics_service.dart';
 
 class VideoAdDetailPage extends StatefulWidget {
   final VideoAd ad;
@@ -19,11 +21,26 @@ class _VideoAdDetailPageState extends State<VideoAdDetailPage> {
   late VideoPlayerController _controller;
   bool _isInitialized = false;
   bool _hasCompleted = false;
+  final VideoAnalyticsService _analyticsService = VideoAnalyticsService();
+  int _lastTrackedSecond = 0;
 
   @override
   void initState() {
     super.initState();
     _initVideo();
+    _trackView();
+  }
+
+  // Track view on page load
+  Future<void> _trackView() async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId != null) {
+      await _analyticsService.trackView(
+        videoId: widget.ad.id,
+        userId: userId,
+        region: widget.ad.region,
+      );
+    }
   }
 
   Future<void> _initVideo() async {
@@ -40,9 +57,42 @@ class _VideoAdDetailPageState extends State<VideoAdDetailPage> {
     if (!_controller.value.isInitialized) return;
     final position = _controller.value.position;
     final duration = _controller.value.duration;
+    
+    // Track watch time every 5 seconds
+    final currentSecond = position.inSeconds;
+    if (currentSecond > 0 && currentSecond % 5 == 0 && currentSecond != _lastTrackedSecond) {
+      _lastTrackedSecond = currentSecond;
+      _trackWatchTime(currentSecond);
+    }
+    
+    // Track completion
     if (!_hasCompleted && duration.inMilliseconds > 0 && position >= duration) {
       _hasCompleted = true;
+      _trackCompletion();
       _onVideoCompleted(widget.sellerId ?? '', widget.ad.id);
+    }
+  }
+
+  // Track watch time
+  Future<void> _trackWatchTime(int seconds) async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId != null) {
+      await _analyticsService.trackWatchTime(
+        videoId: widget.ad.id,
+        userId: userId,
+        watchedSeconds: seconds,
+      );
+    }
+  }
+
+  // Track completion
+  Future<void> _trackCompletion() async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId != null) {
+      await _analyticsService.trackCompletion(
+        videoId: widget.ad.id,
+        userId: userId,
+      );
     }
   }
 

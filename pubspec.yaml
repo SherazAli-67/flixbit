@@ -57,6 +57,8 @@ dependencies:
   video_thumbnail: ^0.5.3
   path_provider: ^2.1.0
   path: ^1.9.0
+  fl_chart: ^0.68.0
+  csv: ^6.0.0
 
 dev_dependencies:
   flutter_test:

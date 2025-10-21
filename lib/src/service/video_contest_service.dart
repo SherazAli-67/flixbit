@@ -5,9 +5,11 @@ import '../models/video_contest.dart';
 import '../models/contest_winner.dart';
 import '../models/video_ad.dart';
 import '../res/firebase_constants.dart';
+import 'video_analytics_service.dart';
 
 class VideoContestService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final VideoAnalyticsService _analyticsService = VideoAnalyticsService();
 
   /// Fetch all active contests
   Future<List<VideoContest>> fetchActiveContests({
@@ -113,7 +115,7 @@ class VideoContestService {
       // Create vote document
       final voteRef = _firestore
           .collection(FirebaseConstants.videoAdVotesCollection)
-          .doc('${contestId}_${userId}');
+          .doc('${contestId}_$userId');
 
       await voteRef.set({
         'contestId': contestId,
@@ -122,6 +124,13 @@ class VideoContestService {
         'thumbsUp': thumbsUp,
         'votedAt': FieldValue.serverTimestamp(),
       });
+
+      // Track engagement in analytics
+      await _analyticsService.trackEngagement(
+        videoId: videoId,
+        userId: userId,
+        actionType: 'vote',
+      );
 
       // Update contest total votes
       await _firestore
