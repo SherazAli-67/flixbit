@@ -36,7 +36,6 @@ class _SellerVideoAdsPageState extends State<SellerVideoAdsPage> {
 
   Future<void> _loadVideos() async {
     setState(() => _loading = true);
-    
     try {
       final userId = FirebaseAuth.instance.currentUser?.uid;
       if (userId == null) throw Exception('Not authenticated');
@@ -65,6 +64,7 @@ class _SellerVideoAdsPageState extends State<SellerVideoAdsPage> {
 
       setState(() => _loading = false);
     } catch (e) {
+      debugPrint("Exception: ${e.toString()}");
       setState(() {
         _error = e.toString();
         _loading = false;

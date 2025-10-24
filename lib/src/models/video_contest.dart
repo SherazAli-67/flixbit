@@ -12,6 +12,7 @@ class VideoContest {
   final String? region;
   final int maxWinners; // e.g., top 3, top 5
   final Map<String, dynamic> prizeStructure; // {1: 500, 2: 300, 3: 100} points
+  final List<String> rewardIds; // IDs of rewards that can be won
   final List<String> participatingVideoIds;
   final int totalParticipants;
   final int totalVotes;
@@ -35,6 +36,7 @@ class VideoContest {
     this.region,
     required this.maxWinners,
     required this.prizeStructure,
+    this.rewardIds = const [],
     required this.participatingVideoIds,
     this.totalParticipants = 0,
     this.totalVotes = 0,
@@ -76,6 +78,7 @@ class VideoContest {
       region: data['region'] as String?,
       maxWinners: data['maxWinners'] as int,
       prizeStructure: Map<String, dynamic>.from(data['prizeStructure'] as Map),
+      rewardIds: List<String>.from(data['rewardIds'] ?? []),
       participatingVideoIds: List<String>.from(data['participatingVideoIds'] as List),
       totalParticipants: data['totalParticipants'] as int? ?? 0,
       totalVotes: data['totalVotes'] as int? ?? 0,
@@ -102,6 +105,7 @@ class VideoContest {
       'region': region,
       'maxWinners': maxWinners,
       'prizeStructure': prizeStructure,
+      'rewardIds': rewardIds,
       'participatingVideoIds': participatingVideoIds,
       'totalParticipants': totalParticipants,
       'totalVotes': totalVotes,
@@ -128,6 +132,7 @@ class VideoContest {
     String? region,
     int? maxWinners,
     Map<String, dynamic>? prizeStructure,
+    List<String>? rewardIds,
     List<String>? participatingVideoIds,
     int? totalParticipants,
     int? totalVotes,
@@ -151,6 +156,7 @@ class VideoContest {
       region: region ?? this.region,
       maxWinners: maxWinners ?? this.maxWinners,
       prizeStructure: prizeStructure ?? this.prizeStructure,
+      rewardIds: rewardIds ?? this.rewardIds,
       participatingVideoIds: participatingVideoIds ?? this.participatingVideoIds,
       totalParticipants: totalParticipants ?? this.totalParticipants,
       totalVotes: totalVotes ?? this.totalVotes,

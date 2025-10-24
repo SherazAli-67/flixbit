@@ -169,18 +169,20 @@ class _VideoAdDetailPageState extends State<VideoAdDetailPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AspectRatio(
-            aspectRatio: _isInitialized ? _controller.value.aspectRatio : 16 / 9,
-            child: _isInitialized
-                ? Stack(
-                    alignment: Alignment.bottomCenter,
-                    children: <Widget>[
-                      VideoPlayer(_controller),
-                      _ControlsOverlay(controller: _controller),
-                      VideoProgressIndicator(_controller, allowScrubbing: true),
-                    ],
-                  )
-                : const Center(child: CircularProgressIndicator()),
+          Expanded(
+            child: AspectRatio(
+              aspectRatio: _isInitialized ? _controller.value.aspectRatio : 16 / 9,
+              child: _isInitialized
+                  ? Stack(
+                      alignment: Alignment.bottomCenter,
+                      children: <Widget>[
+                        VideoPlayer(_controller),
+                        _ControlsOverlay(controller: _controller),
+                        VideoProgressIndicator(_controller, allowScrubbing: true),
+                      ],
+                    )
+                  : const Center(child: CircularProgressIndicator()),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(16),

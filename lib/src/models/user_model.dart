@@ -4,13 +4,19 @@ class UserModel {
   final String email;
   final String profileImg;
   final String createdAt;
+  final String? fcmToken;
+  final List<String>? fcmTokens; // Support multiple devices
+  final DateTime? fcmTokenUpdatedAt;
 
   UserModel({
     required this.userID, 
     required this.email, 
     required this.name, 
     required this.profileImg,
-    required this.createdAt
+    required this.createdAt,
+    this.fcmToken,
+    this.fcmTokens,
+    this.fcmTokenUpdatedAt,
   });
 
   // Convert UserModel to Map for Firestore
@@ -21,6 +27,9 @@ class UserModel {
       'email': email,
       'profileImg': profileImg,
       'createdAt': createdAt,
+      'fcmToken': fcmToken,
+      'fcmTokens': fcmTokens,
+      'fcmTokenUpdatedAt': fcmTokenUpdatedAt?.toIso8601String(),
     };
   }
 
@@ -31,7 +40,12 @@ class UserModel {
       name: map['name'] ?? '',
       email: map['email'] ?? '',
       profileImg: map['profileImg'] ?? '',
-      createdAt: map['createdAt'] ?? DateTime.now().toIso8601String()
+      createdAt: map['createdAt'] ?? DateTime.now().toIso8601String(),
+      fcmToken: map['fcmToken'] as String?,
+      fcmTokens: map['fcmTokens'] != null ? List<String>.from(map['fcmTokens']) : null,
+      fcmTokenUpdatedAt: map['fcmTokenUpdatedAt'] != null 
+          ? DateTime.parse(map['fcmTokenUpdatedAt'] as String)
+          : null,
     );
   }
 
@@ -42,7 +56,12 @@ class UserModel {
       name: map['name'] ?? '',
       email: map['email'] ?? '',
       profileImg: map['profileImg'] ?? '',
-      createdAt: map['createdAt'] ?? DateTime.now().toIso8601String()
+      createdAt: map['createdAt'] ?? DateTime.now().toIso8601String(),
+      fcmToken: map['fcmToken'] as String?,
+      fcmTokens: map['fcmTokens'] != null ? List<String>.from(map['fcmTokens']) : null,
+      fcmTokenUpdatedAt: map['fcmTokenUpdatedAt'] != null 
+          ? DateTime.parse(map['fcmTokenUpdatedAt'] as String)
+          : null,
     );
   }
 

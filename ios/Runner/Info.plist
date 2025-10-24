@@ -30,6 +30,10 @@
 	<string>Need permission to upload profile image</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>We don't need to access to the microphone</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

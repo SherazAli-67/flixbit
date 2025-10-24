@@ -6,6 +6,10 @@ import 'package:flixbit/src/features/main_menu/qr_scanner_page.dart';
 import 'package:flixbit/src/features/main_menu/wallet_page/buy_flixbit_points_page.dart';
 import 'package:flixbit/src/features/referral_page.dart';
 import 'package:flixbit/src/features/rewards_page.dart';
+import 'package:flixbit/src/features/reward_detail_page.dart';
+import 'package:flixbit/src/features/my_rewards_page.dart';
+import 'package:flixbit/src/features/notification_center_page.dart';
+import 'package:flixbit/src/features/notification_permission_page.dart';
 import 'package:flixbit/src/features/seller/seller_main_menu/seller_video_ads_page.dart';
 import 'package:flixbit/src/features/seller/seller_profile_page.dart';
 import 'package:flixbit/src/features/seller/seller_push_notification_page.dart';
@@ -74,6 +78,25 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: RouterEnum.rewardsView.routeName,
       builder: (BuildContext context, GoRouterState state) => const RewardsPage(),
+    ),
+    GoRoute(
+      path: RouterEnum.rewardDetailView.routeName,
+      builder: (BuildContext context, GoRouterState state) {
+        final rewardId = state.uri.queryParameters['rewardId'] ?? '';
+        return RewardDetailPage(rewardId: rewardId);
+      },
+    ),
+    GoRoute(
+      path: RouterEnum.myRewardsView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const MyRewardsPage(),
+    ),
+    GoRoute(
+      path: RouterEnum.notificationCenterView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const NotificationCenterPage(),
+    ),
+    GoRoute(
+      path: RouterEnum.notificationPermissionView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const NotificationPermissionPage(),
     ),
     GoRoute(
       path: RouterEnum.offersView.routeName,

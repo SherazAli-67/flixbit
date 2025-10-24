@@ -282,6 +282,44 @@ class _GamePredicationPageState extends State<GamePredicationPage> {
             ],
           ),
 
+          // Rewards section
+          if (tournament.rewardIds.isNotEmpty) ...[
+            Row(
+              children: [
+                Icon(
+                  Icons.card_giftcard,
+                  size: 14,
+                  color: AppColors.successColor,
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    'Win ${tournament.rewardIds.length} reward${tournament.rewardIds.length > 1 ? 's' : ''}!',
+                    style: AppTextStyles.captionTextStyle.copyWith(
+                      color: AppColors.successColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => _showRewardsPreview(tournament.rewardIds),
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  child: Text(
+                    'View Rewards',
+                    style: AppTextStyles.captionTextStyle.copyWith(
+                      color: AppColors.successColor,
+                      fontSize: 11,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+
           // Divider
           const Divider(
             color: AppColors.unSelectedGreyColor,
@@ -500,5 +538,74 @@ class _GamePredicationPageState extends State<GamePredicationPage> {
       case TournamentStatus.completed:
         return 'Completed';
     }
+  }
+
+  void _showRewardsPreview(List<String> rewardIds) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.cardBgColor,
+        title: Text(
+          'Tournament Rewards',
+          style: AppTextStyles.subHeadingTextStyle,
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          spacing: 16,
+          children: [
+            Text(
+              'Win these rewards by participating in this tournament!',
+              style: AppTextStyles.smallTextStyle,
+              textAlign: TextAlign.center,
+            ),
+            ...rewardIds.map((rewardId) => Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.darkBgColor.withValues(alpha: 0.5),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.card_giftcard,
+                    color: AppColors.primaryColor,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Reward #${rewardId.substring(0, 8)}',
+                      style: AppTextStyles.smallTextStyle,
+                    ),
+                  ),
+                ],
+              ),
+            )),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => context.pop(),
+            child: Text(
+              'Close',
+              style: AppTextStyles.smallTextStyle.copyWith(
+                color: AppColors.lightGreyColor,
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              context.pop();
+              context.push(RouterEnum.rewardsView.routeName);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primaryColor,
+              foregroundColor: AppColors.whiteColor,
+            ),
+            child: const Text('Browse All Rewards'),
+          ),
+        ],
+      ),
+    );
   }
 }

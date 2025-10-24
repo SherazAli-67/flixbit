@@ -10,6 +10,10 @@ enum RouterEnum {
   //Rest pages
   subscriptionView('/subscription_view'),
   rewardsView('/rewards_view'),
+  rewardDetailView('/reward_detail_view'),
+  myRewardsView('/my_rewards_view'),
+  notificationCenterView('/notification_center_view'),
+  notificationPermissionView('/notification_permission_view'),
   offersView('/offers_view'),
   offerDetailView('/offer_detail_view'),
   userOffersHistoryView('/user_offers_history_view'),

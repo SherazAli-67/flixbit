@@ -26,7 +26,7 @@ class Tournament {
   final String prizeDescription;
   final int numberOfWinners;
   final List<PrizeTier> prizeTiers;
-  final List<RewardType> rewardTypes;
+  final List<String> rewardIds; // IDs of rewards that can be won
   
   // Sponsorship
   final bool isSponsored;
@@ -69,7 +69,7 @@ class Tournament {
     required this.prizeDescription,
     required this.numberOfWinners,
     this.prizeTiers = const [],
-    this.rewardTypes = const [],
+    this.rewardIds = const [],
     this.isSponsored = false,
     this.sponsorId,
     this.sponsorName,
@@ -115,7 +115,7 @@ class Tournament {
       prizeDescription: json['prizeDescription'] as String,
       numberOfWinners: json['numberOfWinners'] as int,
       prizeTiers: (json['prizeTiers'] as List?)?.map((e) => PrizeTier.fromJson(e)).toList() ?? [],
-      rewardTypes: (json['rewardTypes'] as List?)?.map((e) => RewardType.values.firstWhere((r) => r.name == e)).toList() ?? [],
+      rewardIds: List<String>.from(json['rewardIds'] ?? []),
       isSponsored: json['isSponsored'] as bool? ?? false,
       sponsorId: json['sponsorId'] as String?,
       sponsorName: json['sponsorName'] as String?,
@@ -156,7 +156,7 @@ class Tournament {
       'prizeDescription': prizeDescription,
       'numberOfWinners': numberOfWinners,
       'prizeTiers': prizeTiers.map((e) => e.toJson()).toList(),
-      'rewardTypes': rewardTypes.map((e) => e.name).toList(),
+      'rewardIds': rewardIds,
       'isSponsored': isSponsored,
       'sponsorId': sponsorId,
       'sponsorName': sponsorName,
@@ -193,7 +193,7 @@ class Tournament {
     String? prizeDescription,
     int? numberOfWinners,
     List<PrizeTier>? prizeTiers,
-    List<RewardType>? rewardTypes,
+    List<String>? rewardIds,
     bool? isSponsored,
     String? sponsorId,
     String? sponsorName,
@@ -228,7 +228,7 @@ class Tournament {
       prizeDescription: prizeDescription ?? this.prizeDescription,
       numberOfWinners: numberOfWinners ?? this.numberOfWinners,
       prizeTiers: prizeTiers ?? this.prizeTiers,
-      rewardTypes: rewardTypes ?? this.rewardTypes,
+      rewardIds: rewardIds ?? this.rewardIds,
       isSponsored: isSponsored ?? this.isSponsored,
       sponsorId: sponsorId ?? this.sponsorId,
       sponsorName: sponsorName ?? this.sponsorName,
@@ -263,11 +263,7 @@ enum EntryType {
   paid,
 }
 
-enum RewardType {
-  digital,
-  physical,
-  both,
-}
+// RewardType enum moved to reward_model.dart
 
 enum TournamentVisibility {
   public,

@@ -162,7 +162,7 @@ class _UploadVideoAdPageState extends State<UploadVideoAdPage> {
         GestureDetector(
           onTap: provider.isUploading ? null : () => provider.pickVideo(),
           child: Container(
-            height: 200,
+            // height: 200,
             width: double.infinity,
             decoration: BoxDecoration(
               color: AppColors.cardBgColor,
@@ -295,18 +295,16 @@ class _UploadVideoAdPageState extends State<UploadVideoAdPage> {
         const SizedBox(height: 16),
         
         Row(
+          spacing: 10,
           children: [
             Expanded(
               child: _buildDropdown(
                 label: 'Category',
                 value: _selectedCategory,
                 items: _categories,
-                onChanged: (value) {
-                  setState(() => _selectedCategory = value);
-                },
+                onChanged: (value) => setState(() => _selectedCategory = value),
               ),
             ),
-            const SizedBox(width: 16),
             Expanded(
               child: _buildDropdown(
                 label: 'Region',

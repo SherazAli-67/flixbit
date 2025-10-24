@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flixbit/src/providers/authentication_provider.dart';
 import 'package:flixbit/src/providers/linked_accounts_provider.dart';
 import 'package:flixbit/src/providers/locale_provider.dart';
@@ -8,6 +9,8 @@ import 'package:flixbit/src/providers/reviews_provider.dart';
 import 'package:flixbit/src/providers/wallet_provider.dart';
 import 'package:flixbit/src/providers/offers_provider.dart';
 import 'package:flixbit/src/providers/seller_offers_provider.dart';
+import 'package:flixbit/src/providers/notification_provider.dart';
+import 'package:flixbit/src/service/fcm_service.dart';
 import 'package:flixbit/src/res/app_colors.dart';
 import 'package:flixbit/src/res/app_constants.dart';
 import 'package:flixbit/src/routes/app_router.dart';
@@ -20,6 +23,13 @@ import 'l10n/app_localizations.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  
+  // Initialize FCM
+  await FCMService().initialize();
+  
+  // Setup background message handler
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final bool initialIsSeller = prefs.getBool('isSeller') ?? false;
 
@@ -34,6 +44,7 @@ void main() async {
         ChangeNotifierProvider(create: (_)=> WalletProvider()),
         ChangeNotifierProvider(create: (_)=> OffersProvider()),
         ChangeNotifierProvider(create: (_)=> SellerOffersProvider()),
+        ChangeNotifierProvider(create: (_)=> NotificationProvider()),
       ],
       child: const MyApp()));
 }

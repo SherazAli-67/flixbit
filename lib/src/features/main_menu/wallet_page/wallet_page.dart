@@ -220,25 +220,42 @@ class _WalletPageState extends State<WalletPage> {
   Widget _buildActionButtons(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40),
-      child: Row(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        spacing: 12,
         children: [
-          Expanded(
-            child: PrimaryBtn(
-              btnText: l10n.buy,
-              icon: '',
-              onTap: () => context.push(RouterEnum.buyFlixbitPointsView.routeName),
-              borderRadius: 20,
-            ),
+          // First row: Buy and Sell
+          Row(
+            children: [
+              Expanded(
+                child: PrimaryBtn(
+                  btnText: l10n.buy,
+                  icon: '',
+                  onTap: () => context.push(RouterEnum.buyFlixbitPointsView.routeName),
+                  borderRadius: 20,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: PrimaryBtn(
+                  btnText: l10n.sell,
+                  icon: '',
+                  onTap: () {},
+                  borderRadius: 20,
+                  bgColor: AppColors.primaryColor.withValues(alpha: 0.12),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 16),
-          Expanded(
+          // Second row: Redeem Rewards
+          SizedBox(
+            width: double.infinity,
             child: PrimaryBtn(
-              btnText: l10n.sell,
-              icon: '',
-              onTap: () {},
+              btnText: 'Redeem Rewards',
+              icon: '🎁',
+              onTap: () => context.push(RouterEnum.rewardsView.routeName),
               borderRadius: 20,
-              bgColor: AppColors.primaryColor.withOpacity(0.12),
+              bgColor: AppColors.successColor.withValues(alpha: 0.2),
             ),
           ),
         ],
@@ -441,12 +458,18 @@ class _WalletPageState extends State<WalletPage> {
       TransactionType.refund,
     ].contains(transaction.type);
 
+    // Special handling for reward redemptions
+    final isRewardRedemption = transaction.source == TransactionSource.reward;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.cardBgColor,
         borderRadius: BorderRadius.circular(12),
+        border: isRewardRedemption 
+            ? Border.all(color: AppColors.primaryColor.withValues(alpha: 0.3), width: 1)
+            : null,
       ),
       child: Row(
         children: [
@@ -454,11 +477,15 @@ class _WalletPageState extends State<WalletPage> {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: isPositive ? AppColors.successColor : AppColors.errorColor,
+              color: isRewardRedemption 
+                  ? AppColors.primaryColor
+                  : (isPositive ? AppColors.successColor : AppColors.errorColor),
               shape: BoxShape.circle,
             ),
             child: Icon(
-              isPositive ? Icons.arrow_upward : Icons.arrow_downward,
+              isRewardRedemption 
+                  ? Icons.card_giftcard
+                  : (isPositive ? Icons.arrow_upward : Icons.arrow_downward),
               color: AppColors.whiteColor,
             ),
           ),

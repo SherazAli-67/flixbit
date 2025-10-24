@@ -33,6 +33,13 @@ class FirebaseConstants{
   // Seller Followers
   static const sellerFollowersCollection = 'seller_followers';
   
+  // Rewards Collections
+  static const rewardsCollection = 'rewards';
+  static const rewardRedemptionsCollection = 'reward_redemptions';
+  static const rewardReservationsCollection = 'reward_reservations';
+  static const rewardInventoryLogsCollection = 'reward_inventory_logs';
+  static const rewardCategoriesCollection = 'reward_categories';
+  
   // Other Collections
   static const reviewsCollection = 'reviews';
   static const giftsCollection = 'gifts';
