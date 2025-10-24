@@ -3,6 +3,7 @@ import '../models/reward_model.dart';
 import '../models/reward_redemption_model.dart';
 import '../service/reward_service.dart';
 import '../service/flixbit_points_manager.dart';
+import '../service/wallet_service.dart';
 
 class RewardProvider with ChangeNotifier {
   final RewardService _rewardService = RewardService();
@@ -29,6 +30,17 @@ class RewardProvider with ChangeNotifier {
   // Filtered rewards based on user balance
   List<Reward> get affordableRewards => _availableRewards
       .where((reward) => reward.pointsCost <= _userBalance)
+      .toList();
+
+  // Recommended rewards (50-80% of user's balance)
+  List<Reward> get recommendedRewards => _availableRewards
+      .where((reward) {
+        final minPoints = (_userBalance * 0.5).round();
+        final maxPoints = (_userBalance * 0.8).round();
+        return reward.pointsCost >= minPoints && 
+               reward.pointsCost <= maxPoints &&
+               reward.pointsCost <= _userBalance;
+      })
       .toList();
 
   // Active redemptions (not expired or used)
@@ -279,6 +291,74 @@ class RewardProvider with ChangeNotifier {
     _sortBy = 'featured';
     notifyListeners();
     _filterRewards();
+  }
+
+  /// Get affordable rewards using WalletService
+  Future<List<Reward>> getAffordableRewardsFromService() async {
+    if (_userId == null) return [];
+    
+    try {
+      _setLoading(true);
+      _clearError();
+      
+      final affordableRewards = await WalletService.getAffordableRewards(_userId!);
+      
+      // Update the available rewards list with affordable ones
+      _availableRewards = affordableRewards;
+      notifyListeners();
+      
+      return affordableRewards;
+    } catch (e) {
+      _setError('Failed to load affordable rewards: ${e.toString()}');
+      return [];
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  /// Get recommended rewards using WalletService
+  Future<List<Reward>> getRecommendedRewardsFromService() async {
+    if (_userId == null) return [];
+    
+    try {
+      _setLoading(true);
+      _clearError();
+      
+      final recommendedRewards = await WalletService.getRecommendedRewards(_userId!);
+      
+      return recommendedRewards;
+    } catch (e) {
+      _setError('Failed to load recommended rewards: ${e.toString()}');
+      return [];
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  /// Get rewards in a specific price range
+  Future<List<Reward>> getRewardsInRange({
+    required int minPoints,
+    required int maxPoints,
+  }) async {
+    if (_userId == null) return [];
+    
+    try {
+      _setLoading(true);
+      _clearError();
+      
+      final rewardsInRange = await WalletService.getRewardsInRange(
+        userId: _userId!,
+        minPoints: minPoints,
+        maxPoints: maxPoints,
+      );
+      
+      return rewardsInRange;
+    } catch (e) {
+      _setError('Failed to load rewards in range: ${e.toString()}');
+      return [];
+    } finally {
+      _setLoading(false);
+    }
   }
 
   // Private helper methods

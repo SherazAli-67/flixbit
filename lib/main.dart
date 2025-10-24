@@ -10,6 +10,7 @@ import 'package:flixbit/src/providers/wallet_provider.dart';
 import 'package:flixbit/src/providers/offers_provider.dart';
 import 'package:flixbit/src/providers/seller_offers_provider.dart';
 import 'package:flixbit/src/providers/notification_provider.dart';
+import 'package:flixbit/src/providers/reward_provider.dart';
 import 'package:flixbit/src/service/fcm_service.dart';
 import 'package:flixbit/src/res/app_colors.dart';
 import 'package:flixbit/src/res/app_constants.dart';
@@ -45,6 +46,7 @@ void main() async {
         ChangeNotifierProvider(create: (_)=> OffersProvider()),
         ChangeNotifierProvider(create: (_)=> SellerOffersProvider()),
         ChangeNotifierProvider(create: (_)=> NotificationProvider()),
+        ChangeNotifierProvider(create: (_)=> RewardProvider()),
       ],
       child: const MyApp()));
 }

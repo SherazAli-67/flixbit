@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flixbit/src/res/firebase_constants.dart';
 import 'package:flutter/cupertino.dart';
 import '../models/wallet_models.dart';
+import '../models/reward_model.dart';
 
 /// Service for managing wallet operations including buy, sell, and balance management
 class WalletService {
@@ -324,6 +325,102 @@ class WalletService {
     }
 
     return multipliers;
+  }
+
+  /// Get affordable rewards for user based on their current balance
+  static Future<List<Reward>> getAffordableRewards(String userId) async {
+    try {
+      // Get user's current balance
+      final wallet = await getWallet(userId);
+      final userBalance = wallet.flixbitPoints;
+
+      // Query rewards that user can afford
+      final snapshot = await _firestore
+          .collection(FirebaseConstants.rewardsCollection)
+          .where('isActive', isEqualTo: true)
+          .where('pointsCost', isLessThanOrEqualTo: userBalance)
+          .where('stockQuantity', isGreaterThan: 0)
+          .orderBy('pointsCost', descending: false) // Cheapest first
+          .limit(20) // Limit to prevent too many results
+          .get();
+
+      return snapshot.docs
+          .map((doc) => Reward.fromFirestore(doc))
+          .toList();
+    } catch (e) {
+      debugPrint('Error getting affordable rewards: $e');
+      return [];
+    }
+  }
+
+  /// Get rewards within a specific price range
+  static Future<List<Reward>> getRewardsInRange({
+    required String userId,
+    required int minPoints,
+    required int maxPoints,
+  }) async {
+    try {
+      // Get user's current balance to ensure they can afford the rewards
+      final wallet = await getWallet(userId);
+      final userBalance = wallet.flixbitPoints;
+
+      // Adjust maxPoints to user's balance if needed
+      final adjustedMaxPoints = maxPoints > userBalance ? userBalance : maxPoints;
+
+      if (adjustedMaxPoints < minPoints) {
+        return []; // User can't afford any rewards in this range
+      }
+
+      final snapshot = await _firestore
+          .collection(FirebaseConstants.rewardsCollection)
+          .where('isActive', isEqualTo: true)
+          .where('pointsCost', isGreaterThanOrEqualTo: minPoints)
+          .where('pointsCost', isLessThanOrEqualTo: adjustedMaxPoints)
+          .where('stockQuantity', isGreaterThan: 0)
+          .orderBy('pointsCost', descending: false)
+          .get();
+
+      return snapshot.docs
+          .map((doc) => Reward.fromFirestore(doc))
+          .toList();
+    } catch (e) {
+      debugPrint('Error getting rewards in range: $e');
+      return [];
+    }
+  }
+
+  /// Get recommended rewards based on user's balance and preferences
+  static Future<List<Reward>> getRecommendedRewards(String userId) async {
+    try {
+      // Get user's current balance
+      final wallet = await getWallet(userId);
+      final userBalance = wallet.flixbitPoints;
+
+      if (userBalance <= 0) {
+        return [];
+      }
+
+      // Get rewards that are 50-80% of user's balance (good value)
+      final minPoints = (userBalance * 0.5).round();
+      final maxPoints = (userBalance * 0.8).round();
+
+      final snapshot = await _firestore
+          .collection(FirebaseConstants.rewardsCollection)
+          .where('isActive', isEqualTo: true)
+          .where('pointsCost', isGreaterThanOrEqualTo: minPoints)
+          .where('pointsCost', isLessThanOrEqualTo: maxPoints)
+          .where('stockQuantity', isGreaterThan: 0)
+          .orderBy('pointsCost', descending: false)
+          .limit(10)
+          .get();
+
+      return snapshot.docs
+          .map((doc) => Reward.fromFirestore(doc))
+          .toList();
+    } catch (e) {
+      debugPrint('Error getting recommended rewards: $e');
+      return [];
+    }
   }
 
   /// Send notification helper

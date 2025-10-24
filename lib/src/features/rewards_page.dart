@@ -248,6 +248,10 @@ class _RewardsPageState extends State<RewardsPage> with TickerProviderStateMixin
             // Filters
             _buildFilters(rewardProvider),
             
+            // Recommended section (if user has balance)
+            if (rewardProvider.userBalance > 0 && rewardProvider.recommendedRewards.isNotEmpty)
+              _buildRecommendedSection(rewardProvider),
+            
             // Rewards list
             Expanded(
               child: RefreshIndicator(
@@ -747,5 +751,64 @@ class _RewardsPageState extends State<RewardsPage> with TickerProviderStateMixin
 
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
+  }
+
+  Widget _buildRecommendedSection(RewardProvider rewardProvider) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.primaryColor.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppColors.primaryColor.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 12,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.star,
+                color: AppColors.primaryColor,
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Recommended for You',
+                style: AppTextStyles.bodyTextStyle.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.primaryColor,
+                ),
+              ),
+            ],
+          ),
+          Text(
+            'Based on your ${rewardProvider.userBalance} points balance',
+            style: AppTextStyles.smallTextStyle.copyWith(
+              color: AppColors.lightGreyColor,
+            ),
+          ),
+          SizedBox(
+            height: 120,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: rewardProvider.recommendedRewards.length,
+              itemBuilder: (context, index) {
+                final reward = rewardProvider.recommendedRewards[index];
+                return Container(
+                  width: 200,
+                  margin: const EdgeInsets.only(right: 12),
+                  child: _buildRewardCard(reward, rewardProvider),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
