@@ -10,6 +10,7 @@ import 'package:flixbit/src/features/reward_detail_page.dart';
 import 'package:flixbit/src/features/my_rewards_page.dart';
 import 'package:flixbit/src/features/notification_center_page.dart';
 import 'package:flixbit/src/features/notification_permission_page.dart';
+import 'package:flixbit/src/features/admin/admin_rewards_page.dart';
 import 'package:flixbit/src/features/seller/seller_main_menu/seller_video_ads_page.dart';
 import 'package:flixbit/src/features/seller/seller_profile_page.dart';
 import 'package:flixbit/src/features/seller/seller_push_notification_page.dart';
@@ -97,6 +98,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: RouterEnum.notificationPermissionView.routeName,
       builder: (BuildContext context, GoRouterState state) => const NotificationPermissionPage(),
+    ),
+    GoRoute(
+      path: RouterEnum.adminRewardsView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const AdminRewardsPage(),
     ),
     GoRoute(
       path: RouterEnum.offersView.routeName,

@@ -14,6 +14,7 @@ enum RouterEnum {
   myRewardsView('/my_rewards_view'),
   notificationCenterView('/notification_center_view'),
   notificationPermissionView('/notification_permission_view'),
+  adminRewardsView('/admin_rewards_view'),
   offersView('/offers_view'),
   offerDetailView('/offer_detail_view'),
   userOffersHistoryView('/user_offers_history_view'),

@@ -189,6 +189,7 @@ class Reward {
 enum RewardType {
   digital,
   physical,
+
 }
 
 enum RewardCategory {

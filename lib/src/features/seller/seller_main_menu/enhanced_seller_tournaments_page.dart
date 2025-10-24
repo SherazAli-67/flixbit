@@ -284,7 +284,7 @@ class _CreateTournamentFormState extends State<_CreateTournamentForm> {
   // Rewards
   final _prizeDescriptionController = TextEditingController();
   int _numberOfWinners = 1;
-  List<RewardType> _rewardTypes = [];
+  final List<String> _selectedRewardIds = [];
 
   // Sponsorship
   bool _isSponsored = false;
@@ -455,22 +455,7 @@ class _CreateTournamentFormState extends State<_CreateTournamentForm> {
                 onChanged: (v) => setState(() => _numberOfWinners = v),
               ),
               const SizedBox(height: 16),
-              _buildCheckboxGroup(
-                label: 'Reward Types',
-                options: RewardType.values,
-                selectedOptions: _rewardTypes,
-                optionLabel: (type) {
-                  switch (type) {
-                    case RewardType.digital:
-                      return 'Digital (Vouchers/Coupons)';
-                    case RewardType.physical:
-                      return 'Physical (Merchandise)';
-                    case RewardType.both:
-                      return 'Both';
-                  }
-                },
-                onChanged: (selected) => setState(() => _rewardTypes = selected),
-              ),
+              _buildRewardSelectionField(),
             ],
           ),
 
@@ -594,7 +579,7 @@ class _CreateTournamentFormState extends State<_CreateTournamentForm> {
         entryFee: _entryFee,
         prizeDescription: _prizeDescriptionController.text,
         numberOfWinners: _numberOfWinners,
-        rewardTypes: _rewardTypes,
+        rewardIds: _selectedRewardIds,
         isSponsored: _isSponsored,
         region: _region,
         sendPushOnCreation: _sendPushOnCreation,
@@ -878,39 +863,6 @@ class _CreateTournamentFormState extends State<_CreateTournamentForm> {
     );
   }
 
-  Widget _buildCheckboxGroup<T>({
-    required String label,
-    required List<T> options,
-    required List<T> selectedOptions,
-    required String Function(T) optionLabel,
-    required void Function(List<T>) onChanged,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: AppTextStyles.smallBoldTextStyle),
-        const SizedBox(height: 8),
-        ...options.map((option) {
-          final isSelected = selectedOptions.contains(option);
-          return CheckboxListTile(
-            value: isSelected,
-            onChanged: (checked) {
-              final newList = List<T>.from(selectedOptions);
-              if (checked == true) {
-                newList.add(option);
-              } else {
-                newList.remove(option);
-              }
-              onChanged(newList);
-            },
-            title: Text(optionLabel(option), style: AppTextStyles.bodyTextStyle),
-            activeColor: AppColors.primaryColor,
-            contentPadding: EdgeInsets.zero,
-          );
-        }),
-      ],
-    );
-  }
 
   Widget _buildSwitch({
     required String label,
@@ -948,6 +900,45 @@ class _CreateTournamentFormState extends State<_CreateTournamentForm> {
           child: child!,
         );
       },
+    );
+  }
+
+  Widget _buildRewardSelectionField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Available Rewards (Optional)',
+          style: AppTextStyles.smallBoldTextStyle,
+        ),
+        const SizedBox(height: 8),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppColors.inputFieldBgColor,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: AppColors.borderColor),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Reward selection will be available after creating the tournament',
+                style: AppTextStyles.captionTextStyle.copyWith(
+                  color: AppColors.lightGreyColor,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'You can add specific rewards as prizes later in the tournament settings',
+                style: AppTextStyles.captionTextStyle.copyWith(
+                  color: AppColors.lightGreyColor,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
