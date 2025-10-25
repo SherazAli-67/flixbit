@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../res/app_colors.dart';
 import '../../res/apptextstyles.dart';
 import '../../models/seller_model.dart';
 import '../../models/review_model.dart';
 import '../../providers/reviews_provider.dart';
+import '../../service/seller_follower_service.dart';
 import '../reviews/widgets/review_card.dart';
 import 'write_review_page.dart';
 
@@ -28,12 +30,17 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
   List<Review> _reviews = [];
   ReviewSummary? _reviewSummary;
   bool _isLoading = true;
+  bool _isFollowing = false;
+  bool _isFollowingLoading = false;
 
   @override
   void initState() {
     super.initState();
     _reviewsProvider = context.read<ReviewsProvider>();
-    _loadSellerData();
+    // Defer loading until after the initial build is complete
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadSellerData();
+    });
   }
 
   Future<void> _loadSellerData() async {
@@ -57,6 +64,13 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
     await _reviewsProvider.loadReviewsForSeller(widget.sellerId);
     _reviews = _reviewsProvider.getReviewsForSeller(widget.sellerId);
     _reviewSummary = _reviewsProvider.getReviewSummaryForSeller(widget.sellerId);
+
+    // Check follow status
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId != null) {
+      final followerService = SellerFollowerService();
+      _isFollowing = await followerService.isFollowing(userId, widget.sellerId);
+    }
 
     setState(() => _isLoading = false);
   }
@@ -253,12 +267,23 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: OutlinedButton.icon(
-                          onPressed: () => _toggleFollow(),
-                          icon: const Icon(Icons.favorite_border, size: 20),
-                          label: Text('Follow (${_seller!.followersCount})'),
+                          onPressed: _isFollowingLoading ? null : () => _toggleFollow(),
+                          icon: Icon(
+                            _isFollowing ? Icons.favorite : Icons.favorite_border,
+                            size: 20,
+                            color: _isFollowing ? Colors.red : AppColors.primaryColor,
+                          ),
+                          label: Text(
+                            _isFollowing ? 'Following (${_seller!.followersCount})' : 'Follow (${_seller!.followersCount})',
+                            style: TextStyle(
+                              color: _isFollowing ? Colors.red : AppColors.primaryColor,
+                            ),
+                          ),
                           style: OutlinedButton.styleFrom(
-                            foregroundColor: AppColors.primaryColor,
-                            side: const BorderSide(color: AppColors.primaryColor),
+                            foregroundColor: _isFollowing ? Colors.red : AppColors.primaryColor,
+                            side: BorderSide(
+                              color: _isFollowing ? Colors.red : AppColors.primaryColor,
+                            ),
                             padding: const EdgeInsets.symmetric(vertical: 12),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -403,14 +428,54 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
     );
   }
 
-  void _toggleFollow() {
-    // TODO: Implement follow/unfollow functionality
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Follow functionality coming soon!'),
-        backgroundColor: AppColors.primaryColor,
-      ),
-    );
+  void _toggleFollow() async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please sign in to follow sellers'),
+          backgroundColor: AppColors.errorColor,
+        ),
+      );
+      return;
+    }
+
+    setState(() => _isFollowingLoading = true);
+
+    try {
+      final followerService = SellerFollowerService();
+      final newFollowStatus = await followerService.toggleFollow(
+        userId,
+        widget.sellerId,
+        'manual',
+      );
+
+      if (mounted) {
+        setState(() {
+          _isFollowing = newFollowStatus;
+          _isFollowingLoading = false;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(newFollowStatus 
+                ? 'You are now following ${_seller?.name ?? 'this seller'}' 
+                : 'You unfollowed ${_seller?.name ?? 'this seller'}'),
+            backgroundColor: AppColors.successColor,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isFollowingLoading = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
+            backgroundColor: AppColors.errorColor,
+          ),
+        );
+      }
+    }
   }
 
   void _showAllReviews() {

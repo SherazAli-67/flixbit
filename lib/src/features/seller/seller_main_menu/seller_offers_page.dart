@@ -7,6 +7,8 @@ import '../../../providers/seller_offers_provider.dart';
 import '../../../routes/router_enum.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/apptextstyles.dart';
+import '../offer_qr_detail_page.dart';
+import '../offer_qr_management_page.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class SellerOffersPage extends StatefulWidget {
@@ -467,6 +469,16 @@ class _SellerOffersPageState extends State<SellerOffersPage>
                   },
                   itemBuilder: (context) => [
                     if (offer.isApproved) ...[
+                      const PopupMenuItem(
+                        value: 'view_qr',
+                        child: Row(
+                          children: [
+                            Icon(Icons.qr_code, color: AppColors.whiteColor, size: 20),
+                            SizedBox(width: 12),
+                            Text('View QR Code', style: AppTextStyles.bodyTextStyle),
+                          ],
+                        ),
+                      ),
                       PopupMenuItem(
                         value: 'toggle_status',
                         child: Row(
@@ -481,6 +493,16 @@ class _SellerOffersPageState extends State<SellerOffersPage>
                               offer.isActive ? 'Pause Offer' : 'Activate Offer',
                               style: AppTextStyles.bodyTextStyle,
                             ),
+                          ],
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 'manage_qr',
+                        child: Row(
+                          children: [
+                            Icon(Icons.settings, color: AppColors.whiteColor, size: 20),
+                            SizedBox(width: 12),
+                            Text('Manage QR', style: AppTextStyles.bodyTextStyle),
                           ],
                         ),
                       ),
@@ -528,6 +550,24 @@ class _SellerOffersPageState extends State<SellerOffersPage>
 
   void _handleMenuAction(String action, Offer offer, SellerOffersProvider provider) async {
     switch (action) {
+      case 'view_qr':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => OfferQRDetailPage(offer: offer),
+          ),
+        );
+        break;
+
+      case 'manage_qr':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => OfferQRManagementPage(offer: offer),
+          ),
+        );
+        break;
+
       case 'toggle_status':
         final newStatus = !offer.isActive;
         final success = await provider.toggleOfferStatus(offer.id, newStatus);

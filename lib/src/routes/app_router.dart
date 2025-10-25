@@ -16,6 +16,8 @@ import 'package:flixbit/src/features/seller/seller_profile_page.dart';
 import 'package:flixbit/src/features/seller/seller_push_notification_page.dart';
 import 'package:flixbit/src/features/seller/seller_qr_code_tracking_page.dart';
 import 'package:flixbit/src/features/seller/seller_referral_management.dart';
+import 'package:flixbit/src/features/seller/seller_followers_page.dart';
+import 'package:flixbit/src/features/main_menu/qr_scan_history_page.dart';
 import 'package:flixbit/src/features/subscription_plans_page.dart';
 import 'package:flixbit/src/features/video_ads/upload_video_ad_page.dart';
 import 'package:flixbit/src/features/wheel_of_fortune_page.dart';
@@ -245,6 +247,14 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: RouterEnum.sellerReferralManagementView.routeName,
       builder: (BuildContext context, GoRouterState state) => const SellerReferralManagement(),
+    ),
+    GoRoute(
+      path: RouterEnum.sellerFollowersView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const SellerFollowersPage(),
+    ),
+    GoRoute(
+      path: RouterEnum.qrScanHistoryView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const QRScanHistoryPage(),
     ),
     // USER SHELL
     StatefulShellRoute.indexedStack(

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flixbit/src/res/app_icons.dart';
+import 'package:flixbit/src/res/firebase_constants.dart';
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 
@@ -72,32 +73,35 @@ class AuthenticationProvider extends ChangeNotifier {
         return false;
       }
 
-      // Upload profile image if provided
-      /*String profileImageUrl = '';
+/*// 👇 Refresh token to make sure Firebase Storage has the correct auth context
+      final token = await user.getIdToken(true);
+      debugPrint("ID token: $token");*/
+      String profileImageUrl = '';
       if (profileImage != null) {
         profileImageUrl = await _uploadProfileImage(user.uid, profileImage);
-      }*/
+      }
 
       // Create user model
       final userModel = UserModel(
         userID: user.uid,
         name: name,
         email: email,
-        profileImg: AppIcons.icDummyImgUrl,
+        profileImg: profileImageUrl,
         createdAt: DateTime.now().toIso8601String()
       );
 
-      // Save user data to Firestore
-      await _firestore.collection('users').doc(user.uid).set(userModel.toMap());
-
+      await _firestore.collection(FirebaseConstants.usersCollection).doc(user.uid).set(userModel.toMap());
       _userModel = userModel;
       _setLoading(false);
       return true;
     } on FirebaseAuthException catch (e) {
+      debugPrint("Exception while creating account: ${e.toString()}");
       _setError(_getAuthErrorMessage(e));
       _setLoading(false);
       return false;
     } catch (e) {
+      debugPrint("Exception while creating account: ${e.toString()}");
+
       _setError('An unexpected error occurred: $e');
       _setLoading(false);
       return false;
@@ -155,8 +159,13 @@ class AuthenticationProvider extends ChangeNotifier {
   // Upload profile image to Firebase Storage
   Future<String> _uploadProfileImage(String userId, File imageFile) async {
     try {
-      final ref = _storage.ref().child('profile_images/$userId.jpg');
-      final uploadTask = await ref.putFile(imageFile);
+      final storageRef = FirebaseStorage.instance
+          .ref()
+          .child('profile_images')
+          .child(userId) // must match rule structure
+          .child('${DateTime.now().millisecondsSinceEpoch}.jpg');
+
+      final uploadTask = await storageRef.putFile(imageFile);
       final downloadUrl = await uploadTask.ref.getDownloadURL();
       return downloadUrl;
     } catch (e) {

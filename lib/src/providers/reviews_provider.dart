@@ -178,34 +178,36 @@ class ReviewsProvider extends ChangeNotifier {
   // Load all sellers
   Future<void> loadSellers() async {
     try {
-      _setLoading(true);
+      _isLoading = true;
       _clearError();
+      // Don't call notifyListeners here to avoid setState during build
 
       // TODO: Load from backend
       // _sellers = await _apiService.getSellers();
 
-      notifyListeners();
     } catch (e) {
-      _setError('Failed to load sellers: $e');
+      _error = e.toString();
     } finally {
-      _setLoading(false);
+      _isLoading = false;
+      notifyListeners(); // Only notify once at the end
     }
   }
 
   // Load offers
   Future<void> loadOffers() async {
     try {
-      _setLoading(true);
+      _isLoading = true;
       _clearError();
+      // Don't call notifyListeners here to avoid setState during build
 
       // TODO: Load from backend
       // _offers = await _apiService.getOffers();
 
-      notifyListeners();
     } catch (e) {
-      _setError('Failed to load offers: $e');
+      _error = e.toString();
     } finally {
-      _setLoading(false);
+      _isLoading = false;
+      notifyListeners(); // Only notify once at the end
     }
   }
 

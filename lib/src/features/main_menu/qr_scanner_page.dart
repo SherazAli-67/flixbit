@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../config/points_config.dart';
 import '../../res/app_colors.dart';
 import '../../res/apptextstyles.dart';
@@ -238,6 +239,57 @@ class _ScannerPageState extends State<ScannerPage> with WidgetsBindingObserver {
     }
   }
 
+  /// Pick image from gallery and scan QR
+  Future<void> _pickImageFromGallery() async {
+    if (_isProcessing) return;
+    
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+      
+      if (image != null) {
+        await _processImageForQR(image.path);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to pick image: $e'),
+            backgroundColor: AppColors.errorColor,
+          ),
+        );
+      }
+    }
+  }
+
+  /// Process image and detect QR code
+  Future<void> _processImageForQR(String imagePath) async {
+    setState(()=> _isProcessing = true);
+    
+    try {
+      final BarcodeCapture? capture = await cameraController.analyzeImage(imagePath);
+      
+      if (capture != null && capture.barcodes.isNotEmpty) {
+        _foundQRCode(capture.barcodes.first);
+      } else {
+        throw Exception('No QR code found in image');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to scan QR from image: $e'),
+            backgroundColor: AppColors.errorColor,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(()=> _isProcessing = false);
+      }
+    }
+  }
+
   /// Show offer redemption success dialog
   Future<void> _showOfferRedemptionSuccess(String offerId, int pointsEarned) async {
     return showDialog(
@@ -339,7 +391,7 @@ class _ScannerPageState extends State<ScannerPage> with WidgetsBindingObserver {
             child: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppColors.errorColor.withOpacity(0.1),
+                color: AppColors.errorColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -389,7 +441,7 @@ class _ScannerPageState extends State<ScannerPage> with WidgetsBindingObserver {
                       ),
                       if (_isProcessing)
                         Container(
-                          color: AppColors.darkBgColor.withOpacity(0.8),
+                          color: AppColors.darkBgColor.withValues(alpha: 0.8),
                           child: Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -418,6 +470,20 @@ class _ScannerPageState extends State<ScannerPage> with WidgetsBindingObserver {
                   color: AppColors.lightGreyColor,
                 ),
                 textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                onPressed: _isProcessing ? null : _pickImageFromGallery,
+                icon: const Icon(Icons.photo_library),
+                label: const Text('Scan from Gallery'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryColor,
+                  foregroundColor: AppColors.whiteColor,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
               ),
             ],
           ),
@@ -462,7 +528,7 @@ class _ScannerPageState extends State<ScannerPage> with WidgetsBindingObserver {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppColors.primaryColor.withOpacity(0.1),
+                color: AppColors.primaryColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
