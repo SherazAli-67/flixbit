@@ -117,10 +117,10 @@ class _NotificationCenterPageState extends State<NotificationCenterPage> with Ti
       ),
       child: TabBar(
         controller: _tabController,
-        indicator: BoxDecoration(
+       /* indicator: BoxDecoration(
           color: AppColors.primaryColor,
           borderRadius: BorderRadius.circular(8),
-        ),
+        ),*/
         labelColor: AppColors.whiteColor,
         unselectedLabelColor: AppColors.lightGreyColor,
         labelStyle: AppTextStyles.smallBoldTextStyle,

@@ -46,16 +46,10 @@ class RewardRedemption {
         (e) => e.name == json['status'],
         orElse: () => RedemptionStatus.active,
       ),
-      redeemedAt: DateTime.parse(json['redeemedAt'] as String),
-      claimedAt: json['claimedAt'] != null 
-          ? DateTime.parse(json['claimedAt'] as String)
-          : null,
-      deliveredAt: json['deliveredAt'] != null 
-          ? DateTime.parse(json['deliveredAt'] as String)
-          : null,
-      expiresAt: json['expiresAt'] != null 
-          ? DateTime.parse(json['expiresAt'] as String)
-          : null,
+      redeemedAt: _parseDateTime(json['redeemedAt']) ?? DateTime.now(),
+      claimedAt: _parseDateTime(json['claimedAt']),
+      deliveredAt: _parseDateTime(json['deliveredAt']),
+      expiresAt: _parseDateTime(json['expiresAt']),
       qrCodeData: json['qrCodeData'] as String?,
       deliveryAddress: json['deliveryAddress'] != null
           ? DeliveryAddress.fromJson(json['deliveryAddress'] as Map<String, dynamic>)
@@ -108,6 +102,21 @@ class RewardRedemption {
       'notes': notes,
       'metadata': metadata,
     };
+  }
+
+  // Helper method to parse DateTime from either Timestamp or String
+  static DateTime? _parseDateTime(dynamic dateValue) {
+    if (dateValue == null) return null;
+    
+    if (dateValue is Timestamp) {
+      return dateValue.toDate();
+    } else if (dateValue is String) {
+      return DateTime.parse(dateValue);
+    } else if (dateValue is DateTime) {
+      return dateValue;
+    }
+    
+    return null;
   }
 
   RewardRedemption copyWith({

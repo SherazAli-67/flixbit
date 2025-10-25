@@ -67,17 +67,16 @@ class _ContestListPageState extends State<ContestListPage> {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 16,
                   children: [
                     Icon(Icons.error_outline, size: 64, color: Colors.red.shade300),
-                    const SizedBox(height: 16),
                     Text(
                       provider.error!,
                       style: AppTextStyles.bodyTextStyle,
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 16),
                     ElevatedButton(
-                      onPressed: () => provider.fetchActiveContests(),
+                      onPressed: ()=> provider.fetchActiveContests(),
                       child: const Text('Retry'),
                     ),
                   ],
@@ -89,18 +88,17 @@ class _ContestListPageState extends State<ContestListPage> {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 16,
                   children: [
                     Icon(
                       Icons.videocam_off,
                       size: 64,
                       color: AppColors.unSelectedGreyColor,
                     ),
-                    const SizedBox(height: 16),
                     Text(
                       'No active contests',
                       style: AppTextStyles.bodyTextStyle,
                     ),
-                    const SizedBox(height: 8),
                     Text(
                       'Check back later for new contests',
                       style: AppTextStyles.smallTextStyle.copyWith(
@@ -113,7 +111,7 @@ class _ContestListPageState extends State<ContestListPage> {
             }
 
             return RefreshIndicator(
-              onRefresh: () => provider.fetchActiveContests(
+              onRefresh: ()=> provider.fetchActiveContests(
                 category: _selectedCategory == 'All' ? null : _selectedCategory,
                 region: _selectedRegion == 'All' ? null : _selectedRegion,
               ),
@@ -155,9 +153,7 @@ class _ContestListPageState extends State<ContestListPage> {
               items: _categories.map((cat) {
                 return DropdownMenuItem(value: cat, child: Text(cat));
               }).toList(),
-              onChanged: (value) {
-                setState(() => _selectedCategory = value == 'All' ? null : value);
-              },
+              onChanged: (value)=> setState(()=> _selectedCategory = value == 'All' ? null : value),
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
@@ -173,20 +169,18 @@ class _ContestListPageState extends State<ContestListPage> {
               items: _regions.map((reg) {
                 return DropdownMenuItem(value: reg, child: Text(reg));
               }).toList(),
-              onChanged: (value) {
-                setState(() => _selectedRegion = value == 'All' ? null : value);
-              },
+              onChanged: (value)=> setState(()=> _selectedRegion = value == 'All' ? null : value),
             ),
           ],
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: ()=> context.pop(),
             child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.pop(context);
+              context.pop();
               context.read<VideoContestProvider>().fetchActiveContests(
                     category: _selectedCategory,
                     region: _selectedRegion,
@@ -352,7 +346,7 @@ class _ContestCard extends StatelessWidget {
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          color: statusColor.withOpacity(0.2),
+                          color: statusColor.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
@@ -493,7 +487,7 @@ class _ContestCard extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => context.pop(),
+            onPressed: ()=> context.pop(),
             child: Text(
               'Close',
               style: AppTextStyles.smallTextStyle.copyWith(

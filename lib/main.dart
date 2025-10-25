@@ -6,6 +6,7 @@ import 'package:flixbit/src/providers/locale_provider.dart';
 import 'package:flixbit/src/providers/profile_provider.dart';
 import 'package:flixbit/src/providers/tab_change_provider.dart';
 import 'package:flixbit/src/providers/reviews_provider.dart';
+import 'package:flixbit/src/providers/video_contest_provider.dart';
 import 'package:flixbit/src/providers/wallet_provider.dart';
 import 'package:flixbit/src/providers/offers_provider.dart';
 import 'package:flixbit/src/providers/seller_offers_provider.dart';
@@ -47,6 +48,7 @@ void main() async {
         ChangeNotifierProvider(create: (_)=> SellerOffersProvider()),
         ChangeNotifierProvider(create: (_)=> NotificationProvider()),
         ChangeNotifierProvider(create: (_)=> RewardProvider()),
+        ChangeNotifierProvider(create: (_)=> VideoContestProvider()),
       ],
       child: const MyApp()));
 }

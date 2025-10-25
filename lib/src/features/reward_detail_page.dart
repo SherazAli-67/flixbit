@@ -6,6 +6,7 @@ import '../models/reward_redemption_model.dart';
 import '../providers/reward_provider.dart';
 import '../res/app_colors.dart';
 import '../res/apptextstyles.dart';
+import 'widgets/address_collection_dialog.dart';
 
 class RewardDetailPage extends StatefulWidget {
   final String rewardId;
@@ -681,15 +682,37 @@ class _RewardDetailPageState extends State<RewardDetailPage> {
   }
 
   Future<void> _redeemReward() async {
+    // Check if physical reward requires address
+    if (_reward!.deliveryInfo?.requiresAddress == true) {
+      await _collectDeliveryAddress();
+    } else {
+      await _processRedemption();
+    }
+  }
+
+  Future<void> _collectDeliveryAddress() async {
+    final address = await showDialog<DeliveryAddress>(
+      context: context,
+      builder: (context) => AddressCollectionDialog(
+        onAddressSubmitted: (address) {
+          Navigator.of(context).pop(address);
+        },
+      ),
+    );
+
+    if (address != null) {
+      await _processRedemption(deliveryAddress: address);
+    }
+  }
+
+  Future<void> _processRedemption({DeliveryAddress? deliveryAddress}) async {
     setState(() => _isRedeeming = true);
     
     try {
       final rewardProvider = context.read<RewardProvider>();
       final redemption = await rewardProvider.redeemReward(
         rewardId: _reward!.id,
-        deliveryAddress: _reward!.deliveryInfo?.requiresAddress == true 
-            ? null // TODO: Collect delivery address for physical rewards
-            : null,
+        deliveryAddress: deliveryAddress,
       );
       
       if (redemption != null && mounted) {

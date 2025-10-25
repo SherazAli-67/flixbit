@@ -361,6 +361,96 @@ class _MyRewardsPageState extends State<MyRewardsPage> with TickerProviderStateM
             ),
           ),
           
+          // Delivery Address (for physical rewards)
+          if (redemption.deliveryAddress != null)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.cardBgColor,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: AppColors.borderColor,
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 8,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.local_shipping,
+                        color: AppColors.primaryColor,
+                        size: 16,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Delivery Address',
+                        style: AppTextStyles.smallBoldTextStyle.copyWith(
+                          color: AppColors.primaryColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    redemption.deliveryAddress!.fullAddress,
+                    style: AppTextStyles.smallTextStyle,
+                  ),
+                  if (redemption.deliveryAddress!.phoneNumber != null)
+                    Text(
+                      'Phone: ${redemption.deliveryAddress!.phoneNumber}',
+                      style: AppTextStyles.smallTextStyle.copyWith(
+                        color: AppColors.lightGreyColor,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          
+          // Tracking Number (if shipped)
+          if (redemption.trackingNumber != null)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.successColor.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: AppColors.successColor.withValues(alpha: 0.3),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.local_shipping,
+                    color: AppColors.successColor,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Tracking Number',
+                          style: AppTextStyles.smallTextStyle.copyWith(
+                            color: AppColors.successColor,
+                          ),
+                        ),
+                        Text(
+                          redemption.trackingNumber!,
+                          style: AppTextStyles.smallBoldTextStyle.copyWith(
+                            color: AppColors.successColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          
           // Details
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -744,7 +834,7 @@ class _MyRewardsPageState extends State<MyRewardsPage> with TickerProviderStateM
       ),
     );
 
-    if (confirmed == true) {
+    if (confirmed == true && mounted) {
       final rewardProvider = context.read<RewardProvider>();
       final success = await rewardProvider.useReward(redemption.id);
       

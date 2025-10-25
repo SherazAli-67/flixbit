@@ -61,20 +61,33 @@ class Reward {
         orElse: () => RewardCategory.voucher,
       ),
       isActive: json['isActive'] as bool? ?? true,
-      expiryDate: json['expiryDate'] != null 
-          ? DateTime.parse(json['expiryDate'] as String)
-          : null,
+      expiryDate: _parseDateTime(json['expiryDate']),
       deliveryInfo: json['deliveryInfo'] != null
           ? DeliveryInfo.fromJson(json['deliveryInfo'] as Map<String, dynamic>)
           : null,
       termsAndConditions: List<String>.from(json['termsAndConditions'] ?? []),
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      createdAt: _parseDateTime(json['createdAt']) ?? DateTime.now(),
+      updatedAt: _parseDateTime(json['updatedAt']) ?? DateTime.now(),
       createdBy: json['createdBy'] as String?,
       isFeatured: json['isFeatured'] as bool? ?? false,
       maxRedemptionsPerUser: json['maxRedemptionsPerUser'] as int?,
       metadata: json['metadata'] as Map<String, dynamic>?,
     );
+  }
+
+  // Helper method to parse DateTime from either Timestamp or String
+  static DateTime? _parseDateTime(dynamic dateValue) {
+    if (dateValue == null) return null;
+    
+    if (dateValue is Timestamp) {
+      return dateValue.toDate();
+    } else if (dateValue is String) {
+      return DateTime.parse(dateValue);
+    } else if (dateValue is DateTime) {
+      return dateValue;
+    }
+    
+    return null;
   }
 
   factory Reward.fromFirestore(DocumentSnapshot doc) {

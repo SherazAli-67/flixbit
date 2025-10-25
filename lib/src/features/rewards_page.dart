@@ -19,7 +19,7 @@ class RewardsPage extends StatefulWidget {
 class _RewardsPageState extends State<RewardsPage> with TickerProviderStateMixin {
   late TabController _tabController;
   String? _userId;
-
+  late Size _size;
   @override
   void initState() {
     super.initState();
@@ -27,9 +27,7 @@ class _RewardsPageState extends State<RewardsPage> with TickerProviderStateMixin
     _userId = FirebaseAuth.instance.currentUser?.uid;
     
     if (_userId != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        context.read<RewardProvider>().initialize(_userId!);
-      });
+      WidgetsBinding.instance.addPostFrameCallback((_)=> context.read<RewardProvider>().initialize(_userId!));
     }
   }
 
@@ -42,20 +40,24 @@ class _RewardsPageState extends State<RewardsPage> with TickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+    _size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: AppColors.darkBgColor,
       body: SafeArea(
-        child: Column(
-          children: [
+        child: CustomScrollView(
+          slivers: [
             // Header with balance
-            _buildHeader(context, l10n),
+            SliverToBoxAdapter(
+              child: _buildHeader(context, l10n),
+            ),
             
             // Tab bar
-            _buildTabBar(),
+            SliverToBoxAdapter(
+              child: _buildTabBar(),
+            ),
             
             // Tab content
-            Expanded(
+            SliverFillRemaining(
               child: TabBarView(
                 controller: _tabController,
                 children: [
@@ -167,10 +169,10 @@ class _RewardsPageState extends State<RewardsPage> with TickerProviderStateMixin
       ),
       child: TabBar(
         controller: _tabController,
-        indicator: BoxDecoration(
+       /* indicator: BoxDecoration(
           color: AppColors.primaryColor,
           borderRadius: BorderRadius.circular(8),
-        ),
+        ),*/
         labelColor: AppColors.whiteColor,
         unselectedLabelColor: AppColors.lightGreyColor,
         labelStyle: AppTextStyles.smallBoldTextStyle,
@@ -243,31 +245,37 @@ class _RewardsPageState extends State<RewardsPage> with TickerProviderStateMixin
           );
         }
 
-        return Column(
-          children: [
-            // Filters
-            _buildFilters(rewardProvider),
-            
-            // Recommended section (if user has balance)
-            if (rewardProvider.userBalance > 0 && rewardProvider.recommendedRewards.isNotEmpty)
-              _buildRecommendedSection(rewardProvider),
-            
-            // Rewards list
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: () => rewardProvider.refresh(),
-                color: AppColors.primaryColor,
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: rewardProvider.availableRewards.length,
-                  itemBuilder: (context, index) {
-                    final reward = rewardProvider.availableRewards[index];
-                    return _buildRewardCard(reward, rewardProvider);
-                  },
+        return RefreshIndicator(
+          onRefresh: () => rewardProvider.refresh(),
+          color: AppColors.primaryColor,
+          child: CustomScrollView(
+            slivers: [
+              // Filters
+              SliverToBoxAdapter(
+                child: _buildFilters(rewardProvider),
+              ),
+              
+              // Recommended section (if user has balance)
+              if (rewardProvider.userBalance > 0 && rewardProvider.recommendedRewards.isNotEmpty)
+                SliverToBoxAdapter(
+                  child: _buildRecommendedSection(rewardProvider),
+                ),
+              
+              // Rewards list
+              SliverPadding(
+                padding: const EdgeInsets.all(16),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final reward = rewardProvider.availableRewards[index];
+                      return _buildRewardCard(reward, rewardProvider);
+                    },
+                    childCount: rewardProvider.availableRewards.length,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );
@@ -402,7 +410,7 @@ class _RewardsPageState extends State<RewardsPage> with TickerProviderStateMixin
               ),
             ],
           ),
-          
+
           // Content row
           Row(
             spacing: 16,
@@ -426,7 +434,7 @@ class _RewardsPageState extends State<RewardsPage> with TickerProviderStateMixin
                       : _buildPlaceholderIcon(reward.category),
                 ),
               ),
-              
+
               // Content
               Expanded(
                 child: Column(
@@ -445,7 +453,7 @@ class _RewardsPageState extends State<RewardsPage> with TickerProviderStateMixin
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    
+
                     // Stock status
                     if (!reward.isInStock)
                       Text(
@@ -461,7 +469,7 @@ class _RewardsPageState extends State<RewardsPage> with TickerProviderStateMixin
                           color: AppColors.orangeColor,
                         ),
                       ),
-                    
+
                     // Points cost and button
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -482,8 +490,8 @@ class _RewardsPageState extends State<RewardsPage> with TickerProviderStateMixin
                         ElevatedButton(
                           onPressed: canRedeem ? () => _navigateToRewardDetail(reward.id) : null,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: canRedeem 
-                                ? AppColors.primaryColor 
+                            backgroundColor: canRedeem
+                                ? AppColors.primaryColor
                                 : AppColors.darkGreyColor,
                             foregroundColor: AppColors.whiteColor,
                             shape: RoundedRectangleBorder(
@@ -495,8 +503,8 @@ class _RewardsPageState extends State<RewardsPage> with TickerProviderStateMixin
                           child: Text(
                             _getButtonText(canAfford, hasReachedLimit, reward),
                             style: AppTextStyles.smallBoldTextStyle.copyWith(
-                              color: canRedeem 
-                                  ? AppColors.whiteColor 
+                              color: canRedeem
+                                  ? AppColors.whiteColor
                                   : AppColors.lightGreyColor,
                             ),
                           ),
@@ -556,13 +564,21 @@ class _RewardsPageState extends State<RewardsPage> with TickerProviderStateMixin
         return RefreshIndicator(
           onRefresh: () => rewardProvider.refresh(),
           color: AppColors.primaryColor,
-          child: ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: rewardProvider.userRedemptions.length,
-            itemBuilder: (context, index) {
-              final redemption = rewardProvider.userRedemptions[index];
-              return _buildRedemptionCard(redemption);
-            },
+          child: CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.all(16),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final redemption = rewardProvider.userRedemptions[index];
+                      return _buildRedemptionCard(redemption);
+                    },
+                    childCount: rewardProvider.userRedemptions.length,
+                  ),
+                ),
+              ),
+            ],
           ),
         );
       },
@@ -793,18 +809,112 @@ class _RewardsPageState extends State<RewardsPage> with TickerProviderStateMixin
             ),
           ),
           SizedBox(
-            height: 120,
+            height: _size.height*0.27, // Fixed height for horizontal scroll
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: rewardProvider.recommendedRewards.length,
               itemBuilder: (context, index) {
                 final reward = rewardProvider.recommendedRewards[index];
                 return Container(
-                  width: 200,
+                  width: _size.width*0.8,
                   margin: const EdgeInsets.only(right: 12),
-                  child: _buildRewardCard(reward, rewardProvider),
+                  child: _buildRecommendedRewardCard(reward, rewardProvider),
                 );
               },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRecommendedRewardCard(Reward reward, RewardProvider rewardProvider) {
+    final canAfford = rewardProvider.canAffordReward(reward);
+    final hasReachedLimit = rewardProvider.hasReachedRedemptionLimit(reward);
+    final canRedeem = canAfford && !hasReachedLimit && reward.canBeRedeemed;
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.cardBgColor,
+        borderRadius: BorderRadius.circular(12),
+        border: reward.isFeatured 
+            ? Border.all(color: AppColors.primaryColor.withValues(alpha: 0.5), width: 1)
+            : null,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 8,
+        children: [
+          // Image
+          Container(
+            width: double.infinity,
+            height: 80,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: _getCategoryColor(reward.category).withValues(alpha: 0.1),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: reward.imageUrl != null
+                  ? Image.network(
+                      reward.imageUrl!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => _buildPlaceholderIcon(reward.category),
+                    )
+                  : _buildPlaceholderIcon(reward.category),
+            ),
+          ),
+
+          // Title
+          Text(
+            reward.title,
+            style: AppTextStyles.smallBoldTextStyle,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+
+          // Points cost
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: AppColors.primaryColor.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(
+              '${reward.pointsCost} points',
+              style: AppTextStyles.smallTextStyle.copyWith(
+                color: AppColors.primaryColor,
+                fontSize: 10,
+              ),
+            ),
+          ),
+
+          // Redeem button
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: canRedeem ? () => _navigateToRewardDetail(reward.id) : null,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: canRedeem
+                    ? AppColors.primaryColor
+                    : AppColors.darkGreyColor,
+                foregroundColor: AppColors.whiteColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(vertical: 6),
+              ),
+              child: Text(
+                _getButtonText(canAfford, hasReachedLimit, reward),
+                style: AppTextStyles.smallTextStyle.copyWith(
+                  color: canRedeem
+                      ? AppColors.whiteColor
+                      : AppColors.lightGreyColor,
+                  fontSize: 10,
+                ),
+              ),
             ),
           ),
         ],
