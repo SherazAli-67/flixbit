@@ -1,7 +1,11 @@
 import 'package:flixbit/src/widgets/primary_btn.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:go_router/go_router.dart';
 import '../../res/app_colors.dart';
 import '../../res/apptextstyles.dart';
+import '../../models/qr_notification_campaign_model.dart';
+import '../../service/qr_notification_service.dart';
 
 class SellerPushNotificationPage extends StatefulWidget {
   const SellerPushNotificationPage({super.key});
@@ -14,8 +18,18 @@ class _SellerPushNotificationPageState extends State<SellerPushNotificationPage>
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _messageController = TextEditingController();
   
-  String selectedAudience = 'Followers';
+  NotificationAudience selectedAudience = NotificationAudience.allFollowers;
   String selectedSchedule = 'Now';
+  DateTime? scheduledDateTime;
+  bool _isLoading = false;
+  int _audienceCount = 0;
+  final QRNotificationService _notificationService = QRNotificationService();
+
+  @override
+  void initState() {
+    super.initState();
+    _updateAudienceCount();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +46,7 @@ class _SellerPushNotificationPageState extends State<SellerPushNotificationPage>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => context.pop(),
                     icon: const Icon(
                       Icons.close,
                       color: AppColors.whiteColor,
@@ -120,28 +134,66 @@ class _SellerPushNotificationPageState extends State<SellerPushNotificationPage>
                       style: AppTextStyles.subHeadingTextStyle,
                     ),
                   ),
+                  
+                  // Audience Count Display
+                  if (_audienceCount > 0)
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryColor.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: AppColors.primaryColor.withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.people,
+                            color: AppColors.primaryColor,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Target Audience: $_audienceCount followers',
+                            style: AppTextStyles.bodyTextStyle.copyWith(
+                              color: AppColors.primaryColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
                   _buildAudienceOption(
                     icon: Icons.group,
-                    title: 'Followers',
+                    title: 'All Followers',
                     subtitle: 'All followers',
-                    isSelected: selectedAudience == 'Followers',
-                    onTap: () => setState(() => selectedAudience = 'Followers'),
+                    isSelected: selectedAudience == NotificationAudience.allFollowers,
+                    onTap: () => _selectAudience(NotificationAudience.allFollowers),
                   ),
 
                   _buildAudienceOption(
-                    icon: Icons.groups,
-                    title: 'Groups',
-                    subtitle: 'Targeted groups',
-                    isSelected: selectedAudience == 'Groups',
-                    onTap: () => setState(() => selectedAudience = 'Groups'),
+                    icon: Icons.qr_code,
+                    title: 'QR Scan Followers',
+                    subtitle: 'Followers from QR scans',
+                    isSelected: selectedAudience == NotificationAudience.qrScanFollowers,
+                    onTap: () => _selectAudience(NotificationAudience.qrScanFollowers),
+                  ),
+
+                  _buildAudienceOption(
+                    icon: Icons.local_offer,
+                    title: 'Offer Followers',
+                    subtitle: 'Followers from offer redemptions',
+                    isSelected: selectedAudience == NotificationAudience.offerFollowers,
+                    onTap: () => _selectAudience(NotificationAudience.offerFollowers),
                   ),
 
                   _buildAudienceOption(
                     icon: Icons.person_add,
-                    title: 'Custom',
-                    subtitle: 'Demographics, interests, location',
-                    isSelected: selectedAudience == 'Custom',
-                    onTap: () => setState(() => selectedAudience = 'Custom'),
+                    title: 'Recent Followers',
+                    subtitle: 'Followers from last 30 days',
+                    isSelected: selectedAudience == NotificationAudience.dateRangeFollowers,
+                    onTap: () => _selectAudience(NotificationAudience.dateRangeFollowers),
                   ),
                 ],
               ),
@@ -177,7 +229,18 @@ class _SellerPushNotificationPageState extends State<SellerPushNotificationPage>
 
               
               // Send Notification Button
-              PrimaryBtn(btnText: "Send Notification", icon: "", onTap: (){}, borderRadius: 99,)
+              _isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.primaryColor,
+                      ),
+                    )
+                  : PrimaryBtn(
+                      btnText: selectedSchedule == 'Now' ? "Send Notification" : "Schedule Notification",
+                      icon: "",
+                      onTap: _sendNotification,
+                      borderRadius: 99,
+                    )
             ],
           ),
         ),
@@ -210,7 +273,7 @@ class _SellerPushNotificationPageState extends State<SellerPushNotificationPage>
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: AppColors.primaryColor.withOpacity(0.2),
+                color: AppColors.primaryColor.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Icon(
@@ -270,7 +333,7 @@ class _SellerPushNotificationPageState extends State<SellerPushNotificationPage>
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: AppColors.primaryColor.withOpacity(0.2),
+                color: AppColors.primaryColor.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Icon(
@@ -301,6 +364,170 @@ class _SellerPushNotificationPageState extends State<SellerPushNotificationPage>
         ),
       ),
     );
+  }
+
+  // Select audience and update count
+  void _selectAudience(NotificationAudience audience) {
+    setState(() => selectedAudience = audience);
+    _updateAudienceCount();
+  }
+
+  // Update audience count based on selected audience
+  Future<void> _updateAudienceCount() async {
+    try {
+      final sellerId = FirebaseAuth.instance.currentUser?.uid;
+      if (sellerId == null) return;
+
+      Map<String, dynamic>? filters;
+      if (selectedAudience == NotificationAudience.dateRangeFollowers) {
+        final thirtyDaysAgo = DateTime.now().subtract(const Duration(days: 30));
+        filters = {
+          'startDate': thirtyDaysAgo.toIso8601String(),
+          'endDate': DateTime.now().toIso8601String(),
+        };
+      }
+
+      final count = await _notificationService.getAudienceCount(
+        sellerId: sellerId,
+        audience: selectedAudience,
+        filters: filters,
+      );
+
+      setState(() => _audienceCount = count);
+    } catch (e) {
+      debugPrint('Failed to get audience count: $e');
+      setState(() => _audienceCount = 0);
+    }
+  }
+
+  // Send notification
+  Future<void> _sendNotification() async {
+    // Validate inputs
+    if (_titleController.text.trim().isEmpty) {
+      _showErrorSnackBar('Please enter a notification title');
+      return;
+    }
+
+    if (_messageController.text.trim().isEmpty) {
+      _showErrorSnackBar('Please enter a notification message');
+      return;
+    }
+
+    if (_audienceCount == 0) {
+      _showErrorSnackBar('No followers found for the selected audience');
+      return;
+    }
+
+    // Show confirmation dialog
+    final confirmed = await _showConfirmationDialog();
+    if (!confirmed) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      final sellerId = FirebaseAuth.instance.currentUser?.uid;
+      if (sellerId == null) {
+        throw Exception('User not authenticated');
+      }
+
+      Map<String, dynamic>? filters;
+      if (selectedAudience == NotificationAudience.dateRangeFollowers) {
+        final thirtyDaysAgo = DateTime.now().subtract(const Duration(days: 30));
+        filters = {
+          'startDate': thirtyDaysAgo.toIso8601String(),
+          'endDate': DateTime.now().toIso8601String(),
+        };
+      }
+
+      // Create campaign
+      final campaignId = await _notificationService.createCampaign(
+        sellerId: sellerId,
+        title: _titleController.text.trim(),
+        message: _messageController.text.trim(),
+        audience: selectedAudience,
+        filters: filters,
+        scheduledFor: selectedSchedule == 'Choose a specific date and time' 
+            ? scheduledDateTime 
+            : null,
+        actionRoute: '/offers_view',
+        actionText: 'View Offers',
+      );
+
+      // Send or schedule campaign
+      if (selectedSchedule == 'Now') {
+        await _notificationService.sendCampaign(campaignId);
+        _showSuccessSnackBar('Notification sent successfully to $_audienceCount followers');
+      } else {
+        if (scheduledDateTime == null) {
+          throw Exception('Please select a date and time for scheduling');
+        }
+        await _notificationService.scheduleCampaign(campaignId, scheduledDateTime!);
+        _showSuccessSnackBar('Notification scheduled for ${_formatDateTime(scheduledDateTime!)}');
+      }
+
+      // Navigate back
+      context.pop();
+    } catch (e) {
+      _showErrorSnackBar('Failed to send notification: $e');
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  // Show confirmation dialog
+  Future<bool> _showConfirmationDialog() async {
+    return await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.darkBgColor,
+        title: const Text(
+          'Confirm Notification',
+          style: TextStyle(color: AppColors.whiteColor),
+        ),
+        content: Text(
+          'Send notification to $_audienceCount followers?',
+          style: const TextStyle(color: AppColors.whiteColor),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primaryColor,
+            ),
+            child: const Text('Send'),
+          ),
+        ],
+      ),
+    ) ?? false;
+  }
+
+  // Show error snackbar
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+
+  // Show success snackbar
+  void _showSuccessSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
+      ),
+    );
+  }
+
+  // Format datetime for display
+  String _formatDateTime(DateTime dateTime) {
+    return '${dateTime.day}/${dateTime.month}/${dateTime.year} at ${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
   }
 
   @override

@@ -33,6 +33,12 @@ class FirebaseConstants{
   // Seller Followers
   static const sellerFollowersCollection = 'seller_followers';
   
+  // QR Notification Collections
+  static const qrNotificationCampaignsCollection = 'qr_notification_campaigns';
+  static const notificationQuotaCollection = 'notification_quota';
+  static const notificationQuotaTransactionsCollection = 'notification_quota_transactions';
+  static const notificationAnalyticsCollection = 'notification_analytics';
+  
   // Rewards Collections
   static const rewardsCollection = 'rewards';
   static const rewardRedemptionsCollection = 'reward_redemptions';
