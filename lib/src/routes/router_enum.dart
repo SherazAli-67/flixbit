@@ -61,7 +61,10 @@ enum RouterEnum {
   sellerFollowersView('/seller_followers_view'),
 
   //QR System
-  qrScanHistoryView('/qr_scan_history_view')
+  qrScanHistoryView('/qr_scan_history_view'),
+  notificationAnalyticsView('/notification_analytics_view'),
+  notificationCampaignListView('/notification_campaign_list_view'),
+  notificationCampaignDetailView('/notification_campaign_detail_view'),
 
   ;
 

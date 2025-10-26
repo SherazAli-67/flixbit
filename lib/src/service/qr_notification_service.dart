@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import '../models/qr_notification_campaign_model.dart';
 import '../models/seller_follower_model.dart';
 import '../res/firebase_constants.dart';
+import 'notification_quota_service.dart';
 
 class QRNotificationService {
   // Singleton pattern
@@ -11,6 +12,7 @@ class QRNotificationService {
   QRNotificationService._internal();
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final NotificationQuotaService _quotaService = NotificationQuotaService();
 
   // Create a new notification campaign
   Future<String> createCampaign({
@@ -158,10 +160,7 @@ class QRNotificationService {
 
       final campaign = QRNotificationCampaign.fromFirestore(campaignDoc);
 
-      // Update status to sending
-      await _updateCampaignStatus(campaignId, CampaignStatus.sending);
-
-      // Get target audience
+      // Get target audience first to check quota
       final userIds = await getTargetAudience(
         sellerId: campaign.sellerId,
         audience: campaign.audience,
@@ -172,6 +171,16 @@ class QRNotificationService {
         await _updateCampaignStatus(campaignId, CampaignStatus.failed, errorMessage: 'No target audience found');
         return;
       }
+
+      // Check quota availability
+      final hasQuota = await _quotaService.hasQuotaAvailable(campaign.sellerId, userIds.length);
+      if (!hasQuota) {
+        await _updateCampaignStatus(campaignId, CampaignStatus.failed, errorMessage: 'Insufficient quota available');
+        throw Exception('Insufficient quota available. Please purchase more quota or wait for monthly reset.');
+      }
+
+      // Update status to sending
+      await _updateCampaignStatus(campaignId, CampaignStatus.sending);
 
       // Update target count
       await _updateCampaignTargetCount(campaignId, userIds.length);
@@ -185,6 +194,9 @@ class QRNotificationService {
         actionRoute: campaign.actionRoute,
         actionText: campaign.actionText,
       );
+
+      // Consume quota after successful send
+      await _quotaService.consumeQuota(campaign.sellerId, userIds.length);
 
       // Update status to sent
       await _updateCampaignStatus(campaignId, CampaignStatus.sent, sentAt: DateTime.now());
@@ -458,5 +470,35 @@ class QRNotificationService {
       debugPrint('QR Notification: Failed to schedule campaign: $e');
       rethrow;
     }
+  }
+
+  // Get seller's quota information
+  Future<QuotaInfo> getSellerQuota(String sellerId) async {
+    return await _quotaService.getSellerQuota(sellerId);
+  }
+
+  // Check if seller has quota available
+  Future<bool> hasQuotaAvailable(String sellerId, int count) async {
+    return await _quotaService.hasQuotaAvailable(sellerId, count);
+  }
+
+  // Get quota usage percentage
+  Future<double> getQuotaUsagePercentage(String sellerId) async {
+    return await _quotaService.getQuotaUsagePercentage(sellerId);
+  }
+
+  // Check if quota is near limit
+  Future<bool> isQuotaNearLimit(String sellerId) async {
+    return await _quotaService.isQuotaNearLimit(sellerId);
+  }
+
+  // Purchase additional quota
+  Future<void> purchaseQuota(String sellerId, int count, double amount) async {
+    await _quotaService.purchaseQuota(sellerId, count, amount);
+  }
+
+  // Get quota transaction history
+  Future<List<QuotaTransaction>> getQuotaHistory(String sellerId) async {
+    return await _quotaService.getQuotaHistory(sellerId);
   }
 }

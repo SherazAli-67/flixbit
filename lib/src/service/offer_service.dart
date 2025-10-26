@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flixbit/src/models/reward_redemption_model.dart';
 import 'package:flutter/foundation.dart';
 import '../config/points_config.dart';
 import '../models/offer_model.dart';
@@ -285,6 +286,7 @@ class OfferService {
         redeemedAt: DateTime.now(),
         pointsEarned: offer.reviewPointsReward,
         qrCodeData: qrCodeData,
+        status: RedemptionStatus.completed.name
       );
 
       await redemptionRef.set(redemption.toJson());

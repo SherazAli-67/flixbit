@@ -167,19 +167,21 @@ class RewardRedemption {
   String get statusText {
     switch (status) {
       case RedemptionStatus.pending:
-        return 'Pending';
+        return 'pending';
       case RedemptionStatus.active:
-        return 'Active';
+        return 'active';
       case RedemptionStatus.used:
-        return 'Used';
+        return 'used';
       case RedemptionStatus.expired:
-        return 'Expired';
+        return 'expired';
       case RedemptionStatus.cancelled:
-        return 'Cancelled';
+        return 'cancelled';
       case RedemptionStatus.shipped:
-        return 'Shipped';
+        return 'shipped';
       case RedemptionStatus.delivered:
-        return 'Delivered';
+        return 'delivered';
+      case RedemptionStatus.completed:
+        return 'completed';
     }
   }
 
@@ -199,6 +201,7 @@ enum RedemptionStatus {
   cancelled,
   shipped,
   delivered,
+  completed,
 }
 
 class DeliveryAddress {

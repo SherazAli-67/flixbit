@@ -271,6 +271,7 @@ class OfferRedemption {
   final String? reviewId; // Link to review if user left one
   final int pointsEarned;
   final String? qrCodeData; // For verification
+  final String status; // Redemption status: 'redeemed', 'used', 'expired', 'cancelled'
 
   OfferRedemption({
     required this.id,
@@ -283,6 +284,7 @@ class OfferRedemption {
     this.reviewId,
     this.pointsEarned = 0,
     this.qrCodeData,
+    this.status = 'redeemed',
   });
 
   factory OfferRedemption.fromJson(Map<String, dynamic> json) {
@@ -297,6 +299,7 @@ class OfferRedemption {
       reviewId: json['reviewId'],
       pointsEarned: json['pointsEarned'] ?? 0,
       qrCodeData: json['qrCodeData'],
+      status: json['status'] ?? 'redeemed',
     );
   }
 
@@ -312,6 +315,7 @@ class OfferRedemption {
       'reviewId': reviewId,
       'pointsEarned': pointsEarned,
       'qrCodeData': qrCodeData,
+      'status': status,
     };
   }
 }

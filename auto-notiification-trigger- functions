@@ -1,0 +1,21 @@
+App-Side Implementation - How Auto-Notifications Are Handled
+
+📱 App-Side Architecture Overview
+The app ONLY receives and displays notifications. It does NOT trigger or send them.
+
+Backend (Cloud Functions) ──FCM──> Flutter App ──Display──> User
+       ↑                                ↓
+   Firestore Triggers            Handle & Route
+
+1. Welcome Notification Flow - Backend (Already Deployed)
+User scans QR → onCreate trigger → Cloud Function checks first scan
+→ Sends FCM notification
+
+2. Thank You Notification Flow
+User redeems offer → onCreate trigger → Cloud Function sends FCM
+
+3. Offer Reminder Flow
+Daily cron job → Checks expiring offers → Sends FCM to unredeemed users
+
+4. Re-engagement Notification Flow
+Weekly cron job → Finds inactive followers → Sends FCM

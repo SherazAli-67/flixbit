@@ -18,6 +18,9 @@ import 'package:flixbit/src/features/seller/seller_qr_code_tracking_page.dart';
 import 'package:flixbit/src/features/seller/seller_referral_management.dart';
 import 'package:flixbit/src/features/seller/seller_followers_page.dart';
 import 'package:flixbit/src/features/main_menu/qr_scan_history_page.dart';
+import 'package:flixbit/src/features/seller/notification_analytics_page.dart';
+import 'package:flixbit/src/features/seller/notification_campaign_list_page.dart';
+import 'package:flixbit/src/features/seller/notification_campaign_detail_page.dart';
 import 'package:flixbit/src/features/subscription_plans_page.dart';
 import 'package:flixbit/src/features/video_ads/upload_video_ad_page.dart';
 import 'package:flixbit/src/features/wheel_of_fortune_page.dart';
@@ -255,6 +258,21 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: RouterEnum.qrScanHistoryView.routeName,
       builder: (BuildContext context, GoRouterState state) => const QRScanHistoryPage(),
+    ),
+    GoRoute(
+      path: RouterEnum.notificationAnalyticsView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const NotificationAnalyticsPage(),
+    ),
+    GoRoute(
+      path: RouterEnum.notificationCampaignListView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const NotificationCampaignListPage(),
+    ),
+    GoRoute(
+      path: RouterEnum.notificationCampaignDetailView.routeName,
+      builder: (BuildContext context, GoRouterState state) {
+        final campaignId = state.extra as String? ?? '';
+        return NotificationCampaignDetailPage(campaignId: campaignId);
+      },
     ),
     // USER SHELL
     StatefulShellRoute.indexedStack(

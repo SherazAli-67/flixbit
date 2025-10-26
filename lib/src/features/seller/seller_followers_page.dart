@@ -64,6 +64,7 @@ class _SellerFollowersPageState extends State<SellerFollowersPage> {
                   }
 
                   if (snapshot.hasError) {
+                    debugPrint("Error: ${snapshot.error}");
                     return Center(
                       child: Text(
                         'Error: ${snapshot.error}',

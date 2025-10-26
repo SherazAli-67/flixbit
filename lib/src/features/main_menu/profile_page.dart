@@ -82,15 +82,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   ]),
 
               _buildSectionTitleWidget(
-                  title: 'QR SYSTEM',
-                  children: [
-                    _buildSectionItemWidget(
-                      title: 'Scan History', 
-                      onTap: ()=> context.push(RouterEnum.qrScanHistoryView.routeName),
-                    ),
-                  ]),
-
-              _buildSectionTitleWidget(
                   title: AppLocalizations.of(context)!.support.toUpperCase(),
                   children: [
                     _buildSectionItemWidget(title: AppLocalizations.of(context)!.helpCenter, onTap: (){}),

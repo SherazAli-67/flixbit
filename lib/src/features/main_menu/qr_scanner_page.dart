@@ -381,6 +381,8 @@ class _ScannerPageState extends State<ScannerPage> with WidgetsBindingObserver {
                 onPressed: () => _showInfoDialog(context),
                 icon: Icon(Icons.info_outline, color: AppColors.whiteColor),
               ),
+              
+              IconButton(onPressed: ()=> context.push(RouterEnum.qrScanHistoryView.routeName), icon: Icon(Icons.history))
             ],
           ),
         ),

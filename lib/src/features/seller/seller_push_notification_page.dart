@@ -6,6 +6,7 @@ import '../../res/app_colors.dart';
 import '../../res/apptextstyles.dart';
 import '../../models/qr_notification_campaign_model.dart';
 import '../../service/qr_notification_service.dart';
+import '../../service/notification_quota_service.dart';
 
 class SellerPushNotificationPage extends StatefulWidget {
   const SellerPushNotificationPage({super.key});
@@ -23,12 +24,14 @@ class _SellerPushNotificationPageState extends State<SellerPushNotificationPage>
   DateTime? scheduledDateTime;
   bool _isLoading = false;
   int _audienceCount = 0;
+  QuotaInfo? _quotaInfo;
   final QRNotificationService _notificationService = QRNotificationService();
 
   @override
   void initState() {
     super.initState();
     _updateAudienceCount();
+    _loadQuotaInfo();
   }
 
   @override
@@ -159,6 +162,59 @@ class _SellerPushNotificationPageState extends State<SellerPushNotificationPage>
                             style: AppTextStyles.bodyTextStyle.copyWith(
                               color: AppColors.primaryColor,
                             ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                  // Quota Information Display
+                  if (_quotaInfo != null)
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: _quotaInfo!.isNearLimit 
+                            ? Colors.orange.withValues(alpha: 0.1)
+                            : AppColors.successColor.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: _quotaInfo!.isNearLimit 
+                              ? Colors.orange.withValues(alpha: 0.3)
+                              : AppColors.successColor.withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: Column(
+                        spacing: 8,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                _quotaInfo!.isNearLimit ? Icons.warning : Icons.check_circle,
+                                color: _quotaInfo!.isNearLimit ? Colors.orange : AppColors.successColor,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  'Notification Quota: ${_quotaInfo!.remainingDisplayText} remaining',
+                                  style: AppTextStyles.bodyTextStyle.copyWith(
+                                    color: _quotaInfo!.isNearLimit ? Colors.orange : AppColors.successColor,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Usage: ${_quotaInfo!.usageDisplayText}',
+                                style: AppTextStyles.hintTextStyle,
+                              ),
+                              Text(
+                                _quotaInfo!.resetDateDisplayText,
+                                style: AppTextStyles.hintTextStyle,
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -400,6 +456,19 @@ class _SellerPushNotificationPageState extends State<SellerPushNotificationPage>
     }
   }
 
+  // Load quota information
+  Future<void> _loadQuotaInfo() async {
+    try {
+      final sellerId = FirebaseAuth.instance.currentUser?.uid;
+      if (sellerId == null) return;
+
+      final quotaInfo = await _notificationService.getSellerQuota(sellerId);
+      setState(() => _quotaInfo = quotaInfo);
+    } catch (e) {
+      debugPrint('Failed to load quota info: $e');
+    }
+  }
+
   // Send notification
   Future<void> _sendNotification() async {
     // Validate inputs
@@ -415,6 +484,12 @@ class _SellerPushNotificationPageState extends State<SellerPushNotificationPage>
 
     if (_audienceCount == 0) {
       _showErrorSnackBar('No followers found for the selected audience');
+      return;
+    }
+
+    // Check quota availability
+    if (_quotaInfo != null && _quotaInfo!.remainingQuota < _audienceCount) {
+      _showErrorSnackBar('Insufficient quota. You have ${_quotaInfo!.remainingQuota} notifications remaining, but need $_audienceCount.');
       return;
     }
 

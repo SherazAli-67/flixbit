@@ -1,0 +1,363 @@
+/**
+ * Cloud Function: Thank You Notification Trigger
+ * 
+ * Triggered when a user successfully redeems an offer
+ * Sends a thank you notification to encourage future engagement
+ * 
+ * Trigger: Firestore onCreate for 'offer_redemptions' collection
+ * 
+ * Dependencies: None (standalone function)
+ * 
+ * Usage: Deploy to Firebase Cloud Functions
+ */
+
+const { onDocumentCreated } = require('firebase-functions/v2/firestore');
+const admin = require('firebase-admin');
+
+// Initialize Firebase Admin SDK
+admin.initializeApp();
+
+/**
+ * Main Cloud Function: Thank You Notification Trigger
+ * 
+ * @param {Object} event - Cloud Functions event
+ */
+exports.onOfferRedemptionThankYou = onDocumentCreated('offer_redemptions/{redemptionId}', async (event) => {
+    try {
+      const snap = event.data;
+      const redemptionData = snap.data();
+      const { userId, sellerId, offerId, status } = redemptionData;
+      
+      console.log(`Offer redemption detected: User ${userId} redeemed offer ${offerId} from seller ${sellerId}`);
+      
+      // Validate required fields
+      if (!userId || !sellerId || !offerId) {
+        console.error('Missing required fields: userId, sellerId, or offerId');
+        return;
+      }
+      
+      // Only send notification for successful redemptions
+      if (status !== 'redeemed' && status !== 'completed') {
+        console.log(`Redemption status is ${status}, skipping thank you notification`);
+        return;
+      }
+      
+      // Get seller's auto-notification settings
+      const settings = await getAutoNotificationSettings(sellerId);
+      
+      if (!settings || !settings.thankYouEnabled) {
+        console.log(`Thank you notifications disabled for seller ${sellerId}`);
+        return;
+      }
+      
+      // Check rate limit
+      const canSend = await checkRateLimit(userId, sellerId);
+      
+      if (!canSend) {
+        console.log(`Rate limit exceeded for user ${userId} and seller ${sellerId}`);
+        return;
+      }
+      
+      // Check user notification preferences
+      const userPrefs = await checkUserNotificationPreference(userId, sellerId);
+      
+      if (!userPrefs) {
+        console.log(`User ${userId} has disabled notifications from seller ${sellerId}`);
+        return;
+      }
+      
+      // Get user's FCM token
+      const userToken = await getUserFCMToken(userId);
+      
+      if (!userToken) {
+        console.log(`No FCM token found for user ${userId}`);
+        return;
+      }
+      
+      // Get offer details for personalized message
+      const offerDetails = await getOfferDetails(offerId);
+      
+      // Prepare notification data
+      const title = 'Thank You!';
+      let body = settings.thankYouMessage || 'Thanks for redeeming! Enjoy your reward.';
+      
+      // Personalize message with offer details
+      if (offerDetails && offerDetails.title) {
+        body = `Thanks for redeeming "${offerDetails.title}"! Enjoy your reward.`;
+      }
+      
+      const data = {
+        type: 'thank_you',
+        sellerId: sellerId,
+        offerId: offerId,
+        redemptionId: event.params.redemptionId,
+        route: '/my_rewards_view',
+        actionText: 'View Rewards'
+      };
+      
+      // Send FCM notification
+      const messageId = await sendFCMNotification(userToken, title, body, data);
+      
+      // Log the notification
+      await logAutoNotification(userId, sellerId, 'thank_you', messageId);
+      
+      // Update offer analytics
+      await updateOfferAnalytics(offerId, 'thank_you_sent');
+      
+      console.log(`Thank you notification sent to user ${userId} for offer ${offerId}`);
+      
+    } catch (error) {
+      console.error('Error in onOfferRedemptionThankYou:', error);
+      
+      // Log error for monitoring
+      await logError('onOfferRedemptionThankYou', error, event.params.redemptionId);
+    }
+  });
+
+/**
+ * Helper Function: Get seller's auto-notification settings
+ * 
+ * @param {string} sellerId - Seller ID
+ * @returns {Promise<Object|null>} - Settings object or null
+ */
+async function getAutoNotificationSettings(sellerId) {
+  try {
+    const settingsDoc = await admin.firestore()
+      .collection('auto_notification_settings')
+      .doc(sellerId)
+      .get();
+    
+    if (!settingsDoc.exists) {
+      // Return default settings if none exist
+      return {
+        thankYouEnabled: true,
+        thankYouMessage: 'Thanks for redeeming! Enjoy your reward.',
+        maxNotificationsPerDay: 1
+      };
+    }
+    
+    return settingsDoc.data();
+  } catch (error) {
+    console.error('Error getting auto-notification settings:', error);
+    return null;
+  }
+}
+
+/**
+ * Helper Function: Check rate limit for notifications
+ * 
+ * @param {string} userId - User ID
+ * @param {string} sellerId - Seller ID
+ * @returns {Promise<boolean>} - True if can send notification
+ */
+async function checkRateLimit(userId, sellerId) {
+  try {
+    const today = new Date();
+    const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    
+    const logsSnapshot = await admin.firestore()
+      .collection('auto_notification_log')
+      .where('userId', '==', userId)
+      .where('sellerId', '==', sellerId)
+      .where('sentAt', '>=', admin.firestore.Timestamp.fromDate(startOfDay))
+      .get();
+    
+    const sentToday = logsSnapshot.size;
+    const maxPerDay = 1; // Default rate limit
+    
+    return sentToday < maxPerDay;
+  } catch (error) {
+    console.error('Error checking rate limit:', error);
+    return false;
+  }
+}
+
+/**
+ * Helper Function: Check user notification preferences
+ * 
+ * @param {string} userId - User ID
+ * @param {string} sellerId - Seller ID
+ * @returns {Promise<boolean>} - True if notifications enabled
+ */
+async function checkUserNotificationPreference(userId, sellerId) {
+  try {
+    const followerDoc = await admin.firestore()
+      .collection('seller_followers')
+      .where('userId', '==', userId)
+      .where('sellerId', '==', sellerId)
+      .limit(1)
+      .get();
+    
+    if (followerDoc.empty) {
+      // User is not following, but we can still send thank you notification
+      return true;
+    }
+    
+    const followerData = followerDoc.docs[0].data();
+    return followerData.notificationsEnabled !== false;
+  } catch (error) {
+    console.error('Error checking user notification preference:', error);
+    return true; // Default to allowing notifications
+  }
+}
+
+/**
+ * Helper Function: Get user's FCM token
+ * 
+ * @param {string} userId - User ID
+ * @returns {Promise<string|null>} - FCM token or null
+ */
+async function getUserFCMToken(userId) {
+  try {
+    const userDoc = await admin.firestore()
+      .collection('users')
+      .doc(userId)
+      .get();
+    
+    if (!userDoc.exists) {
+      return null;
+    }
+    
+    const userData = userDoc.data();
+    return userData.fcmToken || null;
+  } catch (error) {
+    console.error('Error getting user FCM token:', error);
+    return null;
+  }
+}
+
+/**
+ * Helper Function: Get offer details
+ * 
+ * @param {string} offerId - Offer ID
+ * @returns {Promise<Object|null>} - Offer details or null
+ */
+async function getOfferDetails(offerId) {
+  try {
+    const offerDoc = await admin.firestore()
+      .collection('offers')
+      .doc(offerId)
+      .get();
+    
+    if (!offerDoc.exists) {
+      return null;
+    }
+    
+    return offerDoc.data();
+  } catch (error) {
+    console.error('Error getting offer details:', error);
+    return null;
+  }
+}
+
+/**
+ * Helper Function: Send FCM notification
+ * 
+ * @param {string} token - FCM token
+ * @param {string} title - Notification title
+ * @param {string} body - Notification body
+ * @param {Object} data - Additional data
+ * @returns {Promise<string>} - Message ID
+ */
+async function sendFCMNotification(token, title, body, data) {
+  try {
+    const message = {
+      token: token,
+      notification: {
+        title: title,
+        body: body
+      },
+      data: data,
+      android: {
+        notification: {
+          icon: 'ic_notification',
+          color: '#17a3eb',
+          sound: 'default'
+        }
+      },
+      apns: {
+        payload: {
+          aps: {
+            sound: 'default',
+            badge: 1
+          }
+        }
+      }
+    };
+    
+    const response = await admin.messaging().send(message);
+    console.log('FCM notification sent:', response);
+    return response;
+  } catch (error) {
+    console.error('Error sending FCM notification:', error);
+    throw error;
+  }
+}
+
+/**
+ * Helper Function: Log auto-notification
+ * 
+ * @param {string} userId - User ID
+ * @param {string} sellerId - Seller ID
+ * @param {string} type - Notification type
+ * @param {string} messageId - FCM message ID
+ */
+async function logAutoNotification(userId, sellerId, type, messageId) {
+  try {
+    await admin.firestore()
+      .collection('auto_notification_log')
+      .add({
+        userId: userId,
+        sellerId: sellerId,
+        notificationType: type,
+        sentAt: admin.firestore.FieldValue.serverTimestamp(),
+        status: 'sent',
+        fcmMessageId: messageId
+      });
+  } catch (error) {
+    console.error('Error logging auto-notification:', error);
+  }
+}
+
+/**
+ * Helper Function: Update offer analytics
+ * 
+ * @param {string} offerId - Offer ID
+ * @param {string} event - Analytics event
+ */
+async function updateOfferAnalytics(offerId, event) {
+  try {
+    await admin.firestore()
+      .collection('offer_analytics')
+      .doc(offerId)
+      .update({
+        [event]: admin.firestore.FieldValue.increment(1),
+        lastUpdated: admin.firestore.FieldValue.serverTimestamp()
+      });
+  } catch (error) {
+    console.error('Error updating offer analytics:', error);
+  }
+}
+
+/**
+ * Helper Function: Log errors for monitoring
+ * 
+ * @param {string} functionName - Function name
+ * @param {Error} error - Error object
+ * @param {string} contextId - Context ID
+ */
+async function logError(functionName, error, contextId) {
+  try {
+    await admin.firestore()
+      .collection('function_errors')
+      .add({
+        functionName: functionName,
+        error: error.message,
+        stack: error.stack,
+        contextId: contextId,
+        timestamp: admin.firestore.FieldValue.serverTimestamp()
+      });
+  } catch (logError) {
+    console.error('Error logging error:', logError);
+  }
+}
