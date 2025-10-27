@@ -3,13 +3,10 @@ import 'package:flixbit/src/res/apptextstyles.dart';
 import 'package:flixbit/src/routes/router_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:flixbit/src/models/video_ad.dart';
-import 'package:flixbit/src/providers/notification_provider.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/firebase_constants.dart';
-import '../../../widgets/language_switcher.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -26,17 +23,8 @@ class _DashboardPageState extends State<DashboardPage> {
   void initState() {
     super.initState();
     _loadFeaturedVideo();
-    _initializeNotificationProvider();
   }
 
-  void _initializeNotificationProvider() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-    /*  final notificationProvider = context.read<NotificationProvider>();
-      final userId = FirebaseFirestore.instance.app.options.projectId; // This should be actual user ID
-      // Note: In a real app, you'd get the user ID from Firebase Auth
-      // For now, we'll initialize without user ID*/
-    });
-  }
 
   Future<void> _loadFeaturedVideo() async {
     try {
@@ -54,8 +42,7 @@ class _DashboardPageState extends State<DashboardPage> {
         ));
       }
     } catch (e) {
-      debugPrint("Error while fetching featured video");
-      // Silently fail - featured video is optional
+      debugPrint("Error while fetching featured video"); // Silently fail - featured video is optional
     }
   }
 
@@ -73,99 +60,16 @@ class _DashboardPageState extends State<DashboardPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 24,
               children: [
-                // Top Bar
-                _buildTopBar(context, l10n),
-
-                // Media Section
+                Text(l10n.dashboard, style: AppTextStyles.headingTextStyle3),
                 _buildMediaSection(context),
-                
-                // Quick Access Section
                 _buildQuickAccessSection(context, l10n),
-                
-                // List Cards Section
                 _buildListCardsSection(context, l10n),
-
-
-                // Bottom Cards Section
                 _buildBottomCardsSection(context, l10n),
               ],
             ),
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildTopBar(BuildContext context, AppLocalizations l10n) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          l10n.dashboard,
-          style: AppTextStyles.headingTextStyle3
-        ),
-        Row(
-          children: [
-            const LanguageToggleButton(),
-            const SizedBox(width: 8),
-            // Notification icon with badge
-            Consumer<NotificationProvider>(
-              builder: (context, notificationProvider, child) {
-                return Stack(
-                  children: [
-                    IconButton(
-                      onPressed: () => context.push(RouterEnum.notificationCenterView.routeName),
-                      icon: const Icon(
-                        Icons.notifications_outlined,
-                        color: AppColors.whiteColor,
-                        size: 24,
-                      ),
-                    ),
-                    if (notificationProvider.unreadCount > 0)
-                      Positioned(
-                        right: 8,
-                        top: 8,
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: AppColors.errorColor,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          constraints: const BoxConstraints(
-                            minWidth: 16,
-                            minHeight: 16,
-                          ),
-                          child: Text(
-                            '${notificationProvider.unreadCount}',
-                            style: AppTextStyles.smallTextStyle.copyWith(
-                              color: AppColors.whiteColor,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                  ],
-                );
-              },
-            ),
-            const SizedBox(width: 8),
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: AppColors.primaryColor.withValues(alpha: 0.2),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.settings,
-                color: AppColors.primaryColor,
-                size: 20,
-              ),
-            ),
-          ],
-        ),
-      ],
     );
   }
 
@@ -184,12 +88,7 @@ class _DashboardPageState extends State<DashboardPage> {
             spacing: 12,
             children: [
               Icon(Icons.videocam, size: 48, color: AppColors.unSelectedGreyColor),
-              Text(
-                'No featured video yet',
-                style: AppTextStyles.bodyTextStyle.copyWith(
-                  color: AppColors.lightGreyColor,
-                ),
-              ),
+              Text('No featured video yet', style: AppTextStyles.bodyTextStyle.copyWith(color: AppColors.lightGreyColor,),),
             ],
           ),
         ),
@@ -202,10 +101,7 @@ class _DashboardPageState extends State<DashboardPage> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         image: _featuredVideo!.thumbnailUrl != null
-            ? DecorationImage(
-                image: NetworkImage(_featuredVideo!.thumbnailUrl!),
-                fit: BoxFit.cover,
-              )
+            ? DecorationImage(image: NetworkImage(_featuredVideo!.thumbnailUrl!), fit: BoxFit.cover,)
             : null,
         gradient: _featuredVideo!.thumbnailUrl == null
             ? const LinearGradient(
@@ -307,14 +203,10 @@ class _DashboardPageState extends State<DashboardPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           spacing: 5,
           children: [
-            _buildQuickAccessButton(Icons.card_giftcard, l10n.offers, (){
-              context.push(RouterEnum.offersView.routeName);
-            }),
+            _buildQuickAccessButton(Icons.card_giftcard, l10n.offers, ()=> context.push(RouterEnum.offersView.routeName)),
             _buildQuickAccessButton(Icons.wb_sunny, l10n.gifts, (){}),
-            _buildQuickAccessButton(Icons.account_tree, l10n.rewards, (){
-              context.push(RouterEnum.rewardsView.routeName);
-            }),
-            _buildQuickAccessButton(Icons.notifications, l10n.notifications, (){}),
+            _buildQuickAccessButton(Icons.account_tree, l10n.rewards, ()=>context.push(RouterEnum.rewardsView.routeName)),
+            _buildQuickAccessButton(Icons.notifications, l10n.notifications, ()=> context.push(RouterEnum.notificationCenterView.routeName)),
           ],
         ),
       ],
@@ -357,21 +249,11 @@ class _DashboardPageState extends State<DashboardPage> {
     return Column(
       spacing: 20,
       children: [
-        _buildListCard(Icons.sports_soccer, l10n.gamePredictions, l10n.predictMatchOutcomes, (){
-          context.push(RouterEnum.gamePredictionView.routeName);
-        }),
-        _buildListCard(Icons.stars, l10n.subscriptionPackages, l10n.upgradeForMoreFeatures, (){
-          context.push(RouterEnum.subscriptionView.routeName);
-        }),
-        _buildListCard(Icons.video_collection_rounded, 'Watch & Earn', 'Watch Featured ads and Earn Flixbit points', (){
-          context.push(RouterEnum.videoAdsView.routeName);
-        }),
-        _buildListCard(Icons.emoji_events, 'Video Contests', 'Vote on videos and win prizes', (){
-          context.push(RouterEnum.contestListView.routeName);
-        }),
-        _buildListCard(Icons.people, l10n.referrals, l10n.inviteFriends, (){
-          context.push(RouterEnum.referralView.routeName);
-        }),
+        _buildListCard(Icons.sports_soccer, l10n.gamePredictions, l10n.predictMatchOutcomes, ()=> context.push(RouterEnum.gamePredictionView.routeName)),
+        _buildListCard(Icons.stars, l10n.subscriptionPackages, l10n.upgradeForMoreFeatures, ()=> context.push(RouterEnum.subscriptionView.routeName)),
+        _buildListCard(Icons.video_collection_rounded, 'Watch & Earn', 'Watch Featured ads and Earn Flixbit points', ()=> context.push(RouterEnum.videoAdsView.routeName)),
+        _buildListCard(Icons.emoji_events, 'Video Contests', 'Vote on videos and win prizes', ()=> context.push(RouterEnum.contestListView.routeName)),
+        _buildListCard(Icons.people, l10n.referrals, l10n.inviteFriends, ()=>  context.push(RouterEnum.referralView.routeName)),
       ],
     );
   }
@@ -396,25 +278,14 @@ class _DashboardPageState extends State<DashboardPage> {
                 color: AppColors.primaryColor.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(24),
               ),
-              child: Icon(
-                icon,
-                color: AppColors.primaryColor,
-                size: 24,
-              ),
-            ),
+              child: Icon(icon, color: AppColors.primaryColor, size: 24,),),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 4,
                 children: [
-                  Text(
-                    title,
-                    style: AppTextStyles.tileTitleTextStyle
-                  ),
-                  Text(
-                    subtitle,
-                    style: AppTextStyles.smallTextStyle.copyWith(color: AppColors.unSelectedGreyColor)
-                  ),
+                  Text(title, style: AppTextStyles.tileTitleTextStyle),
+                  Text(subtitle, style: AppTextStyles.smallTextStyle.copyWith(color: AppColors.unSelectedGreyColor)),
                 ],
               ),
             ),
@@ -428,14 +299,8 @@ class _DashboardPageState extends State<DashboardPage> {
     return Row(
       spacing: 10,
       children: [
-        Expanded(
-          child: _buildBottomCard(Icons.confirmation_number, l10n.coupons, l10n.viewCoupons, (){}),
-        ),
-        Expanded(
-          child: _buildBottomCard(Icons.casino, l10n.wheelOfFortune, l10n.spinToWin, (){
-            context.push(RouterEnum.wheelOfFortuneView.routeName);
-          }),
-        ),
+        Expanded(child: _buildBottomCard(Icons.confirmation_number, l10n.coupons, l10n.viewCoupons, (){}),),
+        Expanded(child: _buildBottomCard(Icons.casino, l10n.wheelOfFortune, l10n.spinToWin, ()=> context.push(RouterEnum.wheelOfFortuneView.routeName)),),
       ],
     );
   }
@@ -447,10 +312,7 @@ class _DashboardPageState extends State<DashboardPage> {
         padding: const EdgeInsets.all(10),
         alignment: Alignment.center,
         height: 90,
-        decoration: BoxDecoration(
-          color: AppColors.cardBgColor,
-          borderRadius: BorderRadius.circular(12),
-        ),
+        decoration: BoxDecoration(color: AppColors.cardBgColor, borderRadius: BorderRadius.circular(12),),
         child: Row(
           spacing: 10,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -459,15 +321,8 @@ class _DashboardPageState extends State<DashboardPage> {
             Container(
               width: 40,
               height: 40,
-              decoration: BoxDecoration(
-                color: AppColors.primaryColor.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Icon(
-                icon,
-                color: AppColors.primaryColor,
-                size: 20,
-              ),
+              decoration: BoxDecoration(color: AppColors.primaryColor.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(20),),
+              child: Icon(icon, color: AppColors.primaryColor, size: 20,),
             ),
             Expanded(
               child: Column(
@@ -475,14 +330,8 @@ class _DashboardPageState extends State<DashboardPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 spacing: 2,
                 children: [
-                  Text(
-                    title,
-                    style: AppTextStyles.smallTextStyle.copyWith(fontWeight: FontWeight.w700)
-                  ),
-                  Text(
-                    subtitle,
-                    style: AppTextStyles.captionTextStyle.copyWith(color: AppColors.unSelectedGreyColor)
-                  ),
+                  Text(title, style: AppTextStyles.smallTextStyle.copyWith(fontWeight: FontWeight.w700)),
+                  Text(subtitle, style: AppTextStyles.captionTextStyle.copyWith(color: AppColors.unSelectedGreyColor)),
                 ],
               ),
             ),
@@ -491,5 +340,4 @@ class _DashboardPageState extends State<DashboardPage> {
       ),
     );
   }
-
 }

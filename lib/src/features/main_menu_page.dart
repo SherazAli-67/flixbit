@@ -14,10 +14,7 @@ class MainMenuPage extends StatelessWidget{
   void _goBranch(BuildContext context, int index) {
     final MainMenuTabChangeProvider tabProvider = context.read<MainMenuTabChangeProvider>();
     tabProvider.onTabChange(index);
-    navigationShell.goBranch(
-      index,
-      initialLocation: index == navigationShell.currentIndex,
-    );
+    navigationShell.goBranch(index, initialLocation: index == navigationShell.currentIndex,);
   }
 
   @override
@@ -38,10 +35,7 @@ class MainMenuPage extends StatelessWidget{
             icon: Icon(Icons.home_outlined, color: AppColors.unSelectedGreyColor),
             activeIcon: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: AppColors.primaryColor.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(16),
-              ),
+              decoration: BoxDecoration(color: AppColors.primaryColor.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(16),),
               child: Icon(Icons.home_filled, color: AppColors.primaryColor),
             ),
             label: AppLocalizations.of(context)!.dashboard,

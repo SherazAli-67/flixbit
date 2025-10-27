@@ -1,3 +1,4 @@
+import 'package:flixbit/src/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
@@ -5,7 +6,6 @@ import '../../models/tournament_model.dart';
 import '../../res/app_colors.dart';
 import '../../res/apptextstyles.dart';
 import '../../service/tournament_history_service.dart';
-import '../../widgets/loading_indicator.dart';
 
 /// Page showing list of all tournaments user has participated in
 class MyTournamentsPage extends StatefulWidget {
@@ -70,7 +70,7 @@ class _MyTournamentsPageState extends State<MyTournamentsPage> {
         centerTitle: true,
       ),
       body: _isLoading
-          ? const Center(child: LoadingIndicator())
+          ? LoadingWidget()
           : _error != null
               ? _buildErrorView()
               : _tournaments.isEmpty

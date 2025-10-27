@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flixbit/l10n/app_localizations.dart';
+import 'package:flixbit/src/helpers/message_display_helper.dart';
 import 'package:flixbit/src/routes/router_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../config/points_config.dart';
 import '../../res/app_colors.dart';
 import '../../res/apptextstyles.dart';
 import '../../service/qr_scan_service.dart';
@@ -37,7 +37,6 @@ class _ScannerPageState extends State<ScannerPage> with WidgetsBindingObserver {
     _initializeController();
   }
 
-  // Separate controller initialization
   void _initializeController() async{
     cameraController = MobileScannerController(
       facing: CameraFacing.back,
@@ -76,7 +75,6 @@ class _ScannerPageState extends State<ScannerPage> with WidgetsBindingObserver {
     }
   }
 
-  // Add method to handle hot reload
   void _reinitializeController() {
     _disposeController();
     _initializeController();
@@ -102,270 +100,12 @@ class _ScannerPageState extends State<ScannerPage> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  void _foundQRCode(Barcode barcode) async {
-    if (_hasScanned || _isProcessing) return;
-    setState(() {
-      _hasScanned = true;
-      _isProcessing = true;
-      _error = null;
-    });
-
-    try {
-      if (barcode.format != BarcodeFormat.qrCode) {
-        throw Exception('Invalid QR code format');
-      }
-
-      final qrData = barcode.rawValue;
-      if (qrData == null || qrData.isEmpty) {
-        throw Exception('Invalid QR code data');
-      }
-
-      final userId = FirebaseAuth.instance.currentUser?.uid;
-      if (userId == null) {
-        throw Exception('Please sign in to scan QR codes');
-      }
-
-      // Parse QR code data
-      final parts = qrData.split(':');
-      
-      if (parts.isEmpty || parts[0] != 'flixbit') {
-        throw Exception('Invalid QR code format');
-      }
-
-      // Determine QR type and handle accordingly
-      if (parts.length >= 3 && parts[1] == 'seller') {
-        // Seller QR Code: flixbit:seller:{sellerId}
-        await _handleSellerQR(userId, parts[2], qrData);
-      } else if (parts.length >= 4 && parts[1] == 'offer') {
-        // Offer QR Code: flixbit:offer:{offerId}:{sellerId}:{timestamp}
-        await _handleOfferQR(userId, parts[2], parts[3], qrData);
-      } else {
-        throw Exception('Unknown QR code type');
-      }
-    } catch (e) {
-      setState(() => _error = e.toString());
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                Icon(Icons.error_outline, color: AppColors.whiteColor),
-                const SizedBox(width: 8),
-                Expanded(child: Text(e.toString())),
-              ],
-            ),
-            backgroundColor: AppColors.errorColor,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _hasScanned = false;
-          _isProcessing = false;
-        });
-        _initializeController();
-      }
-    }
-  }
-
-  /// Handle Seller QR Code scan
-  Future<void> _handleSellerQR(String userId, String sellerId, String qrData) async {
-    try {
-      // Record scan and award points
-      await _scanService.recordScan(
-        userId: userId,
-        sellerId: sellerId,
-        qrCode: qrData,
-      );
-
-      // Show success message
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                Icon(Icons.check_circle, color: AppColors.whiteColor),
-                const SizedBox(width: 8),
-                Text('Points awarded for QR scan!'),
-              ],
-            ),
-            backgroundColor: AppColors.successColor,
-          ),
-        );
-      }
-
-      // Navigate to seller profile
-      if (mounted) {
-        context.push(
-          '${RouterEnum.sellerProfileView.routeName}?sellerId=$sellerId&verificationMethod=qr_scan',
-        );
-      }
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  /// Handle Offer QR Code scan
-  Future<void> _handleOfferQR(String userId, String offerId, String sellerId, String qrData) async {
-    try {
-      final provider = Provider.of<OffersProvider>(context, listen: false);
-
-      // Validate offer exists and QR matches
-      final isValid = await _offerService.validateQRRedemption(userId, offerId, qrData);
-      
-      if (!isValid) {
-        throw Exception('Invalid or expired offer QR code');
-      }
-
-      // Redeem offer via QR method
-      final redemption = await provider.redeemOffer(
-        userId: userId,
-        offerId: offerId,
-        method: 'qr',
-        qrCodeData: qrData,
-      );
-
-      if (redemption == null) {
-        throw Exception(provider.error ?? 'Failed to redeem offer');
-      }
-
-      // Show success dialog
-      if (mounted) {
-        await _showOfferRedemptionSuccess(offerId, redemption.pointsEarned);
-      }
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  /// Pick image from gallery and scan QR
-  Future<void> _pickImageFromGallery() async {
-    if (_isProcessing) return;
-    
-    try {
-      final ImagePicker picker = ImagePicker();
-      final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-      
-      if (image != null) {
-        await _processImageForQR(image.path);
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to pick image: $e'),
-            backgroundColor: AppColors.errorColor,
-          ),
-        );
-      }
-    }
-  }
-
-  /// Process image and detect QR code
-  Future<void> _processImageForQR(String imagePath) async {
-    setState(()=> _isProcessing = true);
-    
-    try {
-      final BarcodeCapture? capture = await cameraController.analyzeImage(imagePath);
-      
-      if (capture != null && capture.barcodes.isNotEmpty) {
-        _foundQRCode(capture.barcodes.first);
-      } else {
-        throw Exception('No QR code found in image');
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to scan QR from image: $e'),
-            backgroundColor: AppColors.errorColor,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(()=> _isProcessing = false);
-      }
-    }
-  }
-
-  /// Show offer redemption success dialog
-  Future<void> _showOfferRedemptionSuccess(String offerId, int pointsEarned) async {
-    return showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        backgroundColor: AppColors.cardBgColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.check_circle,
-              color: Colors.green,
-              size: 80,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Offer Redeemed!',
-              style: AppTextStyles.headingTextStyle3.copyWith(
-                color: Colors.green,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'You earned $pointsEarned Flixbit points',
-              style: AppTextStyles.bodyTextStyle.copyWith(
-                color: AppColors.primaryColor,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'This offer has been added to your redemptions',
-              style: AppTextStyles.bodyTextStyle.copyWith(
-                color: AppColors.unSelectedGreyColor,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context); // Close dialog
-            },
-            child: Text(
-              'View Details',
-              style: AppTextStyles.buttonTextStyle.copyWith(
-                color: AppColors.primaryColor,
-              ),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              // Navigate to offer details
-              context.push('${RouterEnum.offerDetailView.routeName}?offerId=$offerId');
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primaryColor,
-            ),
-            child: const Text('View Offer'),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 20,
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 65),
@@ -378,15 +118,14 @@ class _ScannerPageState extends State<ScannerPage> with WidgetsBindingObserver {
                 style: AppTextStyles.bodyTextStyle,
               ),
               IconButton(
-                onPressed: () => _showInfoDialog(context),
+                onPressed: () => DisplayMessageHelper.showQRScannerInfoDialog(context),
                 icon: Icon(Icons.info_outline, color: AppColors.whiteColor),
               ),
-              
+
               IconButton(onPressed: ()=> context.push(RouterEnum.qrScanHistoryView.routeName), icon: Icon(Icons.history))
             ],
           ),
         ),
-        const SizedBox(height: 20),
         if (_error != null)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -397,23 +136,14 @@ class _ScannerPageState extends State<ScannerPage> with WidgetsBindingObserver {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
+                spacing: 8,
                 children: [
-                  Icon(Icons.error_outline,
-                      color: AppColors.errorColor, size: 20),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      _error!,
-                      style: AppTextStyles.smallTextStyle.copyWith(
-                        color: AppColors.errorColor,
-                      ),
-                    ),
-                  ),
+                  Icon(Icons.error_outline, color: AppColors.errorColor, size: 20),
+                  Expanded(child: Text(_error!, style: AppTextStyles.smallTextStyle.copyWith(color: AppColors.errorColor,),),),
                 ],
               ),
             ),
           ),
-        const SizedBox(height: 20),
         Padding(
           padding: const EdgeInsets.all(15.0),
           child: Column(
@@ -494,91 +224,139 @@ class _ScannerPageState extends State<ScannerPage> with WidgetsBindingObserver {
     );
   }
 
-  void _showInfoDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: AppColors.cardBgColor,
-        title: Text(
-          'QR Code Points',
-          style: AppTextStyles.subHeadingTextStyle,
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Earn points by scanning seller QR codes:',
-              style: AppTextStyles.bodyTextStyle,
-            ),
-            const SizedBox(height: 16),
-            _buildInfoRow(
-              icon: Icons.qr_code,
-              text: '${PointsConfig.getPoints("qr_scan")} points per scan',
-            ),
-            const SizedBox(height: 8),
-            _buildInfoRow(
-              icon: Icons.timer,
-              text: '${PointsConfig.cooldowns["qr_scan"]} min cooldown',
-            ),
-            const SizedBox(height: 8),
-            _buildInfoRow(
-              icon: Icons.calendar_today,
-              text: 'Up to ${PointsConfig.dailyLimits["qr_scan"]} points daily',
-            ),
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.primaryColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.info_outline,
-                      color: AppColors.primaryColor, size: 20),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      'Points are awarded instantly after scanning',
-                      style: AppTextStyles.smallTextStyle.copyWith(
-                        color: AppColors.primaryColor,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Got it',
-              style: AppTextStyles.buttonTextStyle.copyWith(
-                color: AppColors.primaryColor,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+  void _foundQRCode(Barcode barcode) async {
+    if (_hasScanned || _isProcessing) return;
+    setState(() {
+      _hasScanned = true;
+      _isProcessing = true;
+      _error = null;
+    });
+
+    try {
+      if (barcode.format != BarcodeFormat.qrCode) {
+        throw Exception('Invalid QR code format');
+      }
+
+      final qrData = barcode.rawValue;
+      if (qrData == null || qrData.isEmpty) {
+        throw Exception('Invalid QR code data');
+      }
+
+      final userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId == null) {
+        throw Exception('Please sign in to scan QR codes');
+      }
+
+      // Parse QR code data
+      final parts = qrData.split(':');
+
+      if (parts.isEmpty || parts[0] != 'flixbit') {
+        throw Exception('Invalid QR code format');
+      }
+
+      if (parts.length >= 3 && parts[1] == 'seller') {
+        await _handleSellerQR(userId, parts[2], qrData);
+      } else if (parts.length >= 4 && parts[1] == 'offer') {
+        await _handleOfferQR(userId, parts[2], parts[3], qrData);
+      } else {
+        throw Exception('Unknown QR code type');
+      }
+    } catch (e) {
+      setState(() => _error = e.toString());
+      if (mounted) {
+        DisplayMessageHelper.showSnackbarMessage(context, title: e.toString(), icon: Icons.error_outline);
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _hasScanned = false;
+          _isProcessing = false;
+        });
+        _initializeController();
+      }
+    }
   }
 
-  Widget _buildInfoRow({required IconData icon, required String text}) {
-    return Row(
-      children: [
-        Icon(icon, color: AppColors.primaryColor, size: 20),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            text,
-            style: AppTextStyles.bodyTextStyle,
-          ),
-        ),
-      ],
-    );
+  Future<void> _handleSellerQR(String userId, String sellerId, String qrData) async {
+    try {
+      await _scanService.recordScan(userId: userId, sellerId: sellerId, qrCode: qrData,);
+
+      if (mounted) {
+        DisplayMessageHelper.showSnackbarMessage(context, title: 'Points awarded for QR scan!',
+            textIconColor: AppColors.whiteColor,
+            backgroundColor: AppColors.successColor);
+      }
+
+      // Navigate to seller profile
+      if (mounted) {
+        context.push('${RouterEnum.sellerProfileView.routeName}?sellerId=$sellerId&verificationMethod=qr_scan',);
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> _handleOfferQR(String userId, String offerId, String sellerId, String qrData) async {
+    try {
+      final provider = Provider.of<OffersProvider>(context, listen: false);
+      final isValid = await _offerService.validateQRRedemption(userId, offerId, qrData);
+
+      if (!isValid) {
+        throw Exception('Invalid or expired offer QR code');
+      }
+
+      // Redeem offer via QR method
+      final redemption = await provider.redeemOffer(userId: userId, offerId: offerId, method: 'qr', qrCodeData: qrData,);
+
+      if (redemption == null) {
+        throw Exception(provider.error ?? 'Failed to redeem offer');
+      }
+
+      if (mounted) {
+        await DisplayMessageHelper.showOfferRedemptionSuccess(context, offerId: offerId, pointsEarned:  redemption.pointsEarned);
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> _pickImageFromGallery() async {
+    if (_isProcessing) return;
+
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
+      if (image != null) {
+        await _processImageForQR(image.path);
+      }
+    } catch (e) {
+      if (mounted) {
+        DisplayMessageHelper.showSnackbarMessage(context, title: 'Failed to pick image: $e', backgroundColor: AppColors.errorColor);
+      }
+    }
+  }
+
+  Future<void> _processImageForQR(String imagePath) async {
+    setState(()=> _isProcessing = true);
+
+    try {
+      final BarcodeCapture? capture = await cameraController.analyzeImage(imagePath);
+
+      if (capture != null && capture.barcodes.isNotEmpty) {
+        _foundQRCode(capture.barcodes.first);
+      } else {
+        throw Exception('No QR code found in image');
+      }
+    } catch (e) {
+      if (mounted) {
+        DisplayMessageHelper.showSnackbarMessage(context, title: 'Failed to scan QR from image: $e', backgroundColor: AppColors.errorColor);
+
+      }
+    } finally {
+      if (mounted) {
+        setState(()=> _isProcessing = false);
+      }
+    }
   }
 }
-

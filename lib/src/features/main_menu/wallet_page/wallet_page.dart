@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flixbit/src/helpers/format_helper.dart';
+import 'package:flixbit/src/helpers/message_display_helper.dart';
 import 'package:flixbit/src/service/wallet_service.dart';
+import 'package:flixbit/src/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import 'package:flixbit/l10n/app_localizations.dart';
 import 'package:flixbit/src/models/wallet_models.dart';
 import 'package:flixbit/src/providers/wallet_provider.dart';
@@ -13,7 +15,6 @@ import 'package:flixbit/src/res/app_icons.dart';
 import 'package:flixbit/src/res/apptextstyles.dart';
 import 'package:flixbit/src/routes/router_enum.dart';
 import 'package:flixbit/src/widgets/primary_btn.dart';
-import 'package:flixbit/src/widgets/loading_indicator.dart';
 class WalletPage extends StatefulWidget {
   const WalletPage({super.key});
 
@@ -25,14 +26,12 @@ class _WalletPageState extends State<WalletPage> {
   TransactionType? _selectedType;
   TransactionSource? _selectedSource;
   final _refreshKey = GlobalKey<RefreshIndicatorState>();
-
+  String userID = FirebaseAuth.instance.currentUser!.uid;
   @override
   void initState() {
     super.initState();
     // Initialize wallet data
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<WalletProvider>().initializeWallet(); // Replace with actual user ID
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) =>  context.read<WalletProvider>().initializeWallet());
   }
 
   @override
@@ -48,35 +47,41 @@ class _WalletPageState extends State<WalletPage> {
           icon: const Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(
-          l10n.wallet,
-          style: AppTextStyles.headingTextStyle3,
-        ),
+        title: Text(l10n.wallet, style: AppTextStyles.headingTextStyle3,),
         centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list, color: AppColors.primaryColor),
-            onPressed: _showFilterDialog,
+            onPressed: () =>
+                DisplayMessageHelper.showFilterDialog(
+                    context,
+                    selectedType: _selectedType,
+                    selectedSource: _selectedSource,
+                    onTransactionTypeSelected: (selected, type) =>  setState(()=> _selectedType = selected ? type : null),
+                    onTransactionSourceSelected: (selected, source) => setState(()=> _selectedSource = selected ? source : null),
+                  onClearTap: (){
+                    setState(() {
+                      _selectedType = null;
+                      _selectedSource = null;
+                    });
+                  }
+                ),
           ),
         ],
       ),
       body: Consumer<WalletProvider>(
         builder: (context, wallet, child) {
           if (wallet.isLoading && wallet.balance == null) {
-            return const Center(child: LoadingIndicator());
+            return LoadingWidget();
           }
 
           if (wallet.error != null) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 16,
                 children: [
-                  Text(
-                    wallet.error!,
-                    style: AppTextStyles.errorTextStyle,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
+                  Text(wallet.error!, style: AppTextStyles.errorTextStyle, textAlign: TextAlign.center,),
                   ElevatedButton(
                     onPressed: () {
                       wallet.clearError();
@@ -91,7 +96,7 @@ class _WalletPageState extends State<WalletPage> {
 
           return RefreshIndicator(
             key: _refreshKey,
-            onRefresh: () => wallet.refreshTransactions('currentUser'), // Replace with actual user ID
+            onRefresh: () => wallet.refreshTransactions(userID), // Replace with actual user ID
             child: CustomScrollView(
               slivers: [
                 // User Profile Section
@@ -114,10 +119,7 @@ class _WalletPageState extends State<WalletPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          l10n.transactions,
-                          style: AppTextStyles.subHeadingTextStyle,
-                        ),
+                        Text(l10n.transactions, style: AppTextStyles.subHeadingTextStyle,),
                         if (_selectedType != null || _selectedSource != null)
                           Padding(
                             padding: const EdgeInsets.only(top: 8),
@@ -125,15 +127,9 @@ class _WalletPageState extends State<WalletPage> {
                               spacing: 8,
                               children: [
                                 if (_selectedType != null)
-                                  _buildFilterChip(
-                                    _selectedType.toString().split('.').last,
-                                    () => setState(() => _selectedType = null),
-                                  ),
+                                  _buildFilterChip(_selectedType.toString().split('.').last, () => setState(() => _selectedType = null),),
                                 if (_selectedSource != null)
-                                  _buildFilterChip(
-                                    _selectedSource.toString().split('.').last,
-                                    () => setState(() => _selectedSource = null),
-                                  ),
+                                  _buildFilterChip(_selectedSource.toString().split('.').last, () => setState(() => _selectedSource = null),),
                               ],
                             ),
                           ),
@@ -146,21 +142,11 @@ class _WalletPageState extends State<WalletPage> {
                 SliverPadding(
                   padding: const EdgeInsets.all(20),
                   sliver: wallet.transactions.isEmpty
-                      ? SliverToBoxAdapter(
-                          child: Center(
-                            child: Text(
-                              l10n.noTransactions,
-                              style: AppTextStyles.bodyTextStyle,
-                            ),
-                          ),
-                        )
+                      ? SliverToBoxAdapter(child: Center(child: Text(l10n.noTransactions, style: AppTextStyles.bodyTextStyle,),),)
                       : SliverList(
                           delegate: SliverChildBuilderDelegate(
                             (context, index) {
-                              final filteredTransactions = wallet.getFilteredTransactions(
-                                type: _selectedType,
-                                source: _selectedSource,
-                              );
+                              final filteredTransactions = wallet.getFilteredTransactions(type: _selectedType, source: _selectedSource,);
                               
                               if (index >= filteredTransactions.length) {
                                 return null;
@@ -182,6 +168,7 @@ class _WalletPageState extends State<WalletPage> {
 
   Widget _buildProfileSection(WalletProvider wallet) {
     return Column(
+      spacing: 8,
       children: [
         Stack(
           children: [
@@ -195,24 +182,13 @@ class _WalletPageState extends State<WalletPage> {
               child: Container(
                 width: 32,
                 height: 32,
-                decoration: const BoxDecoration(
-                  color: AppColors.primaryColor,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.check,
-                  color: AppColors.whiteColor,
-                  size: 18,
-                ),
+                decoration: const BoxDecoration(color: AppColors.primaryColor, shape: BoxShape.circle,),
+                child: const Icon(Icons.check, color: AppColors.whiteColor, size: 18,),
               ),
             ),
           ],
         ),
-        const SizedBox(height: 8),
-        Text(
-          'Ethan Carter', // Replace with actual user name
-          style: AppTextStyles.headingTextStyle3,
-        ),
+        Text('Ethan Carter',style: AppTextStyles.headingTextStyle3,),
       ],
     );
   }
@@ -224,8 +200,8 @@ class _WalletPageState extends State<WalletPage> {
       child: Column(
         spacing: 12,
         children: [
-          // First row: Buy and Sell
           Row(
+            spacing: 16,
             children: [
               Expanded(
                 child: PrimaryBtn(
@@ -235,7 +211,6 @@ class _WalletPageState extends State<WalletPage> {
                   borderRadius: 20,
                 ),
               ),
-              const SizedBox(width: 16),
               Expanded(
                 child: PrimaryBtn(
                   btnText: l10n.sell,
@@ -247,7 +222,6 @@ class _WalletPageState extends State<WalletPage> {
               ),
             ],
           ),
-          // Second row: Redeem Rewards
           SizedBox(
             width: double.infinity,
             child: PrimaryBtn(
@@ -265,12 +239,11 @@ class _WalletPageState extends State<WalletPage> {
 
   Widget _buildBalanceCards(WalletProvider wallet) {
     final l10n = AppLocalizations.of(context)!;
-    String userID = FirebaseAuth.instance.currentUser!.uid;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
+        spacing: 16,
         children: [
-          // Main Flixbit Balance Card (Primary)
          FutureBuilder(future: WalletService.getBalance(userID), builder: (_, snapshot){
            if(snapshot.hasData){
              return  _buildMainBalanceCard(
@@ -286,8 +259,6 @@ class _WalletPageState extends State<WalletPage> {
              currency: 'FLIXBIT',
            );
          }),
-          const SizedBox(height: 16),
-          // Tournament Earnings Tracker (Analytics Only)
           _buildTournamentEarningsCard(
             title: 'Tournament Earnings',
             amount: wallet.balance?.tournamentPoints ?? 0,
@@ -325,6 +296,7 @@ class _WalletPageState extends State<WalletPage> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 16,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -352,22 +324,26 @@ class _WalletPageState extends State<WalletPage> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          Text(
-            NumberFormat('#,##0').format(amount),
-            style: AppTextStyles.headingTextStyle3.copyWith(
-              color: AppColors.whiteColor,
-              fontSize: 36,
-              fontWeight: FontWeight.bold,
-            ),
+          Column(
+            spacing: 4,
+            children: [
+              Text(
+                FormattingHelper.getFormattedAmount(amount: amount.toDouble()),
+                style: AppTextStyles.headingTextStyle3.copyWith(
+                  color: AppColors.whiteColor,
+                  fontSize: 36,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                'Available Balance',
+                style: AppTextStyles.captionTextStyle.copyWith(
+                  color: AppColors.whiteColor.withValues(alpha: 0.8),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 4),
-          Text(
-            'Available Balance',
-            style: AppTextStyles.captionTextStyle.copyWith(
-              color: AppColors.whiteColor.withValues(alpha: 0.8),
-            ),
-          ),
+
         ],
       ),
     );
@@ -379,17 +355,16 @@ class _WalletPageState extends State<WalletPage> {
     required String subtitle,
   }) {
     return GestureDetector(
-      onTap: _showTournamentPointsInfo,
+      onTap: ()=>  DisplayMessageHelper.showTournamentPointsInfo(context),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppColors.cardBgColor,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: AppColors.greenColor.withValues(alpha: 0.3),
-          ),
+          border: Border.all(color: AppColors.greenColor.withValues(alpha: 0.3),),
         ),
         child: Row(
+          spacing: 12,
         children: [
           Container(
             padding: const EdgeInsets.all(12),
@@ -397,50 +372,26 @@ class _WalletPageState extends State<WalletPage> {
               color: AppColors.greenColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(
-              Icons.emoji_events,
-              color: AppColors.greenColor,
-              size: 28,
-            ),
+            child: Icon(Icons.emoji_events, color: AppColors.greenColor, size: 28,),
           ),
-          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 4,
               children: [
-                Text(
-                  title,
-                  style: AppTextStyles.bodyTextStyle.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: AppTextStyles.smallTextStyle.copyWith(
-                    color: AppColors.lightGreyColor,
-                  ),
-                ),
+                Text(title, style: AppTextStyles.bodyTextStyle.copyWith(fontWeight: FontWeight.w600,),),
+                Text(subtitle, style: AppTextStyles.smallTextStyle.copyWith(color: AppColors.lightGreyColor,),),
               ],
             ),
           ),
-          const SizedBox(width: 12),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                NumberFormat('#,##0').format(amount),
-                style: AppTextStyles.tileTitleTextStyle.copyWith(
-                  color: AppColors.greenColor,
-                  fontWeight: FontWeight.bold,
-                ),
+                FormattingHelper.getFormattedAmount(amount: amount.toDouble()),
+                style: AppTextStyles.tileTitleTextStyle.copyWith(color: AppColors.greenColor, fontWeight: FontWeight.bold,),
               ),
-              Text(
-                'Points',
-                style: AppTextStyles.captionTextStyle.copyWith(
-                  color: AppColors.lightGreyColor,
-                ),
-              ),
+              Text('Points', style: AppTextStyles.captionTextStyle.copyWith(color: AppColors.lightGreyColor,),),
             ],
           ),
         ],
@@ -472,6 +423,7 @@ class _WalletPageState extends State<WalletPage> {
             : null,
       ),
       child: Row(
+        spacing: 12,
         children: [
           Container(
             width: 40,
@@ -489,31 +441,25 @@ class _WalletPageState extends State<WalletPage> {
               color: AppColors.whiteColor,
             ),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  _getTransactionTitle(transaction),
-                  style: AppTextStyles.bodyTextStyle,
-                ),
-                Text(
-                  DateFormat('MMM dd, yyyy HH:mm').format(transaction.timestamp),
-                  style: AppTextStyles.smallTextStyle.copyWith(
-                    color: AppColors.lightGreyColor,
-                  ),
-                ),
-              ],
+          Expanded(child: Row(children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(_getTransactionTitle(transaction), style: AppTextStyles.bodyTextStyle,),
+                  Text(FormattingHelper.getFormattedDate(timestamp: transaction.timestamp), style: AppTextStyles.smallTextStyle.copyWith(color: AppColors.lightGreyColor,),),
+                ],
+              ),
             ),
-          ),
-          Text(
-            '${isPositive ? '+' : '-'}${NumberFormat('#,##0').format(transaction.amount)}',
-            style: AppTextStyles.bodyTextStyle.copyWith(
-              color: isPositive ? AppColors.successColor : AppColors.errorColor,
-              fontWeight: FontWeight.bold,
+            Text(
+              '${isPositive ? '+' : '-'}${FormattingHelper.getFormattedAmount(amount: transaction.amount)}',
+              style: AppTextStyles.bodyTextStyle.copyWith(
+                color: isPositive ? AppColors.successColor : AppColors.errorColor,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
+          ],))
+
         ],
       ),
     );
@@ -524,104 +470,8 @@ class _WalletPageState extends State<WalletPage> {
       label: Text(label),
       deleteIcon: const Icon(Icons.close, size: 18),
       onDeleted: onDelete,
-      backgroundColor: AppColors.primaryColor.withOpacity(0.1),
+      backgroundColor: AppColors.primaryColor.withValues(alpha: 0.1),
       labelStyle: AppTextStyles.smallTextStyle,
-    );
-  }
-
-  String _getTransactionTitle(WalletTransaction transaction) {
-    final l10n = AppLocalizations.of(context)!;
-    switch (transaction.type) {
-      case TransactionType.earn:
-        return l10n.earned;
-      case TransactionType.spend:
-        return l10n.spent;
-      case TransactionType.buy:
-        return l10n.bought;
-      case TransactionType.sell:
-        return l10n.sold;
-      case TransactionType.gift:
-        return l10n.giftReceived;
-      case TransactionType.reward:
-        return l10n.rewardEarned;
-      case TransactionType.refund:
-        return l10n.refunded;
-    }
-  }
-
-  void _showFilterDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: AppColors.darkBgColor,
-        title: Text(
-          AppLocalizations.of(context)!.filterTransactions,
-          style: AppTextStyles.headingTextStyle3,
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              AppLocalizations.of(context)!.transactionType,
-              style: AppTextStyles.bodyTextStyle,
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              children: TransactionType.values.map((type) {
-                return ChoiceChip(
-                  label: Text(type.toString().split('.').last),
-                  selected: _selectedType == type,
-                  onSelected: (selected) {
-                    setState(() {
-                      _selectedType = selected ? type : null;
-                    });
-                    Navigator.pop(context);
-                  },
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              AppLocalizations.of(context)!.source,
-              style: AppTextStyles.bodyTextStyle,
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              children: TransactionSource.values.map((source) {
-                return ChoiceChip(
-                  label: Text(source.toString().split('.').last),
-                  selected: _selectedSource == source,
-                  onSelected: (selected) {
-                    setState(() {
-                      _selectedSource = selected ? source : null;
-                    });
-                    Navigator.pop(context);
-                  },
-                );
-              }).toList(),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              setState(() {
-                _selectedType = null;
-                _selectedSource = null;
-              });
-              Navigator.pop(context);
-            },
-            child: Text(AppLocalizations.of(context)!.clearAll),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(AppLocalizations.of(context)!.close),
-          ),
-        ],
-      ),
     );
   }
 
@@ -631,16 +481,13 @@ class _WalletPageState extends State<WalletPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            AppLocalizations.of(context)!.pointsBreakdown,
-            style: AppTextStyles.subHeadingTextStyle,
-          ),
+          Text(AppLocalizations.of(context)!.pointsBreakdown, style: AppTextStyles.subHeadingTextStyle,),
           const SizedBox(height: 12),
           FutureBuilder<Map<String, num>>(
             future: wallet.getDailySummary('currentUser'),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: LoadingIndicator());
+                return LoadingWidget();
               }
 
               if (snapshot.hasError) {
@@ -655,6 +502,7 @@ class _WalletPageState extends State<WalletPage> {
 
               final summary = snapshot.data ?? {};
               return Column(
+                spacing: 8,
                 children: [
                   _buildPointsSourceCard(
                     icon: Icons.videogame_asset,
@@ -662,28 +510,24 @@ class _WalletPageState extends State<WalletPage> {
                     points: summary['tournament'] ?? 0,
                     color: AppColors.primaryColor,
                   ),
-                  const SizedBox(height: 8),
                   _buildPointsSourceCard(
                     icon: Icons.ondemand_video,
                     title: AppLocalizations.of(context)!.videoAds,
                     points: summary['video_ad'] ?? 0,
                     color: Colors.purple,
                   ),
-                  const SizedBox(height: 8),
                   _buildPointsSourceCard(
                     icon: Icons.rate_review,
                     title: AppLocalizations.of(context)!.reviews,
                     points: summary['review'] ?? 0,
                     color: Colors.orange,
                   ),
-                  const SizedBox(height: 8),
                   _buildPointsSourceCard(
                     icon: Icons.qr_code_scanner,
                     title: AppLocalizations.of(context)!.qrScans,
                     points: summary['qr_scan'] ?? 0,
                     color: Colors.blue,
                   ),
-                  const SizedBox(height: 8),
                   _buildPointsSourceCard(
                     icon: Icons.people,
                     title: AppLocalizations.of(context)!.referrals,
@@ -711,20 +555,20 @@ class _WalletPageState extends State<WalletPage> {
         color: AppColors.cardBgColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: color.withOpacity(0.3),
+          color: color.withValues(alpha: 0.3),
         ),
       ),
       child: Row(
+        spacing: 12,
         children: [
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, color: color),
           ),
-          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -734,10 +578,8 @@ class _WalletPageState extends State<WalletPage> {
                   style: AppTextStyles.bodyTextStyle,
                 ),
                 Text(
-                  '${NumberFormat('#,##0').format(points)} points today',
-                  style: AppTextStyles.smallTextStyle.copyWith(
-                    color: AppColors.lightGreyColor,
-                  ),
+                  '${FormattingHelper.getFormattedAmount(amount: points.toDouble())} points today',
+                  style: AppTextStyles.smallTextStyle.copyWith(color: AppColors.lightGreyColor,),
                 ),
               ],
             ),
@@ -745,91 +587,34 @@ class _WalletPageState extends State<WalletPage> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Text(
-              '+${NumberFormat('#,##0').format(points)}',
-              style: AppTextStyles.smallTextStyle.copyWith(
-                color: color,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            child: Text('+${FormattingHelper.getFormattedAmount(amount: points.toDouble())}', style: AppTextStyles.smallTextStyle.copyWith( color: color, fontWeight: FontWeight.bold,),),
           ),
         ],
       ),
     );
   }
 
-  // Note: This dialog is kept for compatibility but tournament points are now
-  // just analytics tracking, not a separate currency
-  void _showTournamentPointsInfo() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: AppColors.darkBgColor,
-        title: Row(
-          children: [
-            Icon(Icons.emoji_events, color: AppColors.greenColor),
-            const SizedBox(width: 12),
-            Text(
-              'Tournament Earnings',
-              style: AppTextStyles.headingTextStyle3,
-            ),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Tournament Points are Flixbit Points!',
-              style: AppTextStyles.bodyTextStyle.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'The number shown here represents the total Flixbit points you\'ve earned specifically from tournament activities (predictions, qualifications, wins).',
-              style: AppTextStyles.bodyTextStyle.copyWith(
-                color: AppColors.lightGreyColor,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.greenColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColors.greenColor.withValues(alpha: 0.3)),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.info_outline, color: AppColors.greenColor, size: 20),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      'These points are already included in your main Flixbit balance. No conversion needed!',
-                      style: AppTextStyles.smallTextStyle.copyWith(
-                        color: AppColors.greenColor,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Got it',
-              style: TextStyle(color: AppColors.primaryColor),
-            ),
-          ),
-        ],
-      ),
-    );
+  String _getTransactionTitle(WalletTransaction transaction) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (transaction.type) {
+      case TransactionType.earn:
+        return l10n.earned;
+      case TransactionType.spend:
+        return l10n.spent;
+      case TransactionType.buy:
+        return l10n.bought;
+      case TransactionType.sell:
+        return l10n.sold;
+      case TransactionType.gift:
+        return l10n.giftReceived;
+      case TransactionType.reward:
+        return l10n.rewardEarned;
+      case TransactionType.refund:
+        return l10n.refunded;
+    }
   }
+
 }

@@ -1,3 +1,4 @@
+import 'package:flixbit/src/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -5,7 +6,6 @@ import 'package:flixbit/src/providers/wallet_provider.dart';
 import 'package:flixbit/src/res/app_colors.dart';
 import 'package:flixbit/src/res/apptextstyles.dart';
 import 'package:flixbit/src/widgets/primary_btn.dart';
-import 'package:flixbit/src/widgets/loading_indicator.dart';
 
 class BuyFlixbitPointsPage extends StatefulWidget {
   const BuyFlixbitPointsPage({super.key});
@@ -64,7 +64,7 @@ class _BuyFlixbitPointsPageState extends State<BuyFlixbitPointsPage> {
         centerTitle: true,
       ),
       body: _isProcessing
-          ? const Center(child: LoadingIndicator())
+          ? LoadingWidget()
           : SafeArea(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(20),
