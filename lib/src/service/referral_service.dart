@@ -4,6 +4,7 @@ import '../config/points_config.dart';
 import '../models/wallet_models.dart';
 import '../res/firebase_constants.dart';
 import 'flixbit_points_manager.dart';
+import 'deep_link_service.dart';
 
 class ReferralService {
   // Singleton pattern
@@ -64,7 +65,7 @@ class ReferralService {
     }
   }
 
-  /// Apply referral code during signup
+  /// Apply referral code during signup with attribution tracking
   Future<void> applyReferralCode(String code, String newUserId) async {
     try {
       // Find referrer
@@ -91,7 +92,13 @@ class ReferralService {
         throw Exception('You have already used a referral code');
       }
 
-      // Create referral record
+      // Get attribution data from DeepLinkService
+      final deepLinkService = DeepLinkService();
+      final attributionSource = await deepLinkService.getAttributionSource();
+      final deepLinkTimestamp = await deepLinkService.getDeepLinkTimestamp();
+      final conversionTime = await deepLinkService.getTimeSinceDeepLink();
+
+      // Create referral record with attribution tracking
       final referralRef = _firestore.collection('referrals').doc();
       await referralRef.set({
         'id': referralRef.id,
@@ -102,6 +109,11 @@ class ReferralService {
         'createdAt': FieldValue.serverTimestamp(),
         'qualifiedAt': null,
         'pointsAwarded': false,
+        // Attribution tracking fields
+        'attributionSource': attributionSource ?? 'manual', // whatsapp/facebook/telegram/etc or manual
+        'deepLinkClicked': deepLinkTimestamp,
+        'appInstalled': DateTime.now(),
+        'conversionTimeSeconds': conversionTime?.inSeconds,
       });
 
       // Update referrer's stats
@@ -111,6 +123,8 @@ class ReferralService {
           .update({
             'totalReferrals': FieldValue.increment(1),
           });
+
+      debugPrint('✅ Referral applied with attribution: $attributionSource');
     } catch (e) {
       debugPrint('Error applying referral code: $e');
       rethrow;
@@ -249,5 +263,78 @@ class ReferralService {
     final prefix = userName.replaceAll(RegExp(r'[^a-zA-Z]'), '').toUpperCase();
     final code = '${prefix.substring(0, prefix.length.clamp(2, 4))}$random';
     return code;
+  }
+
+  /// Get attribution analytics for a user's referrals
+  Future<Map<String, dynamic>> getReferralAttribution(String userId) async {
+    try {
+      final referrals = await _firestore
+          .collection('referrals')
+          .where('referrerId', isEqualTo: userId)
+          .get();
+
+      // Group referrals by attribution source
+      final Map<String, int> sourceBreakdown = {};
+      int totalConversionTime = 0;
+      int conversionCount = 0;
+
+      for (var doc in referrals.docs) {
+        final data = doc.data();
+        final source = data['attributionSource'] as String? ?? 'manual';
+        sourceBreakdown[source] = (sourceBreakdown[source] ?? 0) + 1;
+
+        // Calculate average conversion time
+        final conversionSeconds = data['conversionTimeSeconds'] as int?;
+        if (conversionSeconds != null) {
+          totalConversionTime += conversionSeconds;
+          conversionCount++;
+        }
+      }
+
+      final avgConversionTime = conversionCount > 0
+          ? totalConversionTime / conversionCount
+          : 0;
+
+      return {
+        'totalReferrals': referrals.docs.length,
+        'sourceBreakdown': sourceBreakdown,
+        'averageConversionTimeSeconds': avgConversionTime.round(),
+        'mostEffectiveSource': _getMostEffectiveSource(sourceBreakdown),
+      };
+    } catch (e) {
+      debugPrint('Error getting referral attribution: $e');
+      return {
+        'totalReferrals': 0,
+        'sourceBreakdown': {},
+        'averageConversionTimeSeconds': 0,
+        'mostEffectiveSource': 'unknown',
+      };
+    }
+  }
+
+  /// Get most effective referral source
+  String _getMostEffectiveSource(Map<String, int> sourceBreakdown) {
+    if (sourceBreakdown.isEmpty) return 'unknown';
+    
+    return sourceBreakdown.entries
+        .reduce((a, b) => a.value > b.value ? a : b)
+        .key;
+  }
+
+  /// Track referral conversion (when referred user qualifies)
+  Future<void> trackReferralConversion(String referralId) async {
+    try {
+      await _firestore
+          .collection('referrals')
+          .doc(referralId)
+          .update({
+            'convertedAt': FieldValue.serverTimestamp(),
+            'status': 'converted',
+          });
+      
+      debugPrint('✅ Referral conversion tracked: $referralId');
+    } catch (e) {
+      debugPrint('Error tracking referral conversion: $e');
+    }
   }
 }

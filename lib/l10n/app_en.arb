@@ -205,7 +205,29 @@
   "noLocationSet": "No location set (available everywhere)",
   "locationSet": "Location set",
   "setLocation": "Set",
-  "changeLocation": "Change"
+  "changeLocation": "Change",
+  
+  "referralCode": "Referral Code",
+  "referralCodeOptional": "Referral Code (Optional)",
+  "referralCodeHint": "Have a referral code? Enter it here",
+  "enterReferralCode": "Enter referral code",
+  "referralCodeApplied": "Referral code applied successfully!",
+  "invalidReferralCode": "Invalid referral code",
+  "referralCodeAlreadyUsed": "This referral code has already been used",
+  "shareYourCode": "Share your referral code",
+  "inviteFriendsAndEarn": "Invite friends and earn rewards",
+  "copyReferralCode": "Copy Referral Code",
+  "referralCodeCopied": "Referral code copied to clipboard!",
+  "shareVia": "Share via",
+  "totalReferrals": "Total Referrals",
+  "activeFriends": "Active Friends",
+  "pointsEarned": "Points Earned",
+  "yourReferralCode": "Your Referral Code",
+  "referredUsers": "Referred Users",
+  "noReferralsYet": "No referrals yet",
+  "startReferringFriends": "Start referring friends to earn rewards",
+  "alreadyRegisteredMessage": "You already have an account. Share your referral code with friends!",
+  "joinFlixbit": "Join me on Flixbit!"
 }
 
 

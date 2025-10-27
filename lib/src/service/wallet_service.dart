@@ -441,7 +441,7 @@ class WalletService {
       });
     } catch (e) {
       // Don't throw error if notification fails
-      print('Failed to send notification: $e');
+      debugPrint('Failed to send notification: $e');
     }
   }
 }

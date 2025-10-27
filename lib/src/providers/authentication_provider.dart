@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flixbit/src/res/firebase_constants.dart';
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
+import '../service/referral_service.dart';
 
 class AuthenticationProvider extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -55,6 +56,7 @@ class AuthenticationProvider extends ChangeNotifier {
     required String password,
     required String name,
     File? profileImage,
+    String? referralCode,
   }) async {
     try {
       _setLoading(true);
@@ -91,6 +93,20 @@ class AuthenticationProvider extends ChangeNotifier {
 
       await _firestore.collection(FirebaseConstants.usersCollection).doc(user.uid).set(userModel.toMap());
       _userModel = userModel;
+      
+      // Apply referral code if provided
+      if (referralCode != null && referralCode.isNotEmpty) {
+        try {
+          debugPrint('📝 Applying referral code: $referralCode');
+          await ReferralService().applyReferralCode(referralCode.toUpperCase(), user.uid);
+          debugPrint('✅ Referral code applied successfully');
+        } catch (e) {
+          // Don't fail the signup if referral code application fails
+          debugPrint('⚠️ Error applying referral code: $e');
+          // Could store this error in user document for later manual review
+        }
+      }
+      
       _setLoading(false);
       return true;
     } on FirebaseAuthException catch (e) {

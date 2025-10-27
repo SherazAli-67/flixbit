@@ -1,0 +1,245 @@
+Referral System is another crucial and revenue-driving part of the Flixbit app, because it connects users, sellers, and the platform’s reward ecosystem in a viral, self-promoting loop.
+
+ Referral System Integration – Flixbit App Overview
+
+⸻
+
+🎯 Purpose of the Referral System
+
+The Referral System is designed to help Flixbit grow organically by rewarding users and sellers for inviting others.
+
+It promotes network-based marketing, ensuring:
+	•	More app downloads and activity,
+	•	More seller visibility and followers,
+	•	And a continuous increase in user engagement through Flixbit points and offers.
+
+It ties deeply with the Wallet, Rewards, Push Notifications, and QR Systems to track and reward referrals accurately.
+
+⸻
+
+⚙️ Core Concept
+
+Every user and seller has a unique referral identity, represented by either:
+	•	A referral code,
+	•	A referral link, or
+	•	A referral QR code.
+
+When a new user joins through one of these, the system automatically:
+	1.	Tracks the referral source,
+	2.	Awards Flixbit points or bonus rewards to both parties, and
+	3.	Updates the referral analytics in the backend.
+
+⸻
+
+👤 User Side – Referral Features
+
+1. Referral Invitation Options
+
+Users can invite friends through:
+	•	WhatsApp
+	•	Telegram
+	•	Facebook
+	•	Instagram
+	•	Contact List (direct sharing)
+	•	Or by showing their QR code to be scanned in person.
+
+Each method carries their unique referral code or link, allowing precise tracking.
+
+⸻
+
+2. Earning Rewards for Referrals
+
+When a new user installs the app and signs up through an existing user’s referral:
+	•	The referrer (existing user) receives Flixbit points in their wallet.
+	•	The referred user (new user) may receive a welcome reward (bonus Flixbits or coupon).
+
+Example:
+
+Ahmed refers his friend Saif using WhatsApp.
+Saif installs and signs up → Ahmed earns 20 Flixbit points, Saif earns 10 as a welcome bonus.
+
+⸻
+
+3. Referral Conditions & Validation
+	•	The new user must complete registration and verification for the referral to count.
+	•	Duplicate devices or accounts are not rewarded.
+	•	If the referred user engages actively (e.g., joins a tournament or redeems offers), bonus rewards can be triggered.
+
+⸻
+
+4. Wallet Integration
+	•	All referral points are added directly to the Flixbit Wallet.
+	•	Transaction details (date, referral name, earned points) appear in the wallet’s transaction history.
+	•	Users can redeem those points for offers, contests, or prizes.
+
+⸻
+
+5. Referral Dashboard (User App Section)
+
+Users can view:
+	•	Total referrals made
+	•	Total points earned from referrals
+	•	Pending invitations
+	•	Links to share their referral code again
+
+⸻
+
+6. Notifications
+
+Users receive:
+	•	Notifications when a referred friend joins successfully.
+	•	Bonus reward notifications if the referred friend performs specific actions (e.g., purchases points, joins a tournament).
+
+⸻
+
+🏪 Seller Side – Referral Integration
+
+For sellers, the referral system works in two main ways:
+	1.	Attracting new followers (users)
+	2.	Connecting with other sellers or influencers
+
+⸻
+
+1. Seller Referral QR Codes
+	•	Each seller receives a unique referral QR linked to their business profile.
+	•	When users scan it, they:
+	•	Follow that seller automatically.
+	•	Get Flixbit points or special offer rewards.
+
+This system turns physical QR campaigns into referral-based marketing tools.
+
+⸻
+
+2. Influencer or Partner Referrals
+	•	Sellers can collaborate with influencers who share the seller’s referral QR/link.
+	•	Each scan or signup via that link rewards both the influencer and the seller with points or ad credits.
+
+Example:
+
+Influencer promotes a restaurant’s QR code → followers scan → restaurant gains followers → influencer earns commission points.
+
+⸻
+
+3. Seller Referral Benefits
+	•	Gain verified followers who can receive future notifications and offers.
+	•	Earn bonus Flixbit or advertising credits for high referral engagement.
+	•	Build brand credibility via the app’s ranking and reward systems.
+
+⸻
+
+4. Seller Analytics
+
+In their dashboard, sellers can see:
+	•	Total number of referrals made via QR or link.
+	•	Conversion rates (how many scanned → registered → followed).
+	•	Reward distribution summaries.
+
+⸻
+
+👑 Admin & Sub-Admin Side – Referral System Management
+
+Admins and Sub-Admins have full control and visibility over referral operations.
+
+⸻
+
+1. Referral Program Setup
+
+Admin configures:
+	•	Default Flixbit reward values (for both referrer and referred).
+	•	Conditions for valid referrals (minimum activity requirements).
+	•	Bonus programs for top referrers or regional events.
+
+Example:
+
+“Refer 10 active users this month and get 500 Flixbit bonus.”
+
+⸻
+
+2. Tracking & Analytics
+
+Admin/Sub-Admin dashboards include:
+	•	Total referrals system-wide.
+	•	Top referring users and sellers.
+	•	Referral conversion rates.
+	•	Flixbit economy impact from referrals.
+	•	Fraud detection reports (duplicate referrals, fake accounts).
+
+⸻
+
+3. Regional Referral Control (Sub-Admin)
+
+Each Sub-Admin can:
+	•	Track referrals within their assigned city/region.
+	•	Create local referral campaigns with special rewards.
+	•	Manage seller-based referral events and QR codes.
+
+Example:
+
+Sub-Admin for Dubai launches “Refer & Win Weekend” → tracks results locally.
+
+⸻
+
+4. Reward Approval & Automation
+
+Admins control:
+	•	Whether referral rewards are instant or manual approval.
+	•	Set reward thresholds or referral limits per user to prevent abuse.
+	•	Automatically add earned rewards to wallets upon approval.
+
+⸻
+
+5. Fraud Prevention
+	•	System uses device and IP checks to detect fake referrals.
+	•	Only unique, verified users count.
+	•	Admin can revoke points for invalid or suspicious referrals.
+
+⸻
+
+🔁 Integration of Referral System with Other Modules
+Module             -  Integration Description
+Rewards System     -  Referral earnings and bonuses are paid in Flixbit points.
+Wallet System      -  Stores and tracks referral earnings and transactions.
+QR System          -  Referral QR codes enable quick scanning and joining.
+Push Notifications -  Used to remind users to share their referral codes or announce referral events.
+Offers System      -  Referral bonuses can include offer coupons or vouchers.
+Analytics Dashboard - Tracks growth from referrals and ROI from campaigns.
+
+📱 Example Referral Scenarios
+
+Scenario 1 – User-to-User Referral
+	1.	User A shares their referral link on WhatsApp.
+	2.	User B installs and registers using the link.
+	3.	Both users get Flixbit points.
+	4.	Admin dashboard logs the event under “Referral Transactions.”
+
+⸻
+
+Scenario 2 – Seller Follower Referral
+	1.	A seller posts their referral QR code on Instagram.
+	2.	Users scan it and automatically follow the seller.
+	3.	Each scan = referral → seller earns points → users earn welcome rewards.
+
+⸻
+
+Scenario 3 – Admin-Driven Referral Campaign
+	1.	Admin launches “Refer 5 friends and win!” event.
+	2.	The system tracks all referrals within the time window.
+	3.	Top referrers get bonus Flixbits or coupons at the end of the campaign.
+
+⸻
+
+✅ In Summary
+Stakeholder  - Referral Role
+User         - Share referral links, earn Flixbit rewards, and build their in-app earnings.
+Seller       - Use referral QRs or influencer programs to gain followers and engagement.
+Sub-Admin    - Manage regional referral campaigns and track local performance.
+Admin        - Control referral logic, set reward policies, and analyze growth metrics.
+
+💡 Core Value of the Referral System
+
+The Referral System transforms users and sellers into brand ambassadors.
+It creates a self-sustaining growth loop:
+
+Invite → Earn → Engage → Invite Again.
+
+It helps the platform expand organically, keeps engagement high, and ties together all other Flixbit systems — Wallet, Rewards, QR, and Offers — into one rewarding cycle.

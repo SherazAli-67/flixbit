@@ -24,6 +24,24 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            
+            <!-- Deep Link Intent Filter (Custom Scheme) -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Handles flixbit://referral?code=XXX -->
+                <data android:scheme="flixbit" android:host="referral" />
+            </intent-filter>
+            
+            <!-- Universal Links (HTTPS) - Requires domain verification -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Handles https://flixbit.app/referral?code=XXX -->
+                <data android:scheme="https" android:host="flixbit.app" android:pathPrefix="/referral" />
+            </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

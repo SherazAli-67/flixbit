@@ -55,5 +55,22 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!-- Deep Links Configuration -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>flixbit</string>
+			</array>
+			<key>CFBundleURLName</key>
+			<string>com.flixbit.app</string>
+		</dict>
+	</array>
+	<!-- Universal Links Configuration -->
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:flixbit.app</string>
+	</array>
 </dict>
 </plist>

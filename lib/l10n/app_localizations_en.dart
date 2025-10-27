@@ -631,4 +631,69 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get changeLocation => 'Change';
+
+  @override
+  String get referralCode => 'Referral Code';
+
+  @override
+  String get referralCodeOptional => 'Referral Code (Optional)';
+
+  @override
+  String get referralCodeHint => 'Have a referral code? Enter it here';
+
+  @override
+  String get enterReferralCode => 'Enter referral code';
+
+  @override
+  String get referralCodeApplied => 'Referral code applied successfully!';
+
+  @override
+  String get invalidReferralCode => 'Invalid referral code';
+
+  @override
+  String get referralCodeAlreadyUsed =>
+      'This referral code has already been used';
+
+  @override
+  String get shareYourCode => 'Share your referral code';
+
+  @override
+  String get inviteFriendsAndEarn => 'Invite friends and earn rewards';
+
+  @override
+  String get copyReferralCode => 'Copy Referral Code';
+
+  @override
+  String get referralCodeCopied => 'Referral code copied to clipboard!';
+
+  @override
+  String get shareVia => 'Share via';
+
+  @override
+  String get totalReferrals => 'Total Referrals';
+
+  @override
+  String get activeFriends => 'Active Friends';
+
+  @override
+  String get pointsEarned => 'Points Earned';
+
+  @override
+  String get yourReferralCode => 'Your Referral Code';
+
+  @override
+  String get referredUsers => 'Referred Users';
+
+  @override
+  String get noReferralsYet => 'No referrals yet';
+
+  @override
+  String get startReferringFriends => 'Start referring friends to earn rewards';
+
+  @override
+  String get alreadyRegisteredMessage =>
+      'You already have an account. Share your referral code with friends!';
+
+  @override
+  String get joinFlixbit => 'Join me on Flixbit!';
 }

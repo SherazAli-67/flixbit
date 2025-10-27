@@ -631,4 +631,68 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get changeLocation => 'تغيير';
+
+  @override
+  String get referralCode => 'رمز الإحالة';
+
+  @override
+  String get referralCodeOptional => 'رمز الإحالة (اختياري)';
+
+  @override
+  String get referralCodeHint => 'هل لديك رمز إحالة؟ أدخله هنا';
+
+  @override
+  String get enterReferralCode => 'أدخل رمز الإحالة';
+
+  @override
+  String get referralCodeApplied => 'تم تطبيق رمز الإحالة بنجاح!';
+
+  @override
+  String get invalidReferralCode => 'رمز الإحالة غير صالح';
+
+  @override
+  String get referralCodeAlreadyUsed => 'تم استخدام رمز الإحالة هذا بالفعل';
+
+  @override
+  String get shareYourCode => 'شارك رمز الإحالة الخاص بك';
+
+  @override
+  String get inviteFriendsAndEarn => 'ادع الأصدقاء واربح المكافآت';
+
+  @override
+  String get copyReferralCode => 'نسخ رمز الإحالة';
+
+  @override
+  String get referralCodeCopied => 'تم نسخ رمز الإحالة إلى الحافظة!';
+
+  @override
+  String get shareVia => 'مشاركة عبر';
+
+  @override
+  String get totalReferrals => 'إجمالي الإحالات';
+
+  @override
+  String get activeFriends => 'الأصدقاء النشطون';
+
+  @override
+  String get pointsEarned => 'النقاط المكتسبة';
+
+  @override
+  String get yourReferralCode => 'رمز الإحالة الخاص بك';
+
+  @override
+  String get referredUsers => 'المستخدمون المحالون';
+
+  @override
+  String get noReferralsYet => 'لا توجد إحالات بعد';
+
+  @override
+  String get startReferringFriends => 'ابدأ بإحالة الأصدقاء لكسب المكافآت';
+
+  @override
+  String get alreadyRegisteredMessage =>
+      'لديك حساب بالفعل. شارك رمز الإحالة الخاص بك مع الأصدقاء!';
+
+  @override
+  String get joinFlixbit => 'انضم إلي في فليكس بيت!';
 }

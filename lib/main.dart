@@ -13,6 +13,7 @@ import 'package:flixbit/src/providers/seller_offers_provider.dart';
 import 'package:flixbit/src/providers/notification_provider.dart';
 import 'package:flixbit/src/providers/reward_provider.dart';
 import 'package:flixbit/src/service/fcm_service.dart';
+import 'package:flixbit/src/service/deep_link_service.dart';
 import 'package:flixbit/src/res/app_colors.dart';
 import 'package:flixbit/src/res/app_constants.dart';
 import 'package:flixbit/src/routes/app_router.dart';
@@ -37,6 +38,10 @@ void main() async {
     // Use the global router to navigate
     appRouter.go(route);
   });
+  
+  // Initialize Deep Link Service for referral system
+  await DeepLinkService().initialize();
+  debugPrint('🔗 Deep Link Service initialized');
   
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final bool initialIsSeller = prefs.getBool('isSeller') ?? false;

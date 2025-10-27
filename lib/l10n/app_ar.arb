@@ -205,7 +205,29 @@
   "noLocationSet": "لم يتم تحديد موقع (متاح في كل مكان)",
   "locationSet": "تم تحديد الموقع",
   "setLocation": "تحديد",
-  "changeLocation": "تغيير"
+  "changeLocation": "تغيير",
+  
+  "referralCode": "رمز الإحالة",
+  "referralCodeOptional": "رمز الإحالة (اختياري)",
+  "referralCodeHint": "هل لديك رمز إحالة؟ أدخله هنا",
+  "enterReferralCode": "أدخل رمز الإحالة",
+  "referralCodeApplied": "تم تطبيق رمز الإحالة بنجاح!",
+  "invalidReferralCode": "رمز الإحالة غير صالح",
+  "referralCodeAlreadyUsed": "تم استخدام رمز الإحالة هذا بالفعل",
+  "shareYourCode": "شارك رمز الإحالة الخاص بك",
+  "inviteFriendsAndEarn": "ادع الأصدقاء واربح المكافآت",
+  "copyReferralCode": "نسخ رمز الإحالة",
+  "referralCodeCopied": "تم نسخ رمز الإحالة إلى الحافظة!",
+  "shareVia": "مشاركة عبر",
+  "totalReferrals": "إجمالي الإحالات",
+  "activeFriends": "الأصدقاء النشطون",
+  "pointsEarned": "النقاط المكتسبة",
+  "yourReferralCode": "رمز الإحالة الخاص بك",
+  "referredUsers": "المستخدمون المحالون",
+  "noReferralsYet": "لا توجد إحالات بعد",
+  "startReferringFriends": "ابدأ بإحالة الأصدقاء لكسب المكافآت",
+  "alreadyRegisteredMessage": "لديك حساب بالفعل. شارك رمز الإحالة الخاص بك مع الأصدقاء!",
+  "joinFlixbit": "انضم إلي في فليكس بيت!"
 }
 
 

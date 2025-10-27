@@ -18,7 +18,6 @@ import 'package:flixbit/src/features/seller/seller_qr_code_tracking_page.dart';
 import 'package:flixbit/src/features/seller/seller_referral_management.dart';
 import 'package:flixbit/src/features/seller/seller_followers_page.dart';
 import 'package:flixbit/src/features/main_menu/qr_scan_history_page.dart';
-import 'package:flixbit/src/features/seller/notification_analytics_page.dart';
 import 'package:flixbit/src/features/seller/notification_campaign_list_page.dart';
 import 'package:flixbit/src/features/seller/notification_campaign_detail_page.dart';
 import 'package:flixbit/src/features/main_menu/profile_page/notification_preferences_page.dart';
@@ -260,10 +259,10 @@ final GoRouter appRouter = GoRouter(
       path: RouterEnum.qrScanHistoryView.routeName,
       builder: (BuildContext context, GoRouterState state) => const QRScanHistoryPage(),
     ),
-    GoRoute(
+    /*GoRoute(
       path: RouterEnum.notificationAnalyticsView.routeName,
       builder: (BuildContext context, GoRouterState state) => const NotificationAnalyticsPage(),
-    ),
+    ),*/
     GoRoute(
       path: RouterEnum.notificationCampaignListView.routeName,
       builder: (BuildContext context, GoRouterState state) => const NotificationCampaignListPage(),

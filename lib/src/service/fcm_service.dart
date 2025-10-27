@@ -6,6 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/notification_model.dart';
 import '../res/firebase_constants.dart';
+import 'notification_preferences_service.dart';
 
 class FCMService {
   static final FCMService _instance = FCMService._internal();
@@ -237,6 +238,27 @@ class FCMService {
 
     // Track notification delivery
     await _trackNotificationDelivery(message);
+
+    // Check if notification should be shown based on user preferences
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final data = message.data;
+      final notificationType = data['type'] as String?;
+      final sellerId = data['sellerId'] as String?;
+      
+      final preferencesService = NotificationPreferencesService();
+      final shouldShow = await preferencesService.shouldShowNotification(
+        user.uid,
+        notificationType ?? 'other',
+        sellerId,
+        DateTime.now(),
+      );
+      
+      if (!shouldShow) {
+        debugPrint('FCM: Notification blocked by user preferences');
+        return; // Don't show notification
+      }
+    }
 
     // Show local notification
     await _showLocalNotification(message);

@@ -1327,6 +1327,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Change'**
   String get changeLocation;
+
+  /// No description provided for @referralCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral Code'**
+  String get referralCode;
+
+  /// No description provided for @referralCodeOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral Code (Optional)'**
+  String get referralCodeOptional;
+
+  /// No description provided for @referralCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Have a referral code? Enter it here'**
+  String get referralCodeHint;
+
+  /// No description provided for @enterReferralCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter referral code'**
+  String get enterReferralCode;
+
+  /// No description provided for @referralCodeApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral code applied successfully!'**
+  String get referralCodeApplied;
+
+  /// No description provided for @invalidReferralCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid referral code'**
+  String get invalidReferralCode;
+
+  /// No description provided for @referralCodeAlreadyUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'This referral code has already been used'**
+  String get referralCodeAlreadyUsed;
+
+  /// No description provided for @shareYourCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your referral code'**
+  String get shareYourCode;
+
+  /// No description provided for @inviteFriendsAndEarn.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite friends and earn rewards'**
+  String get inviteFriendsAndEarn;
+
+  /// No description provided for @copyReferralCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy Referral Code'**
+  String get copyReferralCode;
+
+  /// No description provided for @referralCodeCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral code copied to clipboard!'**
+  String get referralCodeCopied;
+
+  /// No description provided for @shareVia.
+  ///
+  /// In en, this message translates to:
+  /// **'Share via'**
+  String get shareVia;
+
+  /// No description provided for @totalReferrals.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Referrals'**
+  String get totalReferrals;
+
+  /// No description provided for @activeFriends.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Friends'**
+  String get activeFriends;
+
+  /// No description provided for @pointsEarned.
+  ///
+  /// In en, this message translates to:
+  /// **'Points Earned'**
+  String get pointsEarned;
+
+  /// No description provided for @yourReferralCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Referral Code'**
+  String get yourReferralCode;
+
+  /// No description provided for @referredUsers.
+  ///
+  /// In en, this message translates to:
+  /// **'Referred Users'**
+  String get referredUsers;
+
+  /// No description provided for @noReferralsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No referrals yet'**
+  String get noReferralsYet;
+
+  /// No description provided for @startReferringFriends.
+  ///
+  /// In en, this message translates to:
+  /// **'Start referring friends to earn rewards'**
+  String get startReferringFriends;
+
+  /// No description provided for @alreadyRegisteredMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You already have an account. Share your referral code with friends!'**
+  String get alreadyRegisteredMessage;
+
+  /// No description provided for @joinFlixbit.
+  ///
+  /// In en, this message translates to:
+  /// **'Join me on Flixbit!'**
+  String get joinFlixbit;
 }
 
 class _AppLocalizationsDelegate

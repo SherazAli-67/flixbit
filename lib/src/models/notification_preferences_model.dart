@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 
 class NotificationPreferences {
   // final String userId;
@@ -182,40 +181,5 @@ class NotificationPreferences {
     return perSellerPreferences[sellerId] ?? true;
   }
 
-  bool isInQuietHours(DateTime time) {
-    if (!quietHoursEnabled || quietHoursStart == null || quietHoursEnd == null) {
-      return false;
-    }
 
-    final now = time;
-    final startTime = _parseTime(quietHoursStart!);
-    final endTime = _parseTime(quietHoursEnd!);
-
-    if (startTime == null || endTime == null) return false;
-
-    final currentTime = TimeOfDay.fromDateTime(now);
-    final currentMinutes = currentTime.hour * 60 + currentTime.minute;
-    final startMinutes = startTime.hour * 60 + startTime.minute;
-    final endMinutes = endTime.hour * 60 + endTime.minute;
-
-    if (startMinutes <= endMinutes) {
-      // Same day quiet hours (e.g., 22:00 to 08:00)
-      return currentMinutes >= startMinutes && currentMinutes <= endMinutes;
-    } else {
-      // Overnight quiet hours (e.g., 22:00 to 08:00)
-      return currentMinutes >= startMinutes || currentMinutes <= endMinutes;
-    }
-  }
-
-  TimeOfDay? _parseTime(String timeString) {
-    try {
-      final parts = timeString.split(':');
-      return TimeOfDay(
-        hour: int.parse(parts[0]),
-        minute: int.parse(parts[1]),
-      );
-    } catch (e) {
-      return null;
-    }
-  }
 }

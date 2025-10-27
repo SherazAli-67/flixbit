@@ -7,6 +7,8 @@ import '../config/points_config.dart';
 import '../res/app_colors.dart';
 import '../res/apptextstyles.dart';
 import '../service/referral_service.dart';
+import '../service/share_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ReferralPage extends StatefulWidget {
   const ReferralPage({super.key});
@@ -22,7 +24,7 @@ class _ReferralPageState extends State<ReferralPage> {
   List<Map<String, dynamic>> _referredUsers = [];
   bool _isLoading = true;
   String? _error;
-
+  String currentUserID = FirebaseAuth.instance.currentUser!.uid;
   @override
   void initState() {
     super.initState();
@@ -37,14 +39,14 @@ class _ReferralPageState extends State<ReferralPage> {
       });
 
       // Get referral code
-      final code = await _referralService.getReferralCode('currentUser');
+      final code = await _referralService.getReferralCode(currentUserID);
       if (code == null) {
         // Generate new code if none exists
-        await _referralService.generateReferralCode('currentUser');
+        await _referralService.generateReferralCode(currentUserID);
       }
 
       // Get referred users
-      final users = await _referralService.getReferredUsers('currentUser');
+      final users = await _referralService.getReferredUsers(currentUserID);
 
       if (mounted) {
         setState(() {
@@ -56,7 +58,7 @@ class _ReferralPageState extends State<ReferralPage> {
 
       // Subscribe to stats updates
       _referralService
-          .getReferralStats('currentUser')
+          .getReferralStats(currentUserID)
           .listen(
             (stats) {
               if (mounted) {
@@ -100,9 +102,41 @@ class _ReferralPageState extends State<ReferralPage> {
   Future<void> _shareViaApp(String app) async {
     if (_referralCode == null) return;
 
-    final message = 'Join Flixbit using my referral code: $_referralCode';
-    // TODO: Implement sharing via specific apps
-    debugPrint('Sharing via $app: $message');
+    try {
+      // Get current user name for personalized message
+      final user = FirebaseAuth.instance.currentUser;
+      final userName = user?.displayName ?? 'Friend';
+      
+      // Use ShareService to share via specific app
+      final shareService = ShareService();
+      final success = await shareService.shareViaApp(app, _referralCode!, userName);
+      
+      if (success && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                Icon(Icons.check_circle, color: AppColors.whiteColor),
+                const SizedBox(width: 8),
+                Text('Shared successfully!'),
+              ],
+            ),
+            backgroundColor: AppColors.successColor,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('Error sharing via $app: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to share. Please try again.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   @override
