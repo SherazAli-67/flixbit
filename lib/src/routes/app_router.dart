@@ -21,6 +21,7 @@ import 'package:flixbit/src/features/main_menu/qr_scan_history_page.dart';
 import 'package:flixbit/src/features/seller/notification_analytics_page.dart';
 import 'package:flixbit/src/features/seller/notification_campaign_list_page.dart';
 import 'package:flixbit/src/features/seller/notification_campaign_detail_page.dart';
+import 'package:flixbit/src/features/main_menu/profile_page/notification_preferences_page.dart';
 import 'package:flixbit/src/features/subscription_plans_page.dart';
 import 'package:flixbit/src/features/video_ads/upload_video_ad_page.dart';
 import 'package:flixbit/src/features/wheel_of_fortune_page.dart';
@@ -37,7 +38,7 @@ import 'package:flixbit/src/features/offers_page.dart';
 import 'package:flixbit/src/features/offer_detail_page.dart';
 import 'package:flixbit/src/features/user_offers_history_page.dart';
 import 'package:flixbit/src/features/main_menu/wallet_page/wallet_page.dart';
-import 'package:flixbit/src/features/main_menu/profile_page.dart';
+import 'package:flixbit/src/features/main_menu/profile_page/profile_page.dart';
 import 'package:flixbit/src/features/welcome_page.dart';
 import 'package:flixbit/src/features/seller/seller_main_menu/seller_dashboard_page.dart';
 import 'package:flixbit/src/features/seller/seller_main_menu/seller_offers_page.dart';
@@ -273,6 +274,10 @@ final GoRouter appRouter = GoRouter(
         final campaignId = state.extra as String? ?? '';
         return NotificationCampaignDetailPage(campaignId: campaignId);
       },
+    ),
+    GoRoute(
+      path: RouterEnum.notificationPreferencesView.routeName,
+      builder: (BuildContext context, GoRouterState state) => const NotificationPreferencesPage(),
     ),
     // USER SHELL
     StatefulShellRoute.indexedStack(

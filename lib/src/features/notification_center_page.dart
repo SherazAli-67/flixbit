@@ -425,6 +425,8 @@ class _NotificationCenterPageState extends State<NotificationCenterPage> with Ti
         return AppColors.primaryColor;
       case NotificationType.other:
         return AppColors.lightGreyColor;
+      default:
+        return AppColors.primaryColor;
     }
   }
 

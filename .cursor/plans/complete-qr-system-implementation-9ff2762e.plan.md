@@ -2,24 +2,28 @@
 # Save Auto-Notification Triggers Documentation
 
 ## Overview
+
 Create a markdown documentation file that captures the complete working flow of all 4 auto-notification triggers (Welcome, Thank You, Offer Reminder, Re-engagement) with detailed trigger events, flow diagrams, and technical specifications.
 
 ## Implementation Steps
 
 ### Step 1: Create Documentation File
+
 - **File**: `AUTO_NOTIFICATION_TRIGGERS_FLOW.md`
 - **Location**: Project root directory
 - **Content**: Complete documentation including:
-  - Status summary (all 4 triggers completed)
-  - Individual trigger flows with ASCII diagrams
-  - Trigger events and conditions
-  - Firebase collections used
-  - Rate limiting rules
-  - App-side FCM handling
-  - Technical specifications
+- Status summary (all 4 triggers completed)
+- Individual trigger flows with ASCII diagrams
+- Trigger events and conditions
+- Firebase collections used
+- Rate limiting rules
+- App-side FCM handling
+- Technical specifications
 
 ### Step 2: Structure the Documentation
+
 Include the following sections:
+
 1. **Completion Status** - Overview of completed triggers
 2. **Trigger 1: Welcome Notification** - Full flow diagram and details
 3. **Trigger 2: Thank You Notification** - Full flow diagram and details
@@ -30,6 +34,7 @@ Include the following sections:
 8. **Summary** - Quick reference table
 
 ### Step 3: Format Consistency
+
 - Use ASCII diagrams for visual flow representation
 - Include code snippets where relevant
 - Add Firebase collection structures
@@ -37,14 +42,15 @@ Include the following sections:
 - Maintain consistent formatting with existing documentation
 
 ## Files to Create
+
 1. `AUTO_NOTIFICATION_TRIGGERS_FLOW.md` - Complete auto-notification documentation
 
 ## Success Criteria
+
 - Documentation is comprehensive and easy to understand
 - All 4 triggers are fully documented with flows
 - Technical details are accurate and complete
 - File is saved in project root for easy access
-
 
 ### To-dos
 

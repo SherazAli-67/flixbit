@@ -32,6 +32,12 @@ void main() async {
   // Setup background message handler
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   
+  // Setup notification tap handler for deep linking
+  FCMService().setNotificationTapHandler((route, data) {
+    // Use the global router to navigate
+    appRouter.go(route);
+  });
+  
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final bool initialIsSeller = prefs.getBool('isSeller') ?? false;
 

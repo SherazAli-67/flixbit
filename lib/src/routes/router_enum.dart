@@ -65,6 +65,7 @@ enum RouterEnum {
   notificationAnalyticsView('/notification_analytics_view'),
   notificationCampaignListView('/notification_campaign_list_view'),
   notificationCampaignDetailView('/notification_campaign_detail_view'),
+  notificationPreferencesView('/notification_preferences_view'),
 
   ;
 

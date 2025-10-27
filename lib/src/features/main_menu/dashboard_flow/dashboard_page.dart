@@ -31,10 +31,10 @@ class _DashboardPageState extends State<DashboardPage> {
 
   void _initializeNotificationProvider() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final notificationProvider = context.read<NotificationProvider>();
+    /*  final notificationProvider = context.read<NotificationProvider>();
       final userId = FirebaseFirestore.instance.app.options.projectId; // This should be actual user ID
       // Note: In a real app, you'd get the user ID from Firebase Auth
-      // For now, we'll initialize without user ID
+      // For now, we'll initialize without user ID*/
     });
   }
 

@@ -38,6 +38,7 @@ class FirebaseConstants{
   static const notificationQuotaCollection = 'notification_quota';
   static const notificationQuotaTransactionsCollection = 'notification_quota_transactions';
   static const notificationAnalyticsCollection = 'notification_analytics';
+  static const notificationPreferencesCollection = 'notification_preferences';
   
   // Rewards Collections
   static const rewardsCollection = 'rewards';

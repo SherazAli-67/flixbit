@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flixbit/src/res/app_icons.dart';
 import 'package:flixbit/src/res/firebase_constants.dart';
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
@@ -10,7 +9,7 @@ import '../models/user_model.dart';
 class AuthenticationProvider extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseStorage _storage = FirebaseStorage.instance;
+  // final FirebaseStorage _storage = FirebaseStorage.instance;
 
   User? _user;
   UserModel? _userModel;

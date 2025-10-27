@@ -127,6 +127,14 @@ class AppNotification {
         return 'New Offer';
       case NotificationType.pointsEarned:
         return 'Points Earned';
+      case NotificationType.welcome:
+        return 'Welcome';
+      case NotificationType.thankYou:
+        return 'Thank You';
+      case NotificationType.offerReminder:
+        return 'Offer Reminder';
+      case NotificationType.reEngagement:
+        return 'Re-engagement';
       case NotificationType.other:
         return 'Notification';
     }
@@ -148,6 +156,14 @@ class AppNotification {
         return '🎁';
       case NotificationType.pointsEarned:
         return '💰';
+      case NotificationType.welcome:
+        return '👋';
+      case NotificationType.thankYou:
+        return '🙏';
+      case NotificationType.offerReminder:
+        return '⏰';
+      case NotificationType.reEngagement:
+        return '💌';
       case NotificationType.other:
         return '📢';
     }
@@ -162,6 +178,11 @@ enum NotificationType {
   tournamentWin,
   offerAvailable,
   pointsEarned,
+  // QR System notification types
+  welcome,
+  thankYou,
+  offerReminder,
+  reEngagement,
   other,
 }
 
@@ -174,6 +195,15 @@ class NotificationSettings {
   final bool pointsNotificationsEnabled;
   final bool expiryWarningEnabled;
   final int expiryWarningDays; // Days before expiry to warn
+  // QR System notification preferences
+  final bool qrWelcomeEnabled;
+  final bool qrThankYouEnabled;
+  final bool qrOfferReminderEnabled;
+  final bool qrReEngagementEnabled;
+  final Map<String, bool> perSellerPreferences; // sellerId -> enabled
+  final bool quietHoursEnabled;
+  final String? quietHoursStart; // HH:mm format
+  final String? quietHoursEnd; // HH:mm format
   final DateTime updatedAt;
 
   NotificationSettings({
@@ -185,6 +215,14 @@ class NotificationSettings {
     this.pointsNotificationsEnabled = true,
     this.expiryWarningEnabled = true,
     this.expiryWarningDays = 3,
+    this.qrWelcomeEnabled = true,
+    this.qrThankYouEnabled = true,
+    this.qrOfferReminderEnabled = true,
+    this.qrReEngagementEnabled = true,
+    this.perSellerPreferences = const {},
+    this.quietHoursEnabled = false,
+    this.quietHoursStart,
+    this.quietHoursEnd,
     required this.updatedAt,
   });
 
@@ -198,6 +236,14 @@ class NotificationSettings {
       pointsNotificationsEnabled: json['pointsNotificationsEnabled'] as bool? ?? true,
       expiryWarningEnabled: json['expiryWarningEnabled'] as bool? ?? true,
       expiryWarningDays: json['expiryWarningDays'] as int? ?? 3,
+      qrWelcomeEnabled: json['qrWelcomeEnabled'] as bool? ?? true,
+      qrThankYouEnabled: json['qrThankYouEnabled'] as bool? ?? true,
+      qrOfferReminderEnabled: json['qrOfferReminderEnabled'] as bool? ?? true,
+      qrReEngagementEnabled: json['qrReEngagementEnabled'] as bool? ?? true,
+      perSellerPreferences: Map<String, bool>.from(json['perSellerPreferences'] ?? {}),
+      quietHoursEnabled: json['quietHoursEnabled'] as bool? ?? false,
+      quietHoursStart: json['quietHoursStart'] as String?,
+      quietHoursEnd: json['quietHoursEnd'] as String?,
       updatedAt: DateTime.parse(json['updatedAt'] as String),
     );
   }
@@ -212,6 +258,14 @@ class NotificationSettings {
       'pointsNotificationsEnabled': pointsNotificationsEnabled,
       'expiryWarningEnabled': expiryWarningEnabled,
       'expiryWarningDays': expiryWarningDays,
+      'qrWelcomeEnabled': qrWelcomeEnabled,
+      'qrThankYouEnabled': qrThankYouEnabled,
+      'qrOfferReminderEnabled': qrOfferReminderEnabled,
+      'qrReEngagementEnabled': qrReEngagementEnabled,
+      'perSellerPreferences': perSellerPreferences,
+      'quietHoursEnabled': quietHoursEnabled,
+      'quietHoursStart': quietHoursStart,
+      'quietHoursEnd': quietHoursEnd,
       'updatedAt': updatedAt.toIso8601String(),
     };
   }
@@ -226,6 +280,14 @@ class NotificationSettings {
       'pointsNotificationsEnabled': pointsNotificationsEnabled,
       'expiryWarningEnabled': expiryWarningEnabled,
       'expiryWarningDays': expiryWarningDays,
+      'qrWelcomeEnabled': qrWelcomeEnabled,
+      'qrThankYouEnabled': qrThankYouEnabled,
+      'qrOfferReminderEnabled': qrOfferReminderEnabled,
+      'qrReEngagementEnabled': qrReEngagementEnabled,
+      'perSellerPreferences': perSellerPreferences,
+      'quietHoursEnabled': quietHoursEnabled,
+      'quietHoursStart': quietHoursStart,
+      'quietHoursEnd': quietHoursEnd,
       'updatedAt': Timestamp.fromDate(updatedAt),
     };
   }

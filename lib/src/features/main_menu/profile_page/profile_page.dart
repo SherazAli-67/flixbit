@@ -3,11 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flixbit/src/res/app_icons.dart';
 import 'package:flixbit/src/routes/router_enum.dart';
 import 'package:flutter/material.dart';
-import '../../../l10n/app_localizations.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
-import '../../res/app_colors.dart';
-import '../../res/apptextstyles.dart';
-import '../language_settings_page.dart';
+import '../../../res/app_colors.dart';
+import '../../../res/apptextstyles.dart';
+import '../../language_settings_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -63,7 +63,10 @@ class _ProfilePageState extends State<ProfilePage> {
               _buildSectionTitleWidget(
                   title: AppLocalizations.of(context)!.preferences.toUpperCase(),
                   children: [
-                    _buildSectionItemWidget(title: l10n.notifications, onTap: () {}),
+                    _buildSectionItemWidget(
+                      title: l10n.notifications, 
+                      onTap: ()=> context.push(RouterEnum.notificationPreferencesView.routeName),
+                    ),
                     _buildSectionItemWidget(
                       title: l10n.language, 
                       onTap: () {
